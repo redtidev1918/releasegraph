@@ -48,6 +48,10 @@ jobs:
 
 全部可选：`RELEASE_PLEASE_TOKEN`、`NPM_TOKEN`、`ANDROID_KEYSTORE_B64`、`ANDROID_KEYSTORE_PROPERTIES`。缺某个 secret 只会关掉对应的发布，不会让整次运行失败。
 
+## Release 正文
+
+Release 页面上的说明文字由 ReleaseGraph 生成，调用方不需要提供：`feat` / `fix` / 破坏性变更会被归类并改写成用户措辞，而 `chore` / `ci` / `governance` / 依赖机器人 / 版本号 bump 不会出现在页面上。特殊发版可以用提交正文里的 `release-note:` 覆盖，或放 `.github/release-notes/<version>.md` 整篇替换。语言跟随仓库主 README。详见 [Release 说明（面向用户）](release-notes.md)。
+
 ## 调用方不该做的事
 
 业务仓库不要跑 `gh release create`、`git tag -f`、`git push --force`，也不要用任何手写 API 变更去"修"自己的发布。那些做法会绕开平台强制执行的每一条 exactly-once 不变量。如果缺某个原语，它应该作为新原语加进本仓库，带上自己的测试和 dry run。

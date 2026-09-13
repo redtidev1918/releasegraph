@@ -8,6 +8,7 @@
   - [Release Health](/en/health.md)
   - [Plan Contract](/en/plan.md)
   - [Calling the Release Workflow](/en/callers.md)
+  - [Release Notes (user-facing)](/en/release-notes.md)
   - [Branch Contract](/en/branch-contract.md)
   - [PR Lifecycle](/en/pr-lifecycle.md)
 - Development

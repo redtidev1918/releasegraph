@@ -8,5 +8,6 @@
   - [发布健康](/health.md)
   - [计划契约](/plan.md)
   - [如何调用发布工作流](/callers.md)
+  - [Release 说明（面向用户）](/release-notes.md)
   - [生产操作分支契约](/branch-contract.md)
   - [拉取请求生命周期契约](/pr-lifecycle.md)
