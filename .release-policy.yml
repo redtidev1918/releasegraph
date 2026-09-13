@@ -26,7 +26,8 @@
   "retention": {
     "stable": 1,
     "prerelease": 1,
-    "failed_draft": 3
+    "failed_draft": 3,
+    "pruneStable": false
   },
   "checksums": true,
   "metadata": true,

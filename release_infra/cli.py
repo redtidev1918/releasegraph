@@ -4,7 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-from .assets import collect_assets, write_checksums
+from . import notes
+from .assets import AssetError, collect_assets, write_checksums
 from .inventory import scan, write_outputs
 from .policy import desired_version, load_policy
 from .release import assert_no_cleanup_tag, audit, plan, publish, stage
@@ -34,6 +35,12 @@ def main(argv: list[str] | None = None) -> int:
             command_parser.add_argument("--dry-run", action="store_true")
     static_parser = sub.add_parser("static-check")
     static_parser.add_argument("--root", default=".")
+    notes_parser = sub.add_parser("notes")
+    notes_parser.add_argument("--path", default=".release-policy.yml")
+    notes_parser.add_argument("--version")
+    notes_parser.add_argument("--tag")
+    notes_parser.add_argument("--root", default=".")
+    notes_parser.add_argument("--output")
     plan_parser = sub.add_parser("workflow-plan")
     plan_parser.add_argument("--path", default=".release-policy.yml")
     plan_parser.add_argument("--version")
@@ -69,8 +76,26 @@ def main(argv: list[str] | None = None) -> int:
                     output.write(f"{key}={value}\n")
         else:
             print(json.dumps(result, indent=2))
-    else:
+    elif args.command == "static-check":
         assert_no_cleanup_tag(args.root)
+    elif args.command == "notes":
+        policy = load_policy(args.path)
+        version = desired_version(policy, args.version, args.root)
+        tag = args.tag or policy.get("tag", {}).get("template", "v{version}").format(version=version)
+        try:
+            built = collect_assets(policy.get("assets", {}).get("required", []),
+                                   policy.get("assets", {}).get("optional", []))
+        except AssetError:
+            # A preview before the build produced anything is still useful: the
+            # body then explains where the repository actually delivers from.
+            built = []
+        body = notes.build_for_release(policy, version, tag, root=args.root,
+                                       asset_names=[path.name for path in built],
+                                       asset_sizes={path.name: path.stat().st_size for path in built})
+        if args.output:
+            Path(args.output).write_text(body, encoding="utf-8")
+        else:
+            print(body, end="")
     return 0
 
 

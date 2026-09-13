@@ -62,6 +62,9 @@ type Retention struct {
 	Stable      int `json:"stable,omitempty" yaml:"stable,omitempty"`
 	Prerelease  int `json:"prerelease,omitempty" yaml:"prerelease,omitempty"`
 	FailedDraft int `json:"failed_draft,omitempty" yaml:"failed_draft,omitempty"`
+	// PruneStable opts in to deleting published stable releases beyond Stable.
+	// Off by default: a published stable release is history, not cache.
+	PruneStable bool `json:"pruneStable,omitempty" yaml:"pruneStable,omitempty"`
 }
 
 // ProductionOperations declares the production-operation branch contract:
@@ -191,6 +194,13 @@ type Release struct {
 	// contract. nil means "not declared" and falls back to the historical
 	// default (true), so existing policies keep their meaning.
 	GitHub *bool `json:"github,omitempty" yaml:"github,omitempty"`
+	Notes  Notes `json:"notes,omitempty" yaml:"notes,omitempty"`
+}
+
+// Notes configures the user-facing GitHub Release body.
+type Notes struct {
+	// Language is "auto" (follow the repository's primary README), "en" or "zh".
+	Language string `json:"language,omitempty" yaml:"language,omitempty"`
 }
 
 // Artifacts describes distributable build outputs. Repositories without
@@ -229,6 +239,10 @@ var versionPattern = regexp.MustCompile(`^[0-9]+(?:\.[0-9A-Za-z-]+)+$`)
 var kinds = map[string]bool{"binary": true, "python-library": true, "node-library": true, "container": true, "flutter": true, "android": true, "hybrid": true, "none": true}
 var versionModes = map[string]bool{"release-please": true, "manual": true, "tag": true}
 var registryNames = map[string]bool{"github": true, "pypi": true, "npm": true, "pub": true, "ghcr": true}
+
+// notesLanguages mirrors release_infra/notes.LANGUAGES. Both sides reject the
+// same values, so a policy that loads here renders the same way there.
+var notesLanguages = map[string]bool{"auto": true, "en": true, "zh": true}
 
 func Load(path string) (*Policy, error) {
 	raw, err := os.ReadFile(path)
@@ -319,6 +333,12 @@ func Validate(p *Policy) error {
 	}
 	if containsNewline(p.Release.PostPublish) {
 		return rgerrors.New(rgerrors.Policy, "release.post_publish must be a single-line command")
+	}
+	if p.Release.Notes.Language != "" && !notesLanguages[p.Release.Notes.Language] {
+		return rgerrors.New(rgerrors.Policy, "release.notes.language must be auto, en, or zh")
+	}
+	if p.Retention.Stable < 0 || p.Retention.Prerelease < 0 || p.Retention.FailedDraft < 0 {
+		return rgerrors.New(rgerrors.Policy, "retention values must not be negative")
 	}
 	if po := p.Repository.Git.ProductionOperations; po != nil {
 		if err := validateProductionOperations(po); err != nil {

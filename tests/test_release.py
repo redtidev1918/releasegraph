@@ -191,7 +191,9 @@ class ReleaseTest(unittest.TestCase):
         self.assertFalse(any("release upload" in command for command in commands))
 
     def test_retention_deletes_release_objects_without_tags(self):
-        policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "2.0.0"}, "assets": {"required": []}, "registries": {"github": {"required": True}}, "retention": {"stable": 1, "prerelease": 0}}
+        # Deleting published stable releases is opt-in: they are history, and the
+        # default keeps them. This fixture exercises the opt-in path.
+        policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "2.0.0"}, "assets": {"required": []}, "registries": {"github": {"required": True}}, "retention": {"stable": 1, "prerelease": 0, "pruneStable": True}}
         rows = [{"tagName": "v2", "isDraft": False, "isPrerelease": False}, {"tagName": "v1", "isDraft": False, "isPrerelease": False}, {"tagName": "v3-rc", "isDraft": False, "isPrerelease": True}]
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / ".release-policy.yml"
@@ -217,6 +219,7 @@ class ReleaseTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "collect_assets", return_value=[]), \
                     mock.patch.object(release, "_upload_idempotent"), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
                     mock.patch.object(release, "_run", return_value="") as run, \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"):
@@ -305,6 +308,7 @@ class LatestGuardTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "_is_newest", return_value=False), \
                     mock.patch.object(release, "_upload_idempotent"), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"), \
                     mock.patch.object(release, "_run", return_value="head-commit") as run, \
@@ -313,7 +317,10 @@ class LatestGuardTest(unittest.TestCase):
         commands = [" ".join(call.args[0]) for call in run.call_args_list]
         publish = [c for c in commands if c.startswith("gh release edit")]
         self.assertEqual(len(publish), 1, commands)
-        self.assertNotIn("--latest", publish[0])
+        # Not merely absent: demanded as false, so the API default cannot move
+        # the Latest badge backwards.
+        self.assertIn("--latest=false", publish[0])
+        self.assertNotIn("--latest ", publish[0] + " ")
 
     def test_current_version_still_claims_latest(self):
         policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "2.18.0"}, "assets": {"required": []}, "registries": {"github": {"required": True}}}
@@ -322,6 +329,7 @@ class LatestGuardTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "_is_newest", return_value=True), \
                     mock.patch.object(release, "_upload_idempotent"), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"), \
                     mock.patch.object(release, "_run", return_value="head-commit") as run, \
@@ -329,7 +337,8 @@ class LatestGuardTest(unittest.TestCase):
                 release.publish(str(path))
         publish = [" ".join(call.args[0]) for call in run.call_args_list if call.args[0][:3] == ["gh", "release", "edit"]]
         self.assertEqual(len(publish), 1, publish)
-        self.assertIn("--latest", publish[0])
+        self.assertIn("--latest ", publish[0] + " ")
+        self.assertNotIn("--latest=false", publish[0])
 
 
 class ReleaseContractTest(unittest.TestCase):

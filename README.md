@@ -106,9 +106,12 @@ metadata: true
 
 构建适配器负责编译器和包管理器，并把候选资产放入 `dist/release/`。ReleaseGraph 负责校验发布顺序、资产契约、校验和/元数据、不可变 tag、registry 以及恢复流程。
 
+GitHub Release 页面上的说明文字同样由 ReleaseGraph 生成：面向下载用户，过滤掉 CI/治理/依赖机器人的噪音，语言跟随仓库主 README。详见 [Release 说明（面向用户）](docs/release-notes.md)。
+
 延伸阅读：
 
 - [架构说明](docs/concepts.md)
 - [快速开始](docs/quick-start.md)
 - [认证与权限](docs/authentication.md)
+- [Release 说明（面向用户）](docs/release-notes.md)
 - [英文文档](docs/README.md)

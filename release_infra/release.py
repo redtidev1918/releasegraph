@@ -10,7 +10,7 @@ import tempfile
 from typing import Any
 from pathlib import Path
 
-from . import __version__
+from . import __version__, notes
 from .assets import collect_assets, sha256, write_checksums
 from .github import GitHubError
 from .policy import desired_version, load_policy
@@ -23,6 +23,34 @@ class ReleaseError(RuntimeError):
 
 def _required_assets_present(required: set[str], remote: set[str]) -> bool:
     return all(any(fnmatch.fnmatch(name, pattern) for name in remote) for pattern in required)
+
+
+def required_asset_patterns(policy: dict) -> list[str]:
+    """Every asset a *public* release must carry, or an empty list.
+
+    A repository with no declared binary patterns has nothing to gate: its
+    Release legitimately contains only metadata, and the body says so instead of
+    showing an empty download area.
+    """
+    patterns = list(policy.get("assets", {}).get("required", []))
+    if not patterns:
+        return []
+    if policy.get("checksums", True):
+        patterns.append("SHA256SUMS")
+    patterns.append("RELEASE-METADATA.json")
+    return patterns
+
+
+def missing_required_assets(policy: dict, remote: list[dict]) -> list[str]:
+    """Required patterns with no non-empty asset on the release.
+
+    This is the promote-after-artifacts gate. GitHub will happily publish a
+    Release that holds nothing but "Source code"; the binary workflow failing
+    later then leaves that empty page as the official release.
+    """
+    present = {str(asset.get("name", "")) for asset in remote if int(asset.get("size", 0)) > 0}
+    return [pattern for pattern in required_asset_patterns(policy)
+            if not any(fnmatch.fnmatch(name, pattern) for name in present)]
 
 
 def _run(command: list[str], *, capture: bool = False) -> str:
@@ -111,6 +139,44 @@ def _upload_idempotent(tag: str, paths: list[Path], *, dry_run: bool = False) ->
                 _run(["gh", "release", "upload", tag, str(path)])
 
 
+def _notes_file(policy: dict, version: str, tag: str, assets: list[dict]) -> Path:
+    """Render the user-facing Release body to a temporary file.
+
+    The body is ReleaseGraph's, not GitHub's default generator: that one renders
+    merged pull-request titles, which is developer and automation internals.
+    See `release_infra/notes.py`.
+    """
+    body = notes.build_for_release(
+        policy, version, tag,
+        asset_names=[str(asset.get("name", "")) for asset in assets],
+        asset_sizes={str(asset.get("name", "")): int(asset.get("size", 0)) for asset in assets},
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as handle:
+        handle.write(body)
+        return Path(handle.name)
+
+
+def _local_assets(paths: list[Path]) -> list[dict]:
+    described = []
+    for path in paths:
+        try:
+            size = path.stat().st_size
+        except OSError:
+            size = 0
+        described.append({"name": path.name, "size": size})
+    return described
+
+
+def _publish_notes(policy: dict, version: str, tag: str, assets: list[Path]) -> None:
+    """Create the draft with a user-facing body, never with generated notes."""
+    path = _notes_file(policy, version, tag, _local_assets(assets))
+    try:
+        _run(["gh", "release", "create", tag, "--verify-tag", "--draft", "--title", tag,
+              "--notes-file", str(path)])
+    finally:
+        path.unlink(missing_ok=True)
+
+
 def stage(policy_path: str = ".release-policy.yml", version: str | None = None, *, dry_run: bool = False) -> str:
     policy = load_policy(policy_path)
     desired = desired_version(policy, version)
@@ -125,7 +191,7 @@ def stage(policy_path: str = ".release-policy.yml", version: str | None = None, 
     if release and not release["isDraft"]:
         raise ReleaseError(f"{tag} is already public; run audit instead")
     if not release and not dry_run:
-        _run(["gh", "release", "create", tag, "--verify-tag", "--draft", "--title", tag, "--generate-notes"])
+        _publish_notes(policy, desired, tag, [*assets, *([checksums] if checksums else [])])
     _upload_idempotent(tag, [*assets, *([checksums] if checksums else [])], dry_run=dry_run)
     return tag
 
@@ -258,15 +324,48 @@ def publish(policy_path: str = ".release-policy.yml", version: str | None = None
     _upload_idempotent(tag, [metadata_path], dry_run=dry_run)
     if dry_run:
         return tag
-    prerelease = bool(policy.get("release", {}).get("prerelease", False))
+    current = _release(tag)
+    if current is None:
+        # stage() guarantees the draft exists, so an unreadable release here is a
+        # transient API failure. Failing closed keeps a publish from slipping
+        # past the artefact gate on a read that never happened.
+        raise ReleaseError(f"cannot read {tag} from GitHub; refusing to publish an ungated release")
+    draft = bool(current.get("isDraft"))
+    if draft:
+        # Promote-after-artifacts: the draft is the transaction, and it may only
+        # become the official release once the real artifacts are on it. A
+        # source-code-only page must never be what a download user lands on.
+        missing = missing_required_assets(policy, current.get("assets", []))
+        if missing:
+            raise ReleaseError(
+                f"refusing to publish {tag}: draft is missing required assets: {', '.join(sorted(missing))}"
+            )
+    prerelease = notes.is_prerelease(desired, policy)
     command = ["gh", "release", "edit", tag, "--draft=false", f"--prerelease={'true' if prerelease else 'false'}"]
-    if not prerelease:
-        if _is_newest(desired):
-            command.append("--latest")
-        else:
-            # Same-version repair of an older release: keep Latest where it is.
-            print(f"note: a newer release is currently Latest; publishing {tag} without --latest")
-    _run(command)
+    if prerelease:
+        # A pre-release never takes the Latest badge; GitHub keeps Latest on the
+        # newest published stable release.
+        print(f"note: {tag} is a pre-release; Latest is left untouched")
+    elif _is_newest(desired):
+        command.append("--latest")
+    else:
+        # Same-version repair of an older release: keep Latest where it is, and
+        # say so explicitly rather than relying on the API's default.
+        print(f"note: a newer release is currently Latest; publishing {tag} without --latest")
+        command.append("--latest=false")
+    if draft:
+        # Regenerate the body at promotion time so a draft created by an earlier
+        # engine (or a repair run) still ends up with user-facing notes. Only a
+        # draft is touched: a published release's body is immutable history.
+        notes_path = _notes_file(policy, desired, tag, list(current.get("assets", [])))
+        command += ["--notes-file", str(notes_path)]
+    else:
+        notes_path = None
+    try:
+        _run(command)
+    finally:
+        if notes_path is not None:
+            notes_path.unlink(missing_ok=True)
     audit(policy_path, desired)
     # Label acknowledgement is owned by the version provider: the workflow
     # pre-reconciles before release-please and acknowledges after publish.
@@ -320,11 +419,20 @@ def _remote_text(tag: str, asset: str) -> str:
 
 
 def prune(policy_path: str = ".release-policy.yml") -> None:
+    """Retire drafts and pre-releases past their limits.
+
+    Published *stable* releases are history, not cache: GitHub derives its
+    changelog and comparison links from them, and a user following an old link
+    must still land on a real page. So they are only pruned when the policy
+    explicitly opts in with `retention.pruneStable: true`, and the release
+    currently marked Latest is never pruned at all.
+    """
     policy = load_policy(policy_path)
     retention = policy.get("retention", {})
     keep_stable = int(retention.get("stable", 1))
     keep_prerelease = int(retention.get("prerelease", 1))
     keep_drafts = int(retention.get("failed_draft", 2))
+    prune_stable = bool(retention.get("pruneStable", False))
     releases = json.loads(_run(["gh", "release", "list", "--limit", "100", "--json", "tagName,isDraft,isPrerelease,isLatest,publishedAt,createdAt"], capture=True))
     # gh release list is latest-first for public releases; drafts have no
     # publishedAt and are appended, so sort each class explicitly.
@@ -338,8 +446,15 @@ def prune(policy_path: str = ".release-policy.yml") -> None:
         (r for r in releases if r["isDraft"]),
         key=lambda r: r.get("createdAt") or "", reverse=True,
     )
-    expired = stable[keep_stable:] + prereleases[keep_prerelease:] + drafts[keep_drafts:]
+    expired = [
+        *(stable[keep_stable:] if prune_stable else []),
+        *prereleases[keep_prerelease:],
+        *drafts[keep_drafts:],
+    ]
     for release in expired:
+        if release.get("isLatest"):
+            print(f"note: {release['tagName']} is Latest and is kept regardless of retention")
+            continue
         _run(["gh", "release", "delete", release["tagName"], "--yes"])
 
 
