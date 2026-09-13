@@ -186,3 +186,46 @@ func TestPRLifecycleDefaults(t *testing.T) {
 		t.Fatal("enabled=false must not be enforced")
 	}
 }
+
+func TestRetentionPruneStableIsOptInByDefault(t *testing.T) {
+	p, err := Load("../../.release-policy.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Retention.PruneStable {
+		t.Fatal("published stable releases are history; pruning them must be opt-in")
+	}
+}
+
+func TestNotesLanguageIsValidatedLikeThePythonHalf(t *testing.T) {
+	base := Policy{
+		Kind:       "none",
+		Versioning: Versioning{Mode: "manual", Version: "1.0.0"},
+		Assets:     Assets{Required: []string{}},
+		Checksums:  true,
+	}
+	for _, language := range []string{"", "auto", "en", "zh"} {
+		p := base
+		p.Release.Notes.Language = language
+		if err := Validate(&p); err != nil {
+			t.Fatalf("language %q: %v", language, err)
+		}
+	}
+	p := base
+	p.Release.Notes.Language = "fr"
+	if err := Validate(&p); err == nil {
+		t.Fatal("expected a policy error for an unknown release.notes.language")
+	}
+}
+
+func TestRetentionWithoutPruneStableStillLoads(t *testing.T) {
+	p, err := Parse([]byte(`{"apiVersion":"releasegraph.dev/v1","kind":"none",` +
+		`"versioning":{"mode":"manual","version":"1.0.0"},"assets":{"required":[]},` +
+		`"registries":{},"retention":{"stable":1,"prerelease":1,"failed_draft":2}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Retention.PruneStable || p.Retention.Stable != 1 {
+		t.Fatalf("retention=%+v", p.Retention)
+	}
+}

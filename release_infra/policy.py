@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from . import notes
+
 
 KINDS = {"binary", "python-library", "node-library", "flutter", "android", "container", "hybrid", "none"}
 VERSIONING = {"release-please", "manual"}
@@ -106,6 +108,21 @@ def validate_policy(policy: Any) -> None:
     post_publish = policy.get("release", {}).get("post_publish", "")
     if not isinstance(post_publish, str) or "\n" in post_publish:
         raise PolicyError("release.post_publish must be a single-line string")
+    note_settings = policy.get("release", {}).get("notes", {})
+    if not isinstance(note_settings, dict):
+        raise PolicyError("release.notes must be an object")
+    language = note_settings.get("language", "auto")
+    if language not in notes.LANGUAGES:
+        raise PolicyError(f"release.notes.language must be one of: {', '.join(notes.LANGUAGES)}")
+    retention = policy.get("retention", {})
+    if not isinstance(retention, dict):
+        raise PolicyError("retention must be an object")
+    for name, minimum in (("stable", 1), ("prerelease", 0), ("failed_draft", 0)):
+        value = retention.get(name)
+        if value is not None and (isinstance(value, bool) or not isinstance(value, int) or value < minimum):
+            raise PolicyError(f"retention.{name} must be an integer >= {minimum}")
+    if not isinstance(retention.get("pruneStable", False), bool):
+        raise PolicyError("retention.pruneStable must be a boolean")
     repository = policy.get("repository")
     if repository is not None:
         if not isinstance(repository, dict):

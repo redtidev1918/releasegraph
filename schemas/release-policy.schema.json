@@ -60,8 +60,25 @@
         }
       }
     },
-    "retention": {"type": "object", "properties": {"stable": {"type": "integer", "minimum": 1}, "prerelease": {"type": "integer", "minimum": 0}, "failed_draft": {"type": "integer", "minimum": 0}}},
-    "release": {"type": "object", "properties": {"prerelease": {"type": "boolean"}, "post_publish": {"type": "string"}}},
+    "retention": {"type": "object", "properties": {"stable": {"type": "integer", "minimum": 1}, "prerelease": {"type": "integer", "minimum": 0}, "failed_draft": {"type": "integer", "minimum": 0}, "pruneStable": {"type": "boolean", "default": false, "description": "Opt-in to deleting published stable releases beyond `stable`. Off by default: published stable releases are history, not cache."}}},
+    "release": {
+      "type": "object",
+      "properties": {
+        "prerelease": {"type": "boolean", "description": "Force pre-release even for a version without a SemVer pre-release component. A version such as 1.5.0-rc.1 is always published as a pre-release and never takes Latest."},
+        "post_publish": {"type": "string"},
+        "notes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "language": {
+              "enum": ["auto", "en", "zh"],
+              "default": "auto",
+              "description": "Language of the GitHub Release body. auto follows the repository's primary README."
+            }
+          }
+        }
+      }
+    },
     "checksums": {"type": "boolean"},
     "sbom": {"type": "boolean"},
     "repository": {
