@@ -60,7 +60,7 @@
       }
     },
     "release": {
-      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
+      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md docs/en/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
     },
     "retention": {
       "stable": 1,
@@ -97,17 +97,17 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.17.3",
-  "latest_release": "v2.17.3",
-  "latest_release_at": "2026-09-11T21:47:46Z",
-  "latest_tag": "v2.17.3",
+  "desired_version": "2.17.6",
+  "latest_release": "v2.17.6",
+  "latest_release_at": "2026-09-13T03:01:27Z",
+  "latest_tag": "v2.17.6",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
-    "telepost-2.17.3-linux-x64.tar.gz",
-    "telepost-2.17.3-macos-arm64.tar.gz",
-    "telepost-2.17.3-windows-x64.zip",
+    "telepost-2.17.6-linux-x64.tar.gz",
+    "telepost-2.17.6-macos-arm64.tar.gz",
+    "telepost-2.17.6-windows-x64.zip",
     "telepost-linux-x64",
     "telepost-macos-arm64",
     "telepost-windows-x64.exe"
@@ -121,8 +121,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/34677327775",
-    "updated_at": "2026-09-12T06:08:06Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/34739581399",
+    "updated_at": "2026-09-13T05:09:08Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -133,6 +133,7 @@
   ],
   "workflow_paths": [
     ".github/workflows/branch-contract.yml",
+    ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
@@ -140,55 +141,67 @@
   ],
   "release_history": [
     {
-      "tag": "v2.17.3",
+      "tag": "v2.17.6",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-11T21:47:46Z",
+      "published_at": "2026-09-13T03:01:27Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 2628,
-          "sha256": "sha256:24667d5a555565e6a67fa861638ba51f71221419385c5ebaa334ad6ac8687756"
+          "sha256": "sha256:56058f0d983609b44f0b40e2bfd5d9a04f3ab0ec3807e8b11c5f4a4d007b253c"
         },
         {
           "name": "SHA256SUMS",
           "size": 561,
-          "sha256": "sha256:a898e993626f1411daba31f831ea79cd3476c45ec007775071ed1b0f8d1820a0"
+          "sha256": "sha256:af1f5b5b3cbe2b22a1dee80a447b953b2deb18e9ea726533dd34597d0ede07fb"
         },
         {
-          "name": "telepost-2.17.3-linux-x64.tar.gz",
-          "size": 33357648,
-          "sha256": "sha256:6fae192baa1589c61c0a77d4353de4a85d4e7624f11194f8d4081ad5eae4356d"
+          "name": "telepost-2.17.6-linux-x64.tar.gz",
+          "size": 33375312,
+          "sha256": "sha256:1ad72fbc420babe872314f3b1fa9ba0e89c1166b26600f029e64aa52bc2862ff"
         },
         {
-          "name": "telepost-2.17.3-macos-arm64.tar.gz",
-          "size": 17911061,
-          "sha256": "sha256:45abf7d80b13bdf5d90b278ce1f7f0a9a2b331bb15971f0681fef70638970856"
+          "name": "telepost-2.17.6-macos-arm64.tar.gz",
+          "size": 17926445,
+          "sha256": "sha256:9335316d0b54d42db429952297522364390ae0350c2820a76530153b4fa952ef"
         },
         {
-          "name": "telepost-2.17.3-windows-x64.zip",
-          "size": 21293843,
-          "sha256": "sha256:b52939cc4cd45908432c6cd677de3b199943a71531e1464a6a75b4d3f11d97ad"
+          "name": "telepost-2.17.6-windows-x64.zip",
+          "size": 21321024,
+          "sha256": "sha256:4cd2195e9a61f1c0f17c4c200de905d1121ae20ddc6e4994e3ac3c244642e98f"
         },
         {
           "name": "telepost-linux-x64",
-          "size": 33641368,
-          "sha256": "sha256:ad94611bcc6fc7c1c65874c6a096900902bbcad7f9a009bc146066bc7441afa0"
+          "size": 33661256,
+          "sha256": "sha256:0927519bf85f447375c108279d566d339e55a88f42e3649a100a1ebaefc0906f"
         },
         {
           "name": "telepost-macos-arm64",
-          "size": 18116656,
-          "sha256": "sha256:37ceee8311f53a0f8af84a38205cd74c93826589e7603f4ffb224fbbfc257adf"
+          "size": 18131408,
+          "sha256": "sha256:df1b4bfc4a1714830b6f815784333e6b439cb4337095d0bc5ca66fe0de05a7b9"
         },
         {
           "name": "telepost-windows-x64.exe",
-          "size": 21615058,
-          "sha256": "sha256:db7419d2ecdd8a03556830b07c339ce38b5254042e6972f5619217aacb8c9928"
+          "size": 21653564,
+          "sha256": "sha256:5584c59bd778b3938b76a1225c81c1ee4fac4f537dcecd3d05bb7fa22cade92f"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.17.6",
+      "commit": "6772ca4286d10c5e5e960765ade7213432da232b"
+    },
+    {
+      "name": "v2.17.5",
+      "commit": "e67579e546644b8c65ea6b2950b6fb33964033b8"
+    },
+    {
+      "name": "v2.17.4",
+      "commit": "c9553c64af236f9112385047beee438771bb29b5"
+    },
     {
       "name": "v2.17.3",
       "commit": "7b62659be70297a399233aa91af1d8f4fc873ad8"
@@ -227,9 +240,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "2.17.3"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -245,6 +255,9 @@
           ]
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "2.17.6"
     }
   },
   "registries": {},

@@ -45,7 +45,7 @@
       }
     },
     "release": {
-      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
+      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md docs/en/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
     },
     "retention": {
       "stable": 1,
@@ -103,10 +103,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.12.0",
-  "latest_release": "v1.12.0",
-  "latest_release_at": "2026-09-11T05:28:59Z",
-  "latest_tag": "v1.12.0",
+  "desired_version": "1.13.0",
+  "latest_release": "v1.13.0",
+  "latest_release_at": "2026-09-12T10:06:27Z",
+  "latest_tag": "v1.13.0",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -127,8 +127,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34676847473",
-    "updated_at": "2026-09-12T05:56:38Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34744406198",
+    "updated_at": "2026-09-13T07:07:28Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -139,6 +139,7 @@
   ],
   "workflow_paths": [
     ".github/workflows/branch-contract.yml",
+    ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
@@ -147,55 +148,59 @@
   ],
   "release_history": [
     {
-      "tag": "v1.12.0",
+      "tag": "v1.13.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-11T05:28:59Z",
+      "published_at": "2026-09-12T10:06:27Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2438107,
-          "sha256": "sha256:1537f804640e036761e5950e46b64fc75aa30fcbbd199ad30f65137bf3917ca4"
+          "size": 2437838,
+          "sha256": "sha256:1230bfbe081957d72ba38400cbffab5d549970c6e7c00d9c43c91439711439a9"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2281470,
-          "sha256": "sha256:d7570cd7fb142cad1f7eaf6d5c5b7b2aa9db659e1bbc017937260f3a95bea42a"
+          "size": 2281576,
+          "sha256": "sha256:06a43993d7c500a08512c4091bcd78de2b556c7407ebfcd6acc592fdb7ff57cf"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2407300,
-          "sha256": "sha256:d713b66271330f829f23e996493185043f1df1742474c81fd31bbd4eb9751bd7"
+          "size": 2406263,
+          "sha256": "sha256:7dedab1c6eeb806f28dfbab58bb9a03206185ea0ae7e44c297d91e5fb797a55c"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2205751,
-          "sha256": "sha256:498e164a602835f3b6edb29c97af2209131c680f7a68cac36a65fe12390f546e"
+          "size": 2204832,
+          "sha256": "sha256:dca21d19327b8193807856b07b391a08f7aa2c54c02f164bf0129a18b5403bb4"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2466790,
-          "sha256": "sha256:1408873429ce40a3edc1f130a54254df381763dcc91aaec4706eb1b5818aaea0"
+          "size": 2462492,
+          "sha256": "sha256:fc4856427e0b2a59353ad09539b200f0057a01a0817d67de5ffe46496c71f17d"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2232712,
-          "sha256": "sha256:81d35136eda1d7ff6fbc748224be74c9c0c48da39bb3a9311e367cdf62126f7f"
+          "size": 2229396,
+          "sha256": "sha256:b2f1950541ebc0b28142080a871145766209317aed479bc22327eaec467e8c44"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2735,
-          "sha256": "sha256:6546f52b1746b31cff8b9909a21535288cbb301a2ccec607ed07569f7b4f3d7b"
+          "sha256": "sha256:ba11a099836af0859e97273ff728dacad5d55af0c87d8bfbffdd9c0eae157962"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:e3edfd7805eb2fb0b890aad61e9074e3902f637a2ba65efce19ca72c5764a2a7"
+          "sha256": "sha256:3cb9741a8a7bd15c877e00d52f7aacffa8ecf50e78242d91cac83bca4be133f7"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.13.0",
+      "commit": "fe62cfe386a631a952b90a482c0a0749b43b6abd"
+    },
     {
       "name": "v1.12.0",
       "commit": "2faf9cc3edd2543162f777d780ab10709ad134d1"
@@ -218,9 +223,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "1.12.0"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -232,6 +234,9 @@
           "include-component-in-tag": false
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "1.13.0"
     }
   },
   "registries": {},
@@ -244,8 +249,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 4,
-    "inQueue": 4,
+    "open": 2,
+    "inQueue": 2,
     "shouldLeave": 0
   }
 }
