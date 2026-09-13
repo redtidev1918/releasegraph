@@ -130,10 +130,54 @@ class NoiseFilterTest(unittest.TestCase, NoNoiseMixin):
 
     def test_an_internal_scope_disqualifies_an_otherwise_user_facing_subject(self):
         commits = [
-            notes.Commit(subject="feat(release-infra): add a rollout canary"),
-            notes.Commit(subject="fix(ci): stop flaky upload retries"),
+            notes.Commit(subject="feat(ci): add a release-engineering canary"),
+            notes.Commit(subject="fix(governance): stop flaky policy checks"),
+            notes.Commit(subject="chore(deps): pin a transitive build tool"),
         ]
         self.assertEqual(notes.collect_entries(commits, "en"), [])
+
+    def test_a_real_infra_module_scope_survives_the_filter(self):
+        # Regression: the scope filter split on whitespace and treated the bare
+        # words `release`/`infra`/`pipeline`/`bot` as internal, so EVERY scoped
+        # feature was dropped and ReleaseGraph v1.5.0 shipped an empty
+        # "maintenance" body despite feat(release-notes)/fix(inventory). A scope
+        # is only internal when ALL of its hyphen/underscore tokens name pure
+        # automation; a real product module must survive.
+        for subject in (
+            "feat(release-notes): generate user-facing Release bodies",
+            "fix(release): select the toolchain from the published channel",
+            "fix(inventory): detect consumer callers from their call sites",
+            "feat(pipeline): keep a long upload resumable across restarts",
+            "feat(pipeline-deps): wire a build-only probe",
+        ):
+            match = notes.CONVENTIONAL.match(subject)
+            self.assertFalse(notes.is_noise(subject, match), subject)
+
+        # The whole pipeline keeps the features, not just is_noise().
+        commits = [
+            notes.Commit(subject="feat(release-notes): write notes readers can use"),
+            notes.Commit(subject="fix(inventory): discover every configured caller"),
+        ]
+        entries = notes.collect_entries(commits, "en")
+        self.assertEqual(
+            [entry.text for entry in entries],
+            ["Added write notes readers can use.",
+             "Fixed discover every configured caller."],
+        )
+
+    def test_a_scope_of_only_automation_tokens_is_dropped(self):
+        # `deps` is in SCOPE_STOPWORDS and is NOT a NOISE_WORD or NOISE_PHRASE, so
+        # this subject is dropped by the scope rule alone — the case that isolates
+        # the rule. `ci`/`chore` would instead be caught by NOISE_WORDS, and
+        # `release-infra` by the explicit "release infra" NOISE_PHRASE.
+        subject = "feat(deps): pin a build-only helper"
+        self.assertTrue(notes.is_noise(subject, notes.CONVENTIONAL.match(subject)))
+        # A scope that merely CONTAINS an automation token is still user-facing.
+        mixed = "feat(pipeline-deps): wire a probe"
+        self.assertFalse(notes.is_noise(mixed, notes.CONVENTIONAL.match(mixed)))
+        # Documented intent: plumbing scopes keep being removed by the phrase list.
+        plumbing = "feat(release-infra): add a rollout canary"
+        self.assertTrue(notes.is_noise(plumbing, notes.CONVENTIONAL.match(plumbing)))
 
     def test_a_real_user_facing_feature_survives_the_filter(self):
         commits = [notes.Commit(subject="feat(cli): add a --dry-run flag to export")]

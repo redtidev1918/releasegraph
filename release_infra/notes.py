@@ -182,10 +182,16 @@ NOISE_PHRASES = (
 
 NOISE_WORDS = ("chore", "ci", "wip")
 
-# A conventional-commit scope that names repository plumbing rather than a
-# user-visible surface. The scope itself is never rendered; it only decides
-# whether the commit is user-facing at all.
-SCOPE_STOPWORDS = {"release", "infra", "ci", "chore", "governance", "deps", "dependency", "bot", "pipeline"}
+# A conventional-commit scope that names pure repository automation rather than
+# a product surface. The scope itself is never rendered; it only decides whether
+# the commit is user-facing at all. This set stays tiny on purpose: the type
+# (chore/ci/build/release/...) and the author (dependabot/...) already remove the
+# bulk of the noise, and a real product ships user-facing changes under scopes
+# such as `release-notes`, `inventory` or `pipeline` — those MUST survive. Only a
+# scope whose every token names automation disqualifies the commit.
+SCOPE_STOPWORDS = {"ci", "chore", "governance", "deps", "dependency", "dependabot"}
+
+_SCOPE_TOKEN = re.compile(r"[a-z0-9]+")
 
 VERSION_BUMP = re.compile(
     # "release 1.7.0", "bump v1.2.3", a bare version at the head of a subject, or
@@ -331,11 +337,14 @@ def is_noise(text: str, match: re.Match | None = None) -> bool:
     if any(re.search(rf"\b{word}\b", lowered) for word in NOISE_WORDS):
         return True
     if match is not None and match.group("scope"):
-        # A scope is the developer's module name (`release-infra`, `ci-official`).
+        # A scope is the developer's module name (`release-notes`, `ci-official`).
         # It never reaches the body, but it still disqualifies the commit when it
-        # is itself an internal label.
-        scope = set(normalize(match.group("scope")).split())
-        if scope & SCOPE_STOPWORDS:
+        # names only automation. Tokenize on hyphen/underscore/digit boundaries —
+        # NOT on whitespace, or `release-notes` would be one unmatchable token —
+        # and require EVERY token to be an automation label, so a real module such
+        # as `release-notes` or `pr-lifecycle` is kept, not silently dropped.
+        tokens = set(_SCOPE_TOKEN.findall(normalize(match.group("scope"))))
+        if tokens and tokens <= SCOPE_STOPWORDS:
             return True
     return False
 
