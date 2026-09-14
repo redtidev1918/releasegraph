@@ -44,7 +44,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": true,
     "sbom": false,
@@ -90,8 +91,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/graf/actions/runs/34739553685",
-    "updated_at": "2026-09-13T05:08:33Z"
+    "url": "https://github.com/redtidev1918/graf/actions/runs/34814506384",
+    "updated_at": "2026-09-14T06:41:27Z"
   },
   "signals": [
     ".release-please-manifest.json",

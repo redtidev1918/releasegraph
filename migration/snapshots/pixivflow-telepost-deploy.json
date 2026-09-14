@@ -50,7 +50,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 3
+      "failed_draft": 3,
+      "pruneStable": true
     },
     "checksums": true,
     "sbom": true,
@@ -127,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34744406198",
-    "updated_at": "2026-09-13T07:07:28Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34815880575",
+    "updated_at": "2026-09-14T07:01:55Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -249,8 +250,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 2,
-    "inQueue": 2,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }

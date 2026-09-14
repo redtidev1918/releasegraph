@@ -39,7 +39,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": true,
     "sbom": false,
@@ -79,8 +80,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/34741672332",
-    "updated_at": "2026-09-13T06:00:29Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/34807315605",
+    "updated_at": "2026-09-14T04:47:33Z"
   },
   "signals": [
     ".release-please-manifest.json",

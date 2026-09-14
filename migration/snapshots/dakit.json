@@ -64,9 +64,10 @@
       "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
     },
     "retention": {
-      "stable": 5,
+      "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": true,
     "sbom": false,
@@ -109,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/dakit/actions/runs/34743510862",
-    "updated_at": "2026-09-13T06:45:10Z"
+    "url": "https://github.com/redtidev1918/dakit/actions/runs/34809556915",
+    "updated_at": "2026-09-14T05:25:08Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -167,196 +168,6 @@
           "name": "SHA256SUMS",
           "size": 532,
           "sha256": "sha256:f45e4a4af55b42cc901cb2ca378a11672ae80a933582c687a22a1ab5cedf03b6"
-        }
-      ]
-    },
-    {
-      "tag": "dakit_cli-v0.4.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-07T07:41:55Z",
-      "assets": [
-        {
-          "name": "dakit-cli-0.4.0-linux-arm64.tar.gz",
-          "size": 3249062,
-          "sha256": "sha256:5e2ff90bdcfc493b95e8ddbf5f4c7867c669558a920a8975dbaa4631849d143f"
-        },
-        {
-          "name": "dakit-cli-0.4.0-linux-x64.tar.gz",
-          "size": 3370451,
-          "sha256": "sha256:a5a11ffb33709bdfdb93b9358dca18c081d673234d98a781352ab6578086124c"
-        },
-        {
-          "name": "dakit-cli-0.4.0-macos-arm64-unsigned-preview.tar.gz",
-          "size": 3159268,
-          "sha256": "sha256:070d110726af874d721c57e332e9fbb208ef4a9f4a9c7dedc0f9991134b5566d"
-        },
-        {
-          "name": "dakit-cli-0.4.0-macos-x64-unsigned-preview.tar.gz",
-          "size": 3362602,
-          "sha256": "sha256:25e827f081221de01bbf4bf19b29fdcab7023dd1133bb31cff06cfdcb1ccb778"
-        },
-        {
-          "name": "dakit-cli-0.4.0-windows-x64.zip",
-          "size": 3440674,
-          "sha256": "sha256:91bdc40fb44d77b509ddb5d8aff836bd483ac0d116e3930af587876cc9046991"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 532,
-          "sha256": "sha256:199965f83b0fed2b711ae3519099a3f39fee55a44c87d714e7fdc90f4edf54e1"
-        }
-      ]
-    },
-    {
-      "tag": "dakit_cli-v0.3.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-06T09:19:54Z",
-      "assets": [
-        {
-          "name": "dakit-cli-0.3.0-linux-arm64.tar.gz",
-          "size": 3248739,
-          "sha256": "sha256:17501ad31b7d5d0eba278b6742144941da7e9a4cb03642647fcd2ca8a0754dad"
-        },
-        {
-          "name": "dakit-cli-0.3.0-linux-x64.tar.gz",
-          "size": 3369930,
-          "sha256": "sha256:3c9a62ea377e02f4a6eba76ceca6f726e3b5cd130d71221077d4d07e10dc3d9f"
-        },
-        {
-          "name": "dakit-cli-0.3.0-macos-arm64-unsigned-preview.tar.gz",
-          "size": 3159419,
-          "sha256": "sha256:ff67a72214d3ad348ca51f2f284ab268accbe66918a036ad4f3c3332f1e5d1dc"
-        },
-        {
-          "name": "dakit-cli-0.3.0-macos-x64-unsigned-preview.tar.gz",
-          "size": 3362614,
-          "sha256": "sha256:6ea4e3cfeff37352c29b1ccbc84b1327658c26e7e493543bbde9d1629e183c7e"
-        },
-        {
-          "name": "dakit-cli-0.3.0-windows-x64.zip",
-          "size": 3438982,
-          "sha256": "sha256:7f063d6187ecdeb642e57a2c770bf9141715e65132c45bde042e9b904de81733"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 532,
-          "sha256": "sha256:5844fe652aa05653f54a28ee97b8eeb1b8ee27266f11b79e823f66bed08cc44e"
-        }
-      ]
-    },
-    {
-      "tag": "dakit_cli-v0.2.3",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-05T21:31:35Z",
-      "assets": [
-        {
-          "name": "dakit-cli-0.2.3-linux-arm64.tar.gz",
-          "size": 3234007,
-          "sha256": "sha256:d934afc4563dcd39eef54a7df9f49f57daf6199643a77bdd946ad4ab8a2b542d"
-        },
-        {
-          "name": "dakit-cli-0.2.3-linux-x64.tar.gz",
-          "size": 3355055,
-          "sha256": "sha256:fa560d465ffa9fa8f2e3f26c63d4995e05f3b937576ce19a2576c7dc53c8111a"
-        },
-        {
-          "name": "dakit-cli-0.2.3-macos-arm64-unsigned-preview.tar.gz",
-          "size": 3142613,
-          "sha256": "sha256:0e8c42b79d8db2d2f038bad21bdb7d9aa80d07bdc8f4e145d3194de864c59e64"
-        },
-        {
-          "name": "dakit-cli-0.2.3-macos-x64-unsigned-preview.tar.gz",
-          "size": 3348630,
-          "sha256": "sha256:7dc5e9829b4acfe1bc555a7c84d00912ef83f00bae963a63cfc1de0b48011957"
-        },
-        {
-          "name": "dakit-cli-0.2.3-windows-x64.zip",
-          "size": 3426674,
-          "sha256": "sha256:5e86928bf7446f25f28deeabcf84d217889737be22c3030815c3e998c88ded6c"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 532,
-          "sha256": "sha256:7995fc966b0cb7bead5f194f9a2a5b2f0d0d770aaa5c332f514955a335429217"
-        }
-      ]
-    },
-    {
-      "tag": "dakit_cli-v0.2.2",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-26T05:04:22Z",
-      "assets": [
-        {
-          "name": "dakit-cli-0.2.2-linux-arm64.tar.gz",
-          "size": 3233950,
-          "sha256": "sha256:0576977de2986fb2bc9d5cfcc9befc438307a84f91ddf4d1f7b25052ff1f3ccd"
-        },
-        {
-          "name": "dakit-cli-0.2.2-linux-x64.tar.gz",
-          "size": 3356083,
-          "sha256": "sha256:73c0b9e62b783aea09aa3e548b502a8ed4073e405643c54eb03930bee1435088"
-        },
-        {
-          "name": "dakit-cli-0.2.2-macos-arm64-unsigned-preview.tar.gz",
-          "size": 3142397,
-          "sha256": "sha256:d79cd131b733a15ebb4e2e976b3b4c41fcb5ae718a0f502a07106edc402011ec"
-        },
-        {
-          "name": "dakit-cli-0.2.2-macos-x64-unsigned-preview.tar.gz",
-          "size": 3348545,
-          "sha256": "sha256:9b1eb0a6cd5c134ffbe4172ced36e03ff0c02ffa13a9a467a33f42a83bdef9e0"
-        },
-        {
-          "name": "dakit-cli-0.2.2-windows-x64.zip",
-          "size": 3426563,
-          "sha256": "sha256:bdff1c28c31ba39f2cb2928d1e53591f8cb5be2ec6f94ad30378cac8b12f99a5"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 532,
-          "sha256": "sha256:40711a088a5eab820231c9a03be4cde393824df4f685b034b2b7bbb8e955ad06"
-        }
-      ]
-    },
-    {
-      "tag": "dakit_cli-v0.2.1",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-23T05:28:45Z",
-      "assets": [
-        {
-          "name": "dakit-cli-0.2.1-linux-arm64.tar.gz",
-          "size": 3212236,
-          "sha256": "sha256:f7220650ceaa83def14041fd5d4785b02fa3955bfdf61b6cbd31b83801fd1843"
-        },
-        {
-          "name": "dakit-cli-0.2.1-linux-x64.tar.gz",
-          "size": 3332230,
-          "sha256": "sha256:34b54acee93d33a7f8b14dee1c9baca2478007c311a2f694a28ac663c50ec3c0"
-        },
-        {
-          "name": "dakit-cli-0.2.1-macos-arm64-unsigned-preview.tar.gz",
-          "size": 3115561,
-          "sha256": "sha256:05b4c88ed8b04289e2ff1fb1578fd6a6c77785d98017904cdc1a724cfc8ab18d"
-        },
-        {
-          "name": "dakit-cli-0.2.1-macos-x64-unsigned-preview.tar.gz",
-          "size": 3321172,
-          "sha256": "sha256:2fc7f2665df4ead4ce0f49c5938dab7cb87ceee50c9550c9f92e409fc59273de"
-        },
-        {
-          "name": "dakit-cli-0.2.1-windows-x64.zip",
-          "size": 3399884,
-          "sha256": "sha256:d0d0bfc4f92b1a4795176895e8d34c0c7be8f2f5738c439bf27760fb0bab0ad6"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 532,
-          "sha256": "sha256:c306c8a10eb4c3dbc5c772867f2e39d88f11be21da9b3c762fd6d71a57101e8a"
         }
       ]
     }
@@ -644,12 +455,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      "packages/dakit_core": "1.0.0",
-      "packages/dakit_api": "1.0.0",
-      "packages/dakit_flutter": "1.0.0",
-      "packages/dakit_cli": "0.4.1"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -691,6 +496,12 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      "packages/dakit_core": "1.0.0",
+      "packages/dakit_api": "1.0.0",
+      "packages/dakit_flutter": "1.0.0",
+      "packages/dakit_cli": "0.4.1"
     }
   },
   "registries": {

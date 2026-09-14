@@ -31,7 +31,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
     "sbom": false,
@@ -51,10 +52,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.7.0",
-  "latest_release": "v1.7.0",
-  "latest_release_at": "2026-09-10T11:56:09Z",
-  "latest_tag": "v1.7.0",
+  "desired_version": "1.10.0",
+  "latest_release": "v1.10.0",
+  "latest_release_at": "2026-09-14T03:02:27Z",
+  "latest_tag": "v1.10.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -68,8 +69,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/34745958536",
-    "updated_at": "2026-09-13T07:45:00Z"
+    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/34813363650",
+    "updated_at": "2026-09-14T06:25:00Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -90,20 +91,32 @@
   ],
   "release_history": [
     {
-      "tag": "v1.7.0",
+      "tag": "v1.10.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-10T11:56:09Z",
+      "published_at": "2026-09-14T03:02:27Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1051,
-          "sha256": "sha256:ccb8e46f20b5c555430e5274c7420b340034fb2ba2ac272044d0b15b084492b3"
+          "size": 1224,
+          "sha256": "sha256:5728d717d1f897392c0b9d0a612adb7edf152ab76b7c1d8a40d3a6e1d5f44958"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.10.0",
+      "commit": "351756ad08d7114370ac80c8a68c1125d034827a"
+    },
+    {
+      "name": "v1.9.0",
+      "commit": "e45c60513fcefe91196b9c3aec5947f9e2981ce0"
+    },
+    {
+      "name": "v1.8.0",
+      "commit": "9bc8b78d1288b3cca73d3fcee1a47d47caeb38c7"
+    },
     {
       "name": "v1.7.0",
       "commit": "bfb5efe8925527ed8d731453d30ab8b458bf3407"
@@ -176,13 +189,13 @@
       }
     },
     ".release-please-manifest.json": {
-      ".": "1.7.0"
+      ".": "1.10.0"
     }
   },
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.7.0",
+      "declared": "1.10.0",
       "published": null
     }
   },
@@ -195,8 +208,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 2,
-    "inQueue": 2,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

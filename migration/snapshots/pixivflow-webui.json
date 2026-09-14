@@ -39,7 +39,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
     "sbom": true,
@@ -76,8 +77,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/34738772141",
-    "updated_at": "2026-09-13T04:49:04Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/34812876884",
+    "updated_at": "2026-09-14T06:18:22Z"
   },
   "signals": [
     ".release-please-manifest.json",

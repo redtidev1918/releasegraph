@@ -39,7 +39,7 @@
       "stable": 1,
       "prerelease": 1,
       "failed_draft": 3,
-      "pruneStable": false
+      "pruneStable": true
     },
     "checksums": true,
     "metadata": true,
@@ -136,112 +136,6 @@
           "name": "SHA256SUMS",
           "size": 653,
           "sha256": "sha256:2c483f0c42772b9ea88015d5201cd7b7eb2a0125757187cdca02ad15a8d1f6d3"
-        }
-      ]
-    },
-    {
-      "tag": "v1.5.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-13T05:38:54Z",
-      "assets": [
-        {
-          "name": "RELEASE-METADATA.json",
-          "size": 2394,
-          "sha256": "sha256:d26eb890847f3adfbcd420c8365e2a75cebdcc53ff046fa346fb8ad56bc923e3"
-        },
-        {
-          "name": "releasegraph-darwin-amd64",
-          "size": 7503792,
-          "sha256": "sha256:6dded35be6fd73474ff6f95061c231c5ea6359906657db88c3d1a4446813c324"
-        },
-        {
-          "name": "releasegraph-darwin-arm64",
-          "size": 6980226,
-          "sha256": "sha256:35d2b4875a55a017e77739c9ba9aa24c5fb5fbb12ecde676e24039dc3a4b457d"
-        },
-        {
-          "name": "releasegraph-linux-amd64",
-          "size": 7381176,
-          "sha256": "sha256:ff7c1cd6907478af99b4abf1abd341169b812d24c007dc5f6b4ce1548b8ee7a1"
-        },
-        {
-          "name": "releasegraph-linux-arm64",
-          "size": 6881464,
-          "sha256": "sha256:f61e334b7761db98ac0c029fdc00c3c3633068426a1bd146174d572cd909145a"
-        },
-        {
-          "name": "RELEASEGRAPH-METADATA.json",
-          "size": 174,
-          "sha256": "sha256:7cc99fb3a38d874f150d16b034f9cbc9914e079af1750ea0679947582e57f5f7"
-        },
-        {
-          "name": "releasegraph-windows-amd64.exe",
-          "size": 7575552,
-          "sha256": "sha256:fd116e73dcd2728c1c085c25d15fe6653fba84083f78fe6b9c4c5173b2e95aa1"
-        },
-        {
-          "name": "releasegraph-windows-arm64.exe",
-          "size": 6899712,
-          "sha256": "sha256:7eb8f7a4ca44949ce8a3ffb960b4cbd2f299a65c09d473f44dbb2cf0f27f6668"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 653,
-          "sha256": "sha256:2748398948a36e782a19e97a1f5c4bdbea9ef2abaadf5a66ce029249f90b8184"
-        }
-      ]
-    },
-    {
-      "tag": "v1.4.11",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-11T16:44:24Z",
-      "assets": [
-        {
-          "name": "RELEASE-METADATA.json",
-          "size": 2398,
-          "sha256": "sha256:fb2e1bd4ccb223e2f0bb5c9f5560314b598f29e876c92c64123c0ffa88684da5"
-        },
-        {
-          "name": "releasegraph-darwin-amd64",
-          "size": 7424336,
-          "sha256": "sha256:492e906fd024eb3b1aa5978cb758468ef4f3bcaa17c7b62d7bf0686668019694"
-        },
-        {
-          "name": "releasegraph-darwin-arm64",
-          "size": 6912546,
-          "sha256": "sha256:40004ad76cd035ab83a0465d07e1da2148c146d967bf7d4877cd6058b131c82b"
-        },
-        {
-          "name": "releasegraph-linux-amd64",
-          "size": 7299256,
-          "sha256": "sha256:6eb5f1030f359dd3ee9ec8a897c2ecd546a7291ad265a5c07fd5fd16e38958e5"
-        },
-        {
-          "name": "releasegraph-linux-arm64",
-          "size": 6750392,
-          "sha256": "sha256:2b6f15aa3912e74df9489dbb5c60cb31f04d3c9d0ff43959b3fd80accec89b50"
-        },
-        {
-          "name": "RELEASEGRAPH-METADATA.json",
-          "size": 151,
-          "sha256": "sha256:35dd299b592b606b1600ea0c17a3a86482494d7f455864dabad480123359aaf7"
-        },
-        {
-          "name": "releasegraph-windows-amd64.exe",
-          "size": 7493120,
-          "sha256": "sha256:f9a75f36f66392f18c3aa1208249c49bb7edbe3f5f8cafc5dd6288b23db1ce64"
-        },
-        {
-          "name": "releasegraph-windows-arm64.exe",
-          "size": 6825984,
-          "sha256": "sha256:c76a1b5ffbbef682f90017de9419f58f00b828366b9cd27e1ee25027b0eb0bed"
-        },
-        {
-          "name": "SHA256SUMS",
-          "size": 653,
-          "sha256": "sha256:7d9d3b08fd8d293b0d660b48eb8b622580555050cea77b41d5594a8d32c140bc"
         }
       ]
     }

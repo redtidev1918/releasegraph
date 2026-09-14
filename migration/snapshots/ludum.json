@@ -36,7 +36,8 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
     "sbom": false,
@@ -73,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/34742271062",
-    "updated_at": "2026-09-13T06:15:06Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/34813176456",
+    "updated_at": "2026-09-14T06:22:22Z"
   },
   "signals": [
     ".release-please-manifest.json",
