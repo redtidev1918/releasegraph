@@ -27,7 +27,7 @@
     "stable": 1,
     "prerelease": 1,
     "failed_draft": 3,
-    "pruneStable": false
+    "pruneStable": true
   },
   "checksums": true,
   "metadata": true,
