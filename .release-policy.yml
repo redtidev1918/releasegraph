@@ -31,25 +31,5 @@
   },
   "checksums": true,
   "metadata": true,
-  "sbom": false,
-  "release": {
-    "postRelease": [
-      {
-        "id": "refresh-download-page",
-        "type": "github-workflow",
-        "required": true,
-        "workflow": "update-download-page.yml",
-        "inputs": {
-          "tag": "{{tag}}",
-          "deploy-docs": "false"
-        }
-      },
-      {
-        "id": "deploy-docs",
-        "type": "github-workflow",
-        "required": true,
-        "workflow": "docs.yml"
-      }
-    ]
-  }
+  "sbom": false
 }

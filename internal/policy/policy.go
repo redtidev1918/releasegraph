@@ -213,7 +213,10 @@ type PostReleaseAction struct {
 	Type     string            `json:"type" yaml:"type"`
 	Required bool              `json:"required,omitempty" yaml:"required,omitempty"`
 	Workflow string            `json:"workflow,omitempty" yaml:"workflow,omitempty"`
-	Inputs   map[string]string `json:"inputs,omitempty" yaml:"inputs,omitempty"`
+	// Ref selects the dispatch ref: "tag" (default) pins the workflow run to the
+	// release tag; "default" uses the repository default branch (Pages deploys).
+	Ref    string            `json:"ref,omitempty" yaml:"ref,omitempty"`
+	Inputs map[string]string `json:"inputs,omitempty" yaml:"inputs,omitempty"`
 }
 
 // Artifacts describes distributable build outputs. Repositories without
@@ -365,6 +368,9 @@ func Validate(p *Policy) error {
 			return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+" needs a type")
 		default:
 			return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+": unknown type "+action.Type)
+		}
+		if action.Ref != "" && action.Ref != "tag" && action.Ref != "default" {
+			return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+": ref must be tag or default")
 		}
 		for key, value := range action.Inputs {
 			if containsNewline(value) {

@@ -123,11 +123,15 @@ def load_actions(policy: dict) -> list[dict[str, Any]]:
         inputs = item.get("inputs") or {}
         if not isinstance(inputs, dict):
             raise PostReleaseError(f"postRelease action {action_id}: inputs must be a mapping")
+        ref = item.get("ref", "tag")
+        if ref not in ("tag", "default"):
+            raise PostReleaseError(f"postRelease action {action_id}: ref must be tag or default")
         actions.append({
             "id": action_id,
             "type": atype,
             "required": bool(item.get("required", False)),
             "workflow": item.get("workflow", ""),
+            "ref": ref,
             "inputs": {str(k): str(v) for k, v in inputs.items()},
         })
     return actions
@@ -202,7 +206,8 @@ def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str
 
 def run_action(action: dict, ctx: dict[str, str], max_wait: int) -> None:
     if action["type"] == "github-workflow":
-        _dispatch_and_wait(ctx["repo"], action["workflow"], ctx["tag"],
+        ref = ctx["tag"] if action.get("ref", "tag") == "tag" else ctx["default_branch"]
+        _dispatch_and_wait(ctx["repo"], action["workflow"], ref,
                            resolve_inputs(action, ctx), ctx["head_sha"], max_wait)
         return
     raise PostReleaseError(f"unimplemented action type: {action['type']}")
