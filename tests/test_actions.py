@@ -180,8 +180,9 @@ class DispatchCorrelationTests(unittest.TestCase):
             if "workflows/update-download-page.yml" in flat and "runs" not in flat:
                 return "355654062"
             if "workflows/355654062/runs" in flat:
+                import datetime as dt
                 return json.dumps([{"id": 77, "head_sha": "abc123",
-                                    "created_at": "2026-09-15T00:01:00Z",
+                                    "created_at": dt.datetime.now(dt.UTC).isoformat(),
                                     "event": "workflow_dispatch",
                                     "status": "completed", "conclusion": "success"}])
             if "actions/runs/77" in flat:
