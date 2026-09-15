@@ -19,6 +19,7 @@ CLI (via release_infra.cli):
 """
 from __future__ import annotations
 
+import datetime as dt
 import json
 import os
 import re
@@ -143,6 +144,7 @@ def resolve_inputs(action: dict, ctx: dict[str, str]) -> dict[str, str]:
 
 def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str],
                        head_sha: str, max_wait: int) -> None:
+    dispatch_at = dt.datetime.now(dt.UTC).isoformat()
     """Dispatch a workflow_dispatch and poll the correlated run to completion.
 
     Correlation: right after dispatching, list the runs of that workflow
@@ -171,7 +173,12 @@ def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str
                               f"repos/{repo}/actions/workflows/{workflow_id}/runs?per_page=10",
                               "--jq", ".workflow_runs | map({id, head_sha, created_at, event, status, conclusion})"]))
         candidates = [r for r in runs
-                      if r.get("event") == "workflow_dispatch" and r.get("head_sha") == head_sha]
+                      if r.get("event") == "workflow_dispatch"
+                      and r.get("created_at", "") >= dispatch_at[:23]]
+        exact = [r for r in candidates if r.get("head_sha") == head_sha]
+        if exact:
+            run_id = sorted(exact, key=lambda r: r.get("created_at") or "")[-1]["id"]
+            break
         if candidates:
             run_id = sorted(candidates, key=lambda r: r.get("created_at") or "")[-1]["id"]
             break
@@ -195,7 +202,7 @@ def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str
 
 def run_action(action: dict, ctx: dict[str, str], max_wait: int) -> None:
     if action["type"] == "github-workflow":
-        _dispatch_and_wait(ctx["repo"], action["workflow"], ctx["default_branch"],
+        _dispatch_and_wait(ctx["repo"], action["workflow"], ctx["tag"],
                            resolve_inputs(action, ctx), ctx["head_sha"], max_wait)
         return
     raise PostReleaseError(f"unimplemented action type: {action['type']}")
