@@ -241,7 +241,7 @@ def validate_post_release(post_release: Any) -> None:
     if not isinstance(post_release, list):
         raise PolicyError("release.postRelease must be an array")
     seen: set[str] = set()
-    allowed = {"id", "type", "required", "workflow", "inputs"}
+    allowed = {"id", "type", "required", "workflow", "inputs", "ref"}
     for item in post_release:
         if not isinstance(item, dict):
             raise PolicyError("each release.postRelease entry must be an object")
@@ -259,6 +259,9 @@ def validate_post_release(post_release: Any) -> None:
             raise PolicyError(f"release.postRelease action {action_id}: github-workflow needs a workflow")
         if not isinstance(item.get("required", False), bool):
             raise PolicyError(f"release.postRelease action {action_id}: required must be a boolean")
+        ref = item.get("ref", "tag")
+        if ref not in ("tag", "default"):
+            raise PolicyError(f"release.postRelease action {action_id}: ref must be tag or default")
         unknown = set(item) - allowed
         if unknown:
             raise PolicyError(f"release.postRelease action {action_id}: unknown field(s): {sorted(unknown)}")

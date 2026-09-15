@@ -21,8 +21,8 @@
   "release_infra_version": "1.0.0",
   "policy_hash": "64a392b589c57936158926fef8e3eb6b594d52f9e48ab4d677130c8c60cf16b6",
   "release_policy_hash": "64a392b589c57936158926fef8e3eb6b594d52f9e48ab4d677130c8c60cf16b6",
-  "build_started_at": "2026-09-15T10:03:15.423157+00:00",
-  "published_at": "2026-09-15T10:03:15.423170+00:00",
+  "build_started_at": "2026-09-15T12:33:10.418509+00:00",
+  "published_at": "2026-09-15T12:33:10.418523+00:00",
   "assets": [],
   "asset_sha256": {},
   "registries": {

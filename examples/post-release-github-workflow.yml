@@ -18,5 +18,6 @@ release:
       type: github-workflow
       required: true
       workflow: docs.yml
+      ref: default # Pages deploy: use the default branch, not the tag
       inputs:
         tag: "{{tag}}"
