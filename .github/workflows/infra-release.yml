@@ -90,13 +90,16 @@ jobs:
           python -m release_infra.cli workflow-plan --version "$RELEASEGRAPH_VERSION" --github-output "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
+      # Healthy release + pending post-release actions = resume mode: never re-stage
+      # or re-publish (the release is already public), just audit and run the
+      # missing post-release actions below.
       - name: Create or resume draft
-        if: steps.plan.outputs.run_release == '1'
+        if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy'
         run: python -m release_infra.cli stage --version "$RELEASEGRAPH_VERSION"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Publish and verify release
-        if: steps.plan.outputs.run_release == '1'
+        if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy'
         run: python -m release_infra.cli publish --version "$RELEASEGRAPH_VERSION"
         env:
           GH_TOKEN: ${{ github.token }}
