@@ -151,10 +151,13 @@ def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str
     run that finishes with a non-success conclusion.
     """
     payload = json.dumps({"ref": ref, "inputs": inputs})
-    result = subprocess.run(
-        ["gh", "api", "-X", "POST", f"repos/{repo}/actions/workflows/{workflow}/dispatches",
-         "--input", "-"],
-        input=payload, text=True, capture_output=True)
+    try:
+        result = subprocess.run(
+            ["gh", "api", "-X", "POST", f"repos/{repo}/actions/workflows/{workflow}/dispatches",
+             "--input", "-"],
+            input=payload, text=True, capture_output=True, timeout=60)
+    except subprocess.TimeoutExpired as exc:
+        raise PostReleaseError(f"workflow dispatch timed out: {workflow}") from exc
     if result.returncode:
         raise PostReleaseError(
             f"workflow dispatch failed for {workflow}: "
