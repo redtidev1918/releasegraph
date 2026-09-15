@@ -1,0 +1,81 @@
+name: Probe p6 descriptions
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: false
+        description: Exact release tag to render (default: latest stable)
+      deploy-docs:
+        type: boolean
+        required: false
+        default: true
+        description: Also dispatch the Pages workflow after the commit
+  release:
+    types: [published]
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: update-download-page
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      tag: ${{ steps.render.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Resolve exact tag
+        id: resolve
+        run: |
+          EXACT="${{ inputs.tag || github.event.release.tag_name }}"
+          if [ -n "$EXACT" ]; then
+            echo "tag=$EXACT" >> "$GITHUB_OUTPUT"
+            echo "source=explicit"
+          else
+            echo "source=latest-stable"
+          fi
+
+      - name: Regenerate download pages
+        id: render
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.resolve.outputs.tag }}"
+          ARGS=""
+          if [ -n "$TAG" ]; then
+            ARGS="--tag $TAG"
+          fi
+          python3 .github/scripts/update_download_page.py "${{ github.repository }}" $ARGS
+          echo "tag=${TAG:-latest}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "download page already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git commit -m "docs: refresh download page (${{ steps.render.outputs.tag }})"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild docs site (explicit dispatch)
+        if: steps.commit.outputs.changed == 'true' && inputs.deploy-docs != false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          WORKFLOW="docs.yml"
+          if [ -f .github/scripts/download-page.json ]; then
+            WORKFLOW="$(python3 -c 'import json,sys;print(json.load(open(".github/scripts/download-page.json")).get("docsWorkflow","docs.yml"))' 2>/dev/null || echo docs.yml)"
+          fi
+          gh workflow run "$WORKFLOW" --ref "${{ github.event.repository.default_branch }}"
