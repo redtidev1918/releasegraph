@@ -177,9 +177,12 @@ class DispatchCorrelationTests(unittest.TestCase):
             flat = " ".join(args)
             if "default_branch" in flat:
                 return "main"
-            if "workflows/update-download-page.yml/runs" in flat:
+            if "workflows/update-download-page.yml" in flat and "runs" not in flat:
+                return "355654062"
+            if "workflows/355654062/runs" in flat:
                 return json.dumps([{"id": 77, "head_sha": "abc123",
                                     "created_at": "2026-09-15T00:01:00Z",
+                                    "event": "workflow_dispatch",
                                     "status": "completed", "conclusion": "success"}])
             if "actions/runs/77" in flat:
                 return json.dumps({"status": "completed", "conclusion": "success"})
