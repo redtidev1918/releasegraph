@@ -27,8 +27,7 @@ release:
       type: github-workflow
       required: false
       workflow: docs.yml
-      inputs:
-        tag: "{{tag}}"
+      ref: default # Pages 部署用默认分支
 ```
 
 字段：

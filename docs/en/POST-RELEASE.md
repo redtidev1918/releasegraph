@@ -30,8 +30,7 @@ release:
       type: github-workflow
       required: false
       workflow: docs.yml
-      inputs:
-        tag: "{{tag}}"
+      ref: default # Pages deploy: default branch
 ```
 
 Fields per action:
