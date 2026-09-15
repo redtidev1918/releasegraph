@@ -45,7 +45,7 @@ class PostReleaseError(RuntimeError):
 
 def _gh(args: list[str], *, capture: bool = True, retries: bool = True) -> str:
     def invoke() -> str:
-        result = subprocess.run(["gh", *args], text=True, capture_output=True)
+        result = subprocess.run(["gh", *args], text=True, capture_output=True, timeout=60)
         if result.returncode:
             detail = (result.stderr.strip() or result.stdout.strip()
                       or f"gh {' '.join(args)} failed")
