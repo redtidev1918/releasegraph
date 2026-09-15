@@ -1,7 +1,7 @@
 {
   "repository": null,
-  "version": "1.2.3",
-  "tag": "v1.2.3",
+  "version": "1.0.0",
+  "tag": "v1.0.0",
   "commit_sha": "",
   "build_run_id": null,
   "build_run_url": "https://github.com/None/actions/runs/None",
@@ -11,16 +11,18 @@
   "policy_schema": 1,
   "capabilities": {
     "github_release": true,
-    "binaries": false,
-    "checksums": false,
+    "binaries": true,
+    "checksums": true,
     "registries": [],
-    "required_assets": []
+    "required_assets": [
+      "app-linux-amd64"
+    ]
   },
   "release_infra_version": "1.0.0",
-  "policy_hash": "953c9e9fbcd938b5739e0ccd78c1c42f7dc1e65f0b759201c6554d8e2817636f",
-  "release_policy_hash": "953c9e9fbcd938b5739e0ccd78c1c42f7dc1e65f0b759201c6554d8e2817636f",
-  "build_started_at": "2026-09-10T13:17:56.647597+00:00",
-  "published_at": "2026-09-10T13:17:56.647611+00:00",
+  "policy_hash": "64a392b589c57936158926fef8e3eb6b594d52f9e48ab4d677130c8c60cf16b6",
+  "release_policy_hash": "64a392b589c57936158926fef8e3eb6b594d52f9e48ab4d677130c8c60cf16b6",
+  "build_started_at": "2026-09-15T10:03:15.423157+00:00",
+  "published_at": "2026-09-15T10:03:15.423170+00:00",
   "assets": [],
   "asset_sha256": {},
   "registries": {
@@ -30,7 +32,7 @@
   },
   "container_digest": null,
   "package_versions": {
-    "github": "1.2.3"
+    "github": "1.0.0"
   },
   "source_commit": "",
   "release_pr": null,

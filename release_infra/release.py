@@ -13,6 +13,7 @@ from pathlib import Path
 from . import __version__, notes
 from .assets import collect_assets, sha256, write_checksums
 from .github import GitHubError
+from .actions import health as post_release_health
 from .policy import desired_version, load_policy
 from .retry import retry
 
@@ -239,7 +240,12 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
                 cooldown = dt.datetime.now(dt.UTC) - last < dt.timedelta(hours=6)
         except (ReleaseError, ValueError, KeyError):
             pass
-    should_release = force or (not tag_drift and (repair or (not healthy and not needs_repair and not cooldown)))
+    post_release = policy.get("release", {}).get("postRelease") or []
+    post_state = post_release_health(policy_path, desired) if post_release else {
+        "post_release_actions": 0, "post_release_health": "absent", "post_release_status": ""}
+    post_release_pending = post_state.get("post_release_health") == "pending"
+    should_release = force or (not tag_drift and (
+        repair or (post_release_pending and not cooldown) or (not healthy and not needs_repair and not cooldown)))
     return {
         "should_release": str(should_release).lower(), "run_release": "1" if should_release else "0",
         "release_health": "healthy" if healthy else ("tag-drift" if tag_drift else ("repair" if needs_repair else "missing")),
@@ -264,6 +270,10 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
         "optional_publish": "; ".join(f"({config['publish']}) || true" for name, config in registries.items() if name != "ghcr" and not config.get("required", True) and config.get("publish")),
         "optional_verify": "; ".join(f"({config['verify']}) || true" for config in registries.values() if not config.get("required", True) and config.get("verify")),
         "post_publish": policy.get("release", {}).get("post_publish", ""),
+        "post_release_json": json.dumps(post_release, ensure_ascii=False) if post_release else "",
+        "post_release_actions": str(post_state.get("post_release_actions", 0)),
+        "post_release_health": post_state.get("post_release_health", "absent"),
+        "post_release_status": post_state.get("post_release_status", ""),
     }
 
 

@@ -33,6 +33,16 @@ def main(argv: list[str] | None = None) -> int:
         command_parser.add_argument("--version")
         if name != "audit":
             command_parser.add_argument("--dry-run", action="store_true")
+    post_release_parser = sub.add_parser("post-release")
+    post_release_sub = post_release_parser.add_subparsers(dest="pr_command", required=True)
+    run_parser = post_release_sub.add_parser("run")
+    run_parser.add_argument("--path", default=".release-policy.yml")
+    run_parser.add_argument("--version")
+    run_parser.add_argument("--dry-run", action="store_true")
+    run_parser.add_argument("--max-wait", type=int, default=30 * 60)
+    status_parser = post_release_sub.add_parser("status")
+    status_parser.add_argument("--path", default=".release-policy.yml")
+    status_parser.add_argument("--version")
     static_parser = sub.add_parser("static-check")
     static_parser.add_argument("--root", default=".")
     notes_parser = sub.add_parser("notes")
@@ -68,6 +78,11 @@ def main(argv: list[str] | None = None) -> int:
         print(publish(args.path, args.version, dry_run=args.dry_run))
     elif args.command == "audit":
         audit(args.path, args.version)
+    elif args.command == "post-release":
+        from . import actions
+        if args.pr_command == "run":
+            return actions.run(args.path, args.version, dry_run=args.dry_run, max_wait=args.max_wait)
+        return actions.show_status(args.path, args.version)
     elif args.command == "workflow-plan":
         result = plan(args.path, args.version, force=args.force, repair=args.repair)
         if args.github_output:

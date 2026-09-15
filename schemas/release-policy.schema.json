@@ -66,6 +66,7 @@
       "properties": {
         "prerelease": {"type": "boolean", "description": "Force pre-release even for a version without a SemVer pre-release component. A version such as 1.5.0-rc.1 is always published as a pre-release and never takes Latest."},
         "post_publish": {"type": "string"},
+        "postRelease": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "type"], "properties": {"id": {"type": "string"}, "type": {"enum": ["github-workflow"]}, "required": {"type": "boolean"}, "workflow": {"type": "string"}, "inputs": {"type": "object", "additionalProperties": {"type": "string"}}}}},
         "notes": {
           "type": "object",
           "additionalProperties": false,

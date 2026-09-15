@@ -19,7 +19,9 @@ on:
         required: false
         default: ""
         type: string
-permissions: {contents: write}
+permissions:
+  contents: write
+  actions: write # post-release actions dispatch workflow_dispatch
 concurrency:
   group: release-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: false
@@ -102,6 +104,16 @@ jobs:
         run: python -m release_infra.cli audit --version "$RELEASEGRAPH_VERSION"
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: Post-release actions
+        if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.post_release_json != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python -m release_infra.cli post-release run --version "$RELEASEGRAPH_VERSION"
+
       - name: Move stable channel after audit
         run: |
           git tag -f v1 "$GITHUB_SHA"

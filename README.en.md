@@ -103,7 +103,18 @@ registries:
     required: true
 checksums: true
 metadata: true
+release:
+  postRelease:
+    - id: refresh-docs
+      type: github-workflow
+      required: true
+      workflow: update-download-page.yml
+      inputs:
+        tag: "{{tag}}"
 ```
+
+Post-release actions (`release.postRelease`) run after a release is published:
+resumable, idempotent, exact-tag workflows (see [docs/EN POST-RELEASE](docs/en/POST-RELEASE.md)).
 
 Build adapters own compilers and package managers and place candidates in `dist/release/`. ReleaseGraph validates ordering, the asset contract, checksums/metadata, immutable tags, registries, and recovery.
 

@@ -102,7 +102,18 @@ registries:
     required: true
 checksums: true
 metadata: true
+release:
+  postRelease:
+    - id: refresh-docs
+      type: github-workflow
+      required: true
+      workflow: update-download-page.yml
+      inputs:
+        tag: "{{tag}}"
 ```
+
+发版后动作（`release.postRelease`）在 Release 发布后运行：可恢复、幂等、携带精确 tag 的
+workflow（见 [POST-RELEASE](docs/POST-RELEASE.md)）。
 
 构建适配器负责编译器和包管理器，并把候选资产放入 `dist/release/`。ReleaseGraph 负责校验发布顺序、资产契约、校验和/元数据、不可变 tag、registry 以及恢复流程。
 
