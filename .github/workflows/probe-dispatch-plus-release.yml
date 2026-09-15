@@ -1,0 +1,10 @@
+name: Probe dispatch plus release
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo probe
