@@ -229,3 +229,29 @@ func TestRetentionWithoutPruneStableStillLoads(t *testing.T) {
 		t.Fatalf("retention=%+v", p.Retention)
 	}
 }
+
+func TestPostReleaseValidation(t *testing.T) {
+	base := func(actions []PostReleaseAction) *Policy {
+		return &Policy{Kind: "none", Versioning: Versioning{Mode: "manual", Version: "1.0.0"},
+			Release: Release{PostRelease: actions}}
+	}
+	valid := []PostReleaseAction{{ID: "refresh-docs", Type: "github-workflow", Required: true,
+		Workflow: "update-download-page.yml", Inputs: map[string]string{"tag": "{{tag}}"}}}
+	if err := Validate(base(valid)); err != nil {
+		t.Fatalf("valid postRelease rejected: %v", err)
+	}
+	cases := []string{
+		"missing id", "duplicated id", "unknown type", "missing workflow for github-workflow",
+	}
+	bad := [][]PostReleaseAction{
+		{{Type: "github-workflow", Workflow: "x"}},
+		{{ID: "a", Type: "github-workflow", Workflow: "x"}, {ID: "a", Type: "github-workflow", Workflow: "x"}},
+		{{ID: "a", Type: "smoke"}},
+		{{ID: "a", Type: "github-workflow"}},
+	}
+	for i, actions := range bad {
+		if err := Validate(base(actions)); err == nil {
+			t.Fatalf("case %d (%s) accepted", i, cases[i])
+		}
+	}
+}

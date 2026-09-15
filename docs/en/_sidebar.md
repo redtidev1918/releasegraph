@@ -5,6 +5,7 @@
   - [Core Concepts](/en/concepts.md)
 - Usage & Configuration
   - [Authentication](/en/authentication.md)
+  - [Post-release actions](/en/POST-RELEASE.md)
   - [Release Health](/en/health.md)
   - [Plan Contract](/en/plan.md)
   - [Calling the Release Workflow](/en/callers.md)

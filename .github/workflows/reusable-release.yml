@@ -25,6 +25,9 @@ on:
       run_release:
         description: "'1' when this run may release; '0' when it is a no-op"
         value: ${{ jobs.build-plan.outputs.run_release }}
+      post_release_health:
+        description: "absent | pending | satisfied"
+        value: ${{ jobs.build-plan.outputs.post_release_health }}
     inputs:
       version: {type: string, default: ""}
       dry_run: {type: boolean, default: false}
@@ -126,6 +129,7 @@ jobs:
       tag_drift: ${{ steps.plan.outputs.tag_drift }}
       version: ${{ steps.plan.outputs.version }}
       tag: ${{ steps.plan.outputs.tag }}
+      post_release_health: ${{ steps.plan.outputs.post_release_health }}
       test_command: ${{ steps.plan.outputs.test_command }}
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       has_assets: ${{ steps.plan.outputs.has_assets }}
@@ -536,6 +540,25 @@ jobs:
           "$RUNNER_TEMP/releasegraph" provider reconcile \
             --repo "$GITHUB_REPOSITORY" \
             --version '${{ steps.plan.outputs.version }}' --apply
+
+      # Post-release actions (releasegraph.dev/v1 'release.postRelease'): run after
+      # the release is public and audited. The engine is idempotent and resumable:
+      # actions already 'success' are skipped, so a later scheduled run with
+      # release_health=healthy + post_release_health=pending re-enters here to
+      # finish only the missing steps. Required failures fail this job; the
+      # release itself stays published (transaction 'post-release pending').
+      - name: Post-release actions
+        if: >-
+          steps.plan.outputs.run_release == '1'
+          && !inputs.dry_run
+          && steps.plan.outputs.post_release_json != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=.releasegraph python3 -m release_infra.cli post-release run             --path .release-policy.yml             --version '${{ steps.plan.outputs.version }}'
 
       - name: Optional post-release task
         if: ${{ steps.plan.outputs.run_release == '1' && !inputs.dry_run && steps.plan.outputs.post_publish != '' }}

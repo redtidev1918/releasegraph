@@ -190,6 +190,9 @@ func (l *PRLifecycle) ClosesParked() bool {
 type Release struct {
 	Prerelease  bool   `json:"prerelease,omitempty" yaml:"prerelease,omitempty"`
 	PostPublish string `json:"post_publish,omitempty" yaml:"post_publish,omitempty"`
+	// PostRelease declares resumable, idempotent actions that run after this
+	// release is published. Executed by release_infra/actions.py.
+	PostRelease []PostReleaseAction `json:"postRelease,omitempty" yaml:"postRelease,omitempty"`
 	// GitHub declares whether a GitHub Release is part of this repository's
 	// contract. nil means "not declared" and falls back to the historical
 	// default (true), so existing policies keep their meaning.
@@ -201,6 +204,16 @@ type Release struct {
 type Notes struct {
 	// Language is "auto" (follow the repository's primary README), "en" or "zh".
 	Language string `json:"language,omitempty" yaml:"language,omitempty"`
+}
+
+// PostReleaseAction is one step of the post-release transaction. Exactly the
+// fields the python executor consumes; unknown fields are rejected.
+type PostReleaseAction struct {
+	ID       string            `json:"id" yaml:"id"`
+	Type     string            `json:"type" yaml:"type"`
+	Required bool              `json:"required,omitempty" yaml:"required,omitempty"`
+	Workflow string            `json:"workflow,omitempty" yaml:"workflow,omitempty"`
+	Inputs   map[string]string `json:"inputs,omitempty" yaml:"inputs,omitempty"`
 }
 
 // Artifacts describes distributable build outputs. Repositories without
@@ -333,6 +346,31 @@ func Validate(p *Policy) error {
 	}
 	if containsNewline(p.Release.PostPublish) {
 		return rgerrors.New(rgerrors.Policy, "release.post_publish must be a single-line command")
+	}
+	seenPostRelease := map[string]bool{}
+	for _, action := range p.Release.PostRelease {
+		if action.ID == "" {
+			return rgerrors.New(rgerrors.Policy, "release.postRelease action needs a non-empty id")
+		}
+		if seenPostRelease[action.ID] {
+			return rgerrors.New(rgerrors.Policy, "release.postRelease action id duplicated: "+action.ID)
+		}
+		seenPostRelease[action.ID] = true
+		switch action.Type {
+		case "github-workflow":
+			if action.Workflow == "" {
+				return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+": github-workflow needs a workflow")
+			}
+		case "":
+			return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+" needs a type")
+		default:
+			return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+": unknown type "+action.Type)
+		}
+		for key, value := range action.Inputs {
+			if containsNewline(value) {
+				return rgerrors.New(rgerrors.Policy, "release.postRelease action "+action.ID+" input "+key+" must be single-line")
+			}
+		}
 	}
 	if p.Release.Notes.Language != "" && !notesLanguages[p.Release.Notes.Language] {
 		return rgerrors.New(rgerrors.Policy, "release.notes.language must be auto, en, or zh")

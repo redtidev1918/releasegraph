@@ -108,6 +108,9 @@ def validate_policy(policy: Any) -> None:
     post_publish = policy.get("release", {}).get("post_publish", "")
     if not isinstance(post_publish, str) or "\n" in post_publish:
         raise PolicyError("release.post_publish must be a single-line string")
+    post_release = policy.get("release", {}).get("postRelease")
+    if post_release is not None:
+        validate_post_release(post_release)
     note_settings = policy.get("release", {}).get("notes", {})
     if not isinstance(note_settings, dict):
         raise PolicyError("release.notes must be an object")
@@ -231,3 +234,35 @@ def desired_version(policy: dict[str, Any], explicit: str | None = None, root: s
     if package not in manifest:
         raise PolicyError(f"manifest has no package {package!r}")
     return desired_version({"versioning": {"mode": "manual", "version": None}}, str(manifest[package]))
+
+
+def validate_post_release(post_release: Any) -> None:
+    """Mirror the policy contract for postRelease actions (see actions.py)."""
+    if not isinstance(post_release, list):
+        raise PolicyError("release.postRelease must be an array")
+    seen: set[str] = set()
+    allowed = {"id", "type", "required", "workflow", "inputs"}
+    for item in post_release:
+        if not isinstance(item, dict):
+            raise PolicyError("each release.postRelease entry must be an object")
+        action_id = item.get("id")
+        if not isinstance(action_id, str) or not action_id:
+            raise PolicyError("release.postRelease action needs a non-empty id")
+        if action_id in seen:
+            raise PolicyError(f"release.postRelease action id duplicated: {action_id}")
+        seen.add(action_id)
+        atype = item.get("type")
+        if atype not in {"github-workflow"}:
+            raise PolicyError(
+                f"release.postRelease action {action_id}: unknown type {atype!r} (supported: github-workflow)")
+        if atype == "github-workflow" and (not isinstance(item.get("workflow"), str) or not item.get("workflow")):
+            raise PolicyError(f"release.postRelease action {action_id}: github-workflow needs a workflow")
+        if not isinstance(item.get("required", False), bool):
+            raise PolicyError(f"release.postRelease action {action_id}: required must be a boolean")
+        unknown = set(item) - allowed
+        if unknown:
+            raise PolicyError(f"release.postRelease action {action_id}: unknown field(s): {sorted(unknown)}")
+        inputs = item.get("inputs")
+        if inputs is not None:
+            if not isinstance(inputs, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in inputs.items()):
+                raise PolicyError(f"release.postRelease action {action_id}: inputs must be a string mapping")
