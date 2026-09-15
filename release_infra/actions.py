@@ -165,8 +165,7 @@ def _dispatch_and_wait(repo: str, workflow: str, ref: str, inputs: dict[str, str
     deadline = time.monotonic() + max_wait
     while time.monotonic() < deadline:
         runs = json.loads(_gh(["api",
-                              f"repos/{repo}/actions/workflows/{workflow_id}/runs",
-                              "-f", "per_page=10",
+                              f"repos/{repo}/actions/workflows/{workflow_id}/runs?per_page=10",
                               "--jq", ".workflow_runs[] | {id, head_sha, created_at, event, status, conclusion}"]))
         candidates = [r for r in runs
                       if r.get("event") == "workflow_dispatch" and r.get("head_sha") == head_sha]
