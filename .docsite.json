@@ -1,0 +1,9 @@
+{
+  "repo": "redtidev1918/releasegraph",
+  "name": "ReleaseGraph",
+  "emoji": "🕸️",
+  "description": "ReleaseGraph 文档中心。内容直接来自仓库里的 Markdown，与代码同步更新。",
+  "branch": "main",
+  "themeKey": "rg-theme",
+  "version": 1
+}
