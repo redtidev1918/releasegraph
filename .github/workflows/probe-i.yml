@@ -1,0 +1,16 @@
+name: Probe inputs dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: false
+      deploy-docs:
+        type: boolean
+        required: false
+        default: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok
