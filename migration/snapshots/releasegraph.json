@@ -379,8 +379,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }

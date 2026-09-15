@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34815880575",
-    "updated_at": "2026-09-14T07:01:55Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34943703303",
+    "updated_at": "2026-09-15T07:50:10Z"
   },
   "signals": [
     ".release-please-manifest.json",

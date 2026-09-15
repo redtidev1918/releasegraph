@@ -80,8 +80,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/34807315605",
-    "updated_at": "2026-09-14T04:47:33Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/34930067545",
+    "updated_at": "2026-09-15T04:45:56Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -172,6 +172,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "4.1.2"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -184,9 +187,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "4.1.2"
     }
   },
   "registries": {
