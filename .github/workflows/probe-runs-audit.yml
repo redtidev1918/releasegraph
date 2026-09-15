@@ -1,0 +1,21 @@
+name: Probe runs access
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Try listing runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo "by-workflow-id:"
+          gh api "repos/${{ github.repository }}/actions/workflows/355654062/runs" 2>&1 | head -c 300
+          echo ""
+          echo "global-runs:"
+          gh api "repos/${{ github.repository }}/actions/runs?event=workflow_dispatch&per_page=3" 2>&1 | head -c 300
+          echo ""
