@@ -6,6 +6,9 @@ import json
 import os
 import subprocess
 import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 from . import __version__
@@ -21,6 +24,42 @@ class ReleaseError(RuntimeError):
 
 def _required_assets_present(required: set[str], remote: set[str]) -> bool:
     return all(any(fnmatch.fnmatch(name, pattern) for name in remote) for pattern in required)
+
+
+
+def _pypi_status(package: str | None, version: str) -> str:
+    """Return 'published', 'missing', or 'unknown' for a PyPI version.
+
+    A network/parse failure returns 'unknown' so callers never treat a
+    transient outage as a confirmable missing version and then blind-publish.
+    """
+    if not package:
+        return "unknown"
+    url = f"https://pypi.org/pypi/{urllib.parse.quote(package)}/{urllib.parse.quote(version)}/json"
+    try:
+        with urllib.request.urlopen(url, timeout=15) as response:
+            json.load(response)
+            return "published"
+    except urllib.error.HTTPError as exc:
+        return "missing" if exc.code == 404 else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _pypi_package(policy: dict) -> str | None:
+    """Derive the PyPI package name from policy, pyproject, or repo name."""
+    pypi = policy.get("registries", {}).get("pypi", {})
+    if isinstance(pypi, dict) and pypi.get("package"):
+        return str(pypi["package"])
+    pyproject = Path("pyproject.toml")
+    if pyproject.exists():
+        try:
+            import tomllib
+            return tomllib.loads(pyproject.read_text()).get("project", {}).get("name")
+        except Exception:
+            pass
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    return repo.rsplit("/", 1)[-1] or None
 
 
 def _run(command: list[str], *, capture: bool = False) -> str:
@@ -115,7 +154,17 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
     if checksums_enabled:
         required.add("SHA256SUMS")
     remote = {asset["name"] for asset in (release or {}).get("assets", []) if int(asset.get("size", 0)) > 0}
-    healthy = bool(release and not release["isDraft"] and _required_assets_present(required, remote))
+    github_healthy = bool(release and not release["isDraft"] and _required_assets_present(required, remote))
+    registries = policy.get("registries", {})
+    pypi_enabled = "pypi" in registries
+    if pypi_enabled:
+        pypi_status = _pypi_status(_pypi_package(policy), desired)
+    else:
+        pypi_status = "not-configured"
+    pypi_published = pypi_status == "published"
+    pypi_missing = pypi_status == "missing"
+    pypi_unknown = pypi_status == "unknown"
+    healthy = bool(github_healthy and (not pypi_enabled or pypi_published))
     needs_repair = bool(release and not release["isDraft"] and not healthy)
     build = policy.get("build", {})
     matrix = build.get("matrix") or [{"runner": "ubuntu-latest", "command": build.get("command", ":"), "version_check": build.get("version_check", "")}]
@@ -126,7 +175,6 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
     if Path("go.mod").exists():
         go_version = next((line.split()[1] for line in Path("go.mod").read_text().splitlines() if line.startswith("go ")), "")
     asset_patterns = policy.get("assets", {})
-    registries = policy.get("registries", {})
     ghcr = registries.get("ghcr", {})
     tag_drift = False
     try:
@@ -150,7 +198,7 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
     should_release = force or (not tag_drift and (repair or (not healthy and not needs_repair and not cooldown)))
     return {
         "should_release": str(should_release).lower(), "run_release": "1" if should_release else "0",
-        "release_health": "healthy" if healthy else ("tag-drift" if tag_drift else ("repair" if needs_repair else "missing")),
+        "release_health": "healthy" if healthy else ("tag-drift" if tag_drift else ("partial" if pypi_unknown else ("repair" if needs_repair else "missing"))),
         "version": desired, "tag": tag, "retry_count": str(retry_count), "cooldown": str(cooldown).lower(),
         "needs_repair": str(needs_repair).lower(), "tag_drift": str(tag_drift).lower(),
         "test_command": policy.get("build", {}).get("test", ""), "build_command": policy.get("build", {}).get("command", ":"),
@@ -161,7 +209,9 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
         "needs_java": "1" if needs_java else "0",
         "needs_go": "1" if go_version else "0", "go_version": go_version,
         "needs_goreleaser": "1" if Path(".goreleaser.yml").exists() or Path(".goreleaser.yaml").exists() else "0",
-        "pypi_enabled": str("pypi" in registries).lower(), "pypi_required": str(registries.get("pypi", {}).get("required", True)).lower(),
+        "pypi_enabled": str(pypi_enabled).lower(), "pypi_required": str(registries.get("pypi", {}).get("required", True)).lower(),
+        "pypi_published": str(pypi_published).lower(), "pypi_status": pypi_status,
+        "should_publish_pypi": "1" if (pypi_enabled and pypi_missing and should_release and not cooldown) else "0",
         "pypi_packages_dir": registries.get("pypi", {}).get("packages_dir", "dist/release"),
         "ghcr_enabled": str("ghcr" in registries).lower(), "ghcr_required": str(ghcr.get("required", True)).lower(),
         "ghcr_context": ghcr.get("context", "."), "ghcr_file": ghcr.get("file", "Dockerfile"),

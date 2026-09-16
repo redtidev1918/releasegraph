@@ -6,6 +6,24 @@ on:
       paths_released:
         description: "Release Please component paths released in this run"
         value: ${{ jobs.release_please.outputs.paths_released }}
+      version:
+        description: "Target release version"
+        value: ${{ jobs.build-plan.outputs.version }}
+      tag:
+        description: "Target release tag"
+        value: ${{ jobs.build-plan.outputs.tag }}
+      run_release:
+        description: "Whether the release path should run"
+        value: ${{ jobs.build-plan.outputs.run_release }}
+      release_health:
+        description: "Current release health"
+        value: ${{ jobs.build-plan.outputs.release_health }}
+      pypi_enabled:
+        description: "Whether PyPI is a configured registry"
+        value: ${{ jobs.build-plan.outputs.pypi_enabled }}
+      should_publish_pypi:
+        description: "Whether the caller should publish this build to PyPI"
+        value: ${{ jobs.build-plan.outputs.should_publish_pypi }}
     inputs:
       version: {type: string, default: ""}
       dry_run: {type: boolean, default: false}
@@ -64,6 +82,7 @@ jobs:
       needs_goreleaser: ${{ steps.plan.outputs.needs_goreleaser }}
       pypi_enabled: ${{ steps.plan.outputs.pypi_enabled }}
       pypi_packages_dir: ${{ steps.plan.outputs.pypi_packages_dir }}
+      should_publish_pypi: ${{ steps.plan.outputs.should_publish_pypi }}
       ghcr_enabled: ${{ steps.plan.outputs.ghcr_enabled }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,7 +90,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: redtidev1918/releasegraph
-          ref: v1
+          ref: main
           path: .releasegraph
       - name: Policy and release plan
         id: plan
@@ -230,14 +249,13 @@ jobs:
     permissions:
       contents: write
       packages: write
-      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: redtidev1918/releasegraph
-          ref: v1
+          ref: main
           path: .releasegraph
       - name: Configure Git identity for release tags
         run: |
@@ -336,12 +354,6 @@ jobs:
           RELEASE_TAG: ${{ steps.plan.outputs.tag }}
           COMMAND: ${{ steps.plan.outputs.required_publish }}
         run: bash -euo pipefail -c "$COMMAND"
-      - name: Publish to PyPI with OIDC
-        if: ${{ steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && !inputs.dry_run && steps.plan.outputs.pypi_enabled == 'true' }}
-        continue-on-error: ${{ steps.plan.outputs.pypi_required != 'true' }}
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
-        with:
-          packages-dir: ${{ steps.plan.outputs.pypi_packages_dir }}
       - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
         if: ${{ steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && !inputs.dry_run && steps.plan.outputs.ghcr_enabled == 'true' }}
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
