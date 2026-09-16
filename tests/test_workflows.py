@@ -68,6 +68,21 @@ class WorkflowTest(unittest.TestCase):
         permissions = finalize.split("steps:", 1)[0]
         self.assertIn("pull-requests: write", permissions)
 
+    def test_finalize_keeps_actions_write_for_workflow_dispatch(self):
+        """release.postRelease `github-workflow` must dispatch with the ephemeral
+        GITHUB_TOKEN, which on same-repo workflow_dispatch requires Actions write.
+        The executing job (finalize) must therefore preserve `actions: write` so
+        the caller-granted scope is not dropped before the dispatch."""
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        finalize = workflow.split("  finalize:", 1)[1].split("  release_summary:", 1)[0]
+        permissions = finalize.split("steps:", 1)[0]
+        self.assertIn("actions: write", permissions)
+        # The dispatch runs with the job-scoped GITHUB_TOKEN — no PAT/App is
+        # required for a same-repo workflow_dispatch when Actions write is set.
+        step = finalize.split("- name: Post-release actions", 1)[1].split("      - name:", 1)[0]
+        self.assertIn("GH_TOKEN: ${{ github.token }}", step)
+        self.assertNotIn("secrets.", step)
+
     def test_reusable_workflow_exposes_release_please_component_paths(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         self.assertIn("paths_released:", workflow)

@@ -1,3 +1,11 @@
+## Workflow-dispatch post-release permission
+
+`release.postRelease` with `type: github-workflow` dispatches a same-repo `workflow_dispatch`. That endpoint requires `Actions: write` on the ephemeral `GITHUB_TOKEN`.
+
+- `github-workflow` postRelease requires the calling workflow to grant `actions: write`.
+- The job executing `github-workflow` postRelease must preserve `actions: write` in its job permissions.
+- `GITHUB_TOKEN` is sufficient for a same-repo `workflow_dispatch` when `Actions: write` permission is granted; a PAT/App is not required by default.
+
 # Authentication
 
 ReleaseGraph uses progressively broader permissions. A reusable workflow cannot elevate the permissions granted by its caller.

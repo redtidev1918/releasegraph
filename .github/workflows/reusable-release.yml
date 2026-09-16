@@ -313,10 +313,16 @@ jobs:
     if: always() && needs.build.result == 'success' && needs.build-plan.result == 'success'
     runs-on: ubuntu-latest
     permissions:
-      # Caller-compatible subset only (see release_please above).
+      # Caller-compatible subset only (see release_please above). The finalize
+      # job runs release.postRelease `github-workflow` actions, which dispatch a
+      # same-repo workflow_dispatch with the ephemeral actions GITHUB_TOKEN.
+      # That endpoint requires Actions write, so callers must grant it too
+      # (TelePost/PixivFlow do); a reusable workflow cannot elevate past the
+      # caller's permissions.
       contents: write
       packages: write
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0}

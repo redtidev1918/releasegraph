@@ -18,3 +18,12 @@ managed repository 使用该次 GitHub Actions job 的短期 `GITHUB_TOKEN`，�
 小型 fleet 可以使用只覆盖 graph 仓库的 fine-grained PAT。不要默认使用 classic 全仓库 PAT。reusable workflow 不能提升 caller 已授予的 token 权限。
 
 完整配置示例见[英文认证文档](/en/authentication.md)。
+
+## workflow-dispatch post-release 权限
+
+`release.postRelease` 的 `type: github-workflow` 会对同仓库发起 `workflow_dispatch`，该端点要求 ephemeral `GITHUB_TOKEN` 拥有 `Actions: write`：
+
+- `github-workflow` postRelease 要求调用方 workflow 授予 `actions: write`。
+- 执行 `github-workflow` postRelease 的 job 必须在自身 permissions 中保留 `actions: write`。
+- 同仓库 `workflow_dispatch` 在授予 `Actions: write` 时，用 `GITHUB_TOKEN` 即可，默认不需要 PAT/App。
+
