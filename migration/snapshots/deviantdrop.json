@@ -49,6 +49,27 @@
           "requireLatestBase": true
         }
       }
+    },
+    "release": {
+      "postRelease": [
+        {
+          "id": "refresh-download-page",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "update-download-page.yml",
+          "inputs": {
+            "tag": "{{tag}}",
+            "deploy-docs": "false"
+          }
+        },
+        {
+          "id": "deploy-docs",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "static.yml",
+          "ref": "default"
+        }
+      ]
     }
   },
   "release_infra_version": null,
@@ -69,8 +90,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/34943811484",
-    "updated_at": "2026-09-15T07:51:19Z"
+    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/35062314048",
+    "updated_at": "2026-09-16T06:07:37Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -175,6 +196,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.10.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -187,9 +211,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.10.0"
     }
   },
   "registries": {
@@ -208,8 +229,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }
