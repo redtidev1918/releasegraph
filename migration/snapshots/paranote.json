@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "node-library",
     "versioning": {
@@ -33,12 +36,27 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
-    "sbom": false
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
+  "release_infra_version": null,
   "desired_version": "0.2.0",
   "latest_release": "v0.2.0",
   "latest_release_at": "2026-08-27T15:54:26Z",
@@ -51,17 +69,13 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy documentation to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/paranote/actions/runs/34323549987",
-    "updated_at": "2026-09-09T07:23:16Z"
+    "url": "https://github.com/redtidev1918/paranote/actions/runs/35061914720",
+    "updated_at": "2026-09-16T06:02:08Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -72,10 +86,12 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
@@ -107,8 +123,12 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.2.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "node",
@@ -118,9 +138,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.2.0"
     }
   },
   "registries": {
@@ -129,5 +146,18 @@
       "declared": "0.2.0",
       "published": "0.2.0"
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

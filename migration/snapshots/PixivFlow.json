@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "node-library",
     "versioning": {
@@ -41,30 +44,75 @@
         "verify": "docker buildx imagetools inspect ghcr.io/redtidev1918/pixivflow:$RELEASE_VERSION"
       }
     },
+    "release": {
+      "postRelease": [
+        {
+          "id": "refresh-download-page",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "update-download-page.yml",
+          "inputs": {
+            "tag": "{{tag}}",
+            "deploy-docs": "false"
+          }
+        },
+        {
+          "id": "deploy-docs",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "static.yml",
+          "ref": "default"
+        }
+      ]
+    },
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": true,
-    "sbom": true
+    "sbom": true,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true,
+          "operations": {
+            "cutover": {
+              "branches": [
+                "chore/cutover-*"
+              ],
+              "allowedPaths": [
+                "Dockerfile",
+                "Dockerfile.scheduler",
+                "docker-compose.yml",
+                "docker-compose.apprise.example.yml"
+              ]
+            }
+          }
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "2.12.1",
-  "latest_release": "v2.12.1",
-  "latest_release_at": "2026-09-08T18:41:11Z",
-  "latest_tag": "v2.12.1",
+  "release_infra_version": null,
+  "desired_version": "2.22.1",
+  "latest_release": "v2.22.1",
+  "latest_release_at": "2026-09-16T04:20:30Z",
+  "latest_tag": "v2.22.1",
   "draft_releases": [],
   "actual_assets": [
-    "pixivflow-2.12.1.tgz",
+    "pixivflow-2.22.1.tgz",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
   "release_workflows": [
-    {
-      "name": "Deploy static content to Pages",
-      "path": ".github/workflows/static.yml"
-    },
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
@@ -73,8 +121,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/34319982390",
-    "updated_at": "2026-09-09T06:38:40Z"
+    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/35064863401",
+    "updated_at": "2026-09-16T06:41:37Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -85,57 +133,158 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
+    ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
+    ".github/workflows/package-smoke.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
     ".github/workflows/test.yml",
+    ".github/workflows/update-download-page.yml",
     ".github/workflows/version-sync-check.yml"
   ],
   "release_history": [
     {
-      "tag": "v2.12.1",
+      "tag": "v2.22.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-08T18:41:11Z",
+      "published_at": "2026-09-16T04:20:30Z",
       "assets": [
         {
-          "name": "pixivflow-2.12.1.tgz",
-          "size": 562116,
-          "sha256": "sha256:834bc1553734e9c215e4deb3773e7a65fa044cba5c4b5f8326b2e773899bfa55"
+          "name": "pixivflow-2.22.1.tgz",
+          "size": 1797281,
+          "sha256": "sha256:7d0d520653b5505cf5f1b5b4573d6edc105a11591f98025a3b67f3a7e69f90ff"
         },
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1615,
-          "sha256": "sha256:667b47aa72657de5b8e1433eb0ebbc3538dffe6cb9cb5606705ff0ccaf338b72"
+          "size": 2250,
+          "sha256": "sha256:1aa2fb652d8c521559efc43c55fd90d36efa5ef51b1ef48d2fd2bc7bcb9fc92f"
         },
         {
           "name": "SHA256SUMS",
           "size": 87,
-          "sha256": "sha256:f3d9a503d1cc0e335b4c7d6fcf5a9aea647930ce51390508e127271e032c1575"
+          "sha256": "sha256:e4a565b9795ab0e12dcfb137aef37a31f397ff3f4f14a94d34354e4a501e86ad"
         }
       ]
-    },
-    {
-      "tag": "v2.12.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-08T11:53:21Z",
-      "assets": []
     }
   ],
   "tags": [
     {
+      "name": "v2.22.1",
+      "commit": "d7d248938926828a1b7993429d9746b134359211"
+    },
+    {
+      "name": "v2.22.0",
+      "commit": "e6cd6211dba78c25b095ea7ce307a0afc5f2b734"
+    },
+    {
+      "name": "v2.21.0",
+      "commit": "56d4043e026ea215c56a448922080a8d325178eb"
+    },
+    {
+      "name": "v2.20.5",
+      "commit": "eed77d40a98f87d590a57098ac835a1b45be52fe"
+    },
+    {
+      "name": "v2.20.4",
+      "commit": "8cfa81e56468bcefb6e9328a44dc47aa4d2039bf"
+    },
+    {
+      "name": "v2.20.3",
+      "commit": "a0e4b16a620b6b8c1cf9c270fd103a829497f19f"
+    },
+    {
+      "name": "v2.20.2",
+      "commit": "966ea4b07134bb122ae6a326759cc7d6cfd4dfe0"
+    },
+    {
+      "name": "v2.20.1",
+      "commit": "74c199062eea795af72bec87d13ff5e87c0bc7d0"
+    },
+    {
+      "name": "v2.20.0",
+      "commit": "99fda26ba6625c16c889461a202faa76af095d1a"
+    },
+    {
+      "name": "v2.19.5",
+      "commit": "c81c8d26faec73b325cbb3a5dc377f24460eabbf"
+    },
+    {
+      "name": "v2.19.4",
+      "commit": "41c45e0a8110dadd39f47980133ce6e902d159ea"
+    },
+    {
+      "name": "v2.19.3",
+      "commit": "9c309a5bfd86c237291c85dd7974f0d6462ecc02"
+    },
+    {
+      "name": "v2.19.2",
+      "commit": "af02a9a80030359cdcd52ab8ef0bff0ba5b4a1e4"
+    },
+    {
+      "name": "v2.19.1",
+      "commit": "f1d3a838e9cbee1beae1b332f73705387ebfa6f6"
+    },
+    {
+      "name": "v2.19.0",
+      "commit": "11e05af420925465877d9e9766c3f2e58ef78d8a"
+    },
+    {
+      "name": "v2.18.1",
+      "commit": "5926bd20e4ac2c9d2f2c7ad80cdbe9ac39e177e7"
+    },
+    {
+      "name": "v2.18.0",
+      "commit": "9d65dfcf2fc72b0df97eb4cdca9f08c83076afd8"
+    },
+    {
+      "name": "v2.17.0",
+      "commit": "a0ef5292c839149fd715cc8b68628041b8309682"
+    },
+    {
+      "name": "v2.16.1",
+      "commit": "fffe8394b0030a9d3cd01e671bd5903a1e8fb82c"
+    },
+    {
+      "name": "v2.16.0",
+      "commit": "21660d9020cec8fe46efadca7b6df67cb132bce8"
+    },
+    {
+      "name": "v2.15.0",
+      "commit": "20bb36cabe0c6def0d8c8d33f911d8790aad4857"
+    },
+    {
+      "name": "v2.14.0",
+      "commit": "904951344c1cb0b3c0c7e0c789ed75ccead2ad62"
+    },
+    {
+      "name": "v2.13.0",
+      "commit": "9b5a8a166557c9499d3d780b657143bace797f7e"
+    },
+    {
+      "name": "v2.12.3",
+      "commit": "449aa0f825539e3659073bc06b9bef41c19bc252"
+    },
+    {
+      "name": "v2.12.2",
+      "commit": "6d5fdd2c524625091fd83ddfdeec03d9f7cd506b"
+    },
+    {
       "name": "v2.12.1",
-      "commit": "668a0951f6953d9befa4a540eebd2a92ab664a51"
+      "commit": "df724eb6634040cba4dfb7505b873ae4a58c3b2c"
     },
     {
       "name": "v2.12.0",
-      "commit": "620c96e7c6d359dfe7db04c5fa16eb143a2062b2"
+      "commit": "d73f47b3e10ba31a2bbe2a79d11c571e69c37094"
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.22.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "node",
@@ -145,16 +294,26 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.12.1"
     }
   },
   "registries": {
     "npm": {
       "package": "pixivflow",
-      "declared": "2.12.1",
-      "published": "2.12.1"
+      "declared": "2.22.1",
+      "published": "2.22.1"
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

@@ -1,0 +1,6 @@
+{
+  "workflow_api": 4,
+  "policy_schema": 2,
+  "minimum_policy_schema": 1,
+  "notes": "Interface versions ReleaseGraph exposes to managed repositories. Raises to minimum_policy_schema require a policy migration before a repository may take the new pin."
+}

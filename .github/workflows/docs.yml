@@ -1,12 +1,19 @@
-name: Deploy documentation
+# docsite: managed file, run `python3 docsite.py update` to refresh.
+# 使用 GitHub 推荐的静态 HTML 部署方式（docsify，无需构建）
+# 注意：早期接入的仓库沿用了 GitHub 默认模板名 static.yml；内容等价，无需改名。
+# actions 版本由本模板统一维护（当前：checkout v7 / configure-pages v6 /
+# upload-pages-artifact v5 / deploy-pages v5）。升级只改这里，再由 update 下发。
+
+name: Deploy static content to Pages
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - "docs/**"
-      - ".github/workflows/docs.yml"
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
 
 permissions:
   contents: read
@@ -14,7 +21,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
@@ -24,12 +31,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-      - uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          source: ./docs
-          destination: ./_site
-      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
-      - id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+          path: './docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

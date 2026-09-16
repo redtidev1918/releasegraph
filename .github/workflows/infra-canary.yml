@@ -12,10 +12,32 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with: {python-version: "3.11"}
-      - run: |
+      - name: actionlint
+        run: |
           curl --fail --location --output /tmp/actionlint.tar.gz https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
           tar -xzf /tmp/actionlint.tar.gz -C /tmp actionlint
-          /tmp/actionlint -color
+          set +e
+          /tmp/actionlint -no-color > /tmp/actionlint.out 2>&1
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          # actionlint v1.7.12 (2026-03-30) predates the job.workflow_* context
+          # properties GitHub announced on 2026-09-03, so its bundled schema
+          # flags the branch-contract gate's engine-provenance expressions as
+          # undefined. Filter exactly those known-stale findings (matched on
+          # the error header lines only, never on the code frames) and fail on
+          # anything else. Drop this filter once actionlint ships the new
+          # context properties.
+          known_stale='property "workflow_(sha|repository|ref|file_path)" is not defined'
+          findings=$(grep -E '^[^[:space:]].*\.ya?ml:[0-9]+:[0-9]+:' /tmp/actionlint.out || true)
+          unexpected=$(printf '%s\n' "$findings" | grep -vE "$known_stale" || true)
+          if [ -n "$unexpected" ]; then
+            cat /tmp/actionlint.out
+            exit 1
+          fi
+          echo "actionlint: filtered only known-stale job.workflow_* findings; nothing else reported"
       - run: python -m unittest discover -v
       - run: python -m release_infra.cli static-check
       - run: python -m compileall -q release_infra tests

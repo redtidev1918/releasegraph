@@ -1,8 +1,0 @@
-title: ReleaseGraph
-description: Serverless multi-repository release orchestration for GitHub Actions
-theme: jekyll-theme-cayman
-url: https://redtidev1918.github.io
-baseurl: /releasegraph
-repository: redtidev1918/releasegraph
-github:
-  is_project_page: true

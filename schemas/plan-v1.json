@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/redtidev1918/releasegraph/main/schemas/plan-v1.json",
+  "title": "ReleaseGraph plan v1 (graph view)",
+  "description": "What `releasegraph plan --graph <file> --state <file>|--live --output json` writes to stdout, as consumed by .github/workflows/reusable-readonly-plan.yml. Scope is deliberately narrow. `releasegraph plan --path <policy>` is a different command with a different shape: its `blocked` is an array of ids and it also emits `nodes`. That shape is NOT described here, because one schema cannot honestly cover two incompatible payloads that share a property name. `blocked` here always means the graph view's map of project id to unsatisfied dependency ids.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "releasegraphVersion",
+    "generatedAt",
+    "data"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "releasegraphVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "RFC3339 timestamp of the computation."
+    },
+    "data": {
+      "$ref": "#/$defs/graphView"
+    },
+    "error": {
+      "$ref": "#/$defs/error",
+      "description": "Declared by the CLI envelope and currently NEVER emitted: no command sets it, and a failing plan writes human-readable text to stderr with a non-zero exit code and no JSON at all. It stays in this schema because the type declares it; see docs/plan.md."
+    }
+  },
+  "$defs": {
+    "graphView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ready",
+        "blocked",
+        "noop"
+      ],
+      "description": "A plan is computed from fresh state, never stored. Ready means every dependency condition holds; blocked names the ones that do not; noop means there is nothing to do.",
+      "properties": {
+        "ready": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Project ids whose dependencies are satisfied and which are not HEALTHY."
+        },
+        "blocked": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "description": "Project id -> the dependency ids whose condition is unsatisfied."
+        },
+        "noop": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Project ids already HEALTHY: a released version is never re-released for its own sake."
+        }
+      }
+    },
+    "stateInput": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/healthValue"
+      },
+      "description": "The `--state <file>` input: project id -> node state. Any string decodes (the loader does not validate), but only these values are meaningful; an unrecognised value is treated as not-HEALTHY, so it plans work rather than skipping it. Repo-health values (schemas/health-v1.json) are a subset.",
+      "propertyNames": {
+        "minLength": 1
+      }
+    },
+    "healthValue": {
+      "enum": [
+        "HEALTHY",
+        "READY",
+        "RUNNING",
+        "BLOCKED",
+        "RECOVERABLE",
+        "DEGRADED",
+        "BROKEN",
+        "NOOP",
+        "UNMANAGED",
+        "NO_RELEASE",
+        "NEEDS_REVIEW",
+        "ACK_PENDING",
+        "WAIVED"
+      ],
+      "description": "Node state vocabulary: every internal/domain.Health value, because the state file describes a node's current state, not a repository report. Only HEALTHY means there is nothing to do; any other value makes the project a planning candidate. This is deliberately WIDER than schemas/health-v1.json, whose values are the narrower repository-health subset: the fixture in testdata/graph/diamond-health.json uses READY, which is transaction state and would be rejected as repository health."
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable machine code, e.g. GRAPH_ERROR."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

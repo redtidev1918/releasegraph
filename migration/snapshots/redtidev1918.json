@@ -7,6 +7,16 @@
   "template": false,
   "classification": "no-release",
   "health": "NO_RELEASE",
+  "health_reasons": [
+    {
+      "code": "policy_absent"
+    },
+    {
+      "code": "release_absent"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": null,
   "release_infra_version": null,
   "desired_version": null,
@@ -24,5 +34,12 @@
   "release_history": [],
   "tags": [],
   "release_config": {},
-  "registries": {}
+  "registries": {},
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
 }

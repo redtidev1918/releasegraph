@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "node-library",
     "versioning": {
@@ -33,16 +36,31 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
-    "sbom": false
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "3.0.2",
-  "latest_release": "v3.0.2",
-  "latest_release_at": "2026-09-09T04:17:23Z",
-  "latest_tag": "v3.0.2",
+  "release_infra_version": null,
+  "desired_version": "3.0.3",
+  "latest_release": "v3.0.3",
+  "latest_release_at": "2026-09-09T13:37:00Z",
+  "latest_tag": "v3.0.3",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -51,17 +69,13 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy documentation to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/34310309378",
-    "updated_at": "2026-09-09T04:17:31Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/35062196345",
+    "updated_at": "2026-09-16T06:06:01Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -71,27 +85,33 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
-      "tag": "v3.0.2",
+      "tag": "v3.0.3",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-09T04:17:23Z",
+      "published_at": "2026-09-09T13:37:00Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1058,
-          "sha256": "sha256:79940deb2cae041fecee00e0dc90d75fb842efe265a4254b7164050c335d156c"
+          "size": 1302,
+          "sha256": "sha256:13c40b74cb3e773de4c39c80b556c71f1d9181f90cf35c3f608b2c9ffe663c98"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v3.0.3",
+      "commit": "72268b31c1866bf48a645af5851093ea86f4e8a4"
+    },
     {
       "name": "v3.0.2",
       "commit": "f9e07c9caccf1630761592a79f4f694b917eff86"
@@ -118,8 +138,12 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "3.0.3"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "node",
@@ -129,16 +153,26 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "3.0.2"
     }
   },
   "registries": {
     "npm": {
       "package": "ludum",
-      "declared": "3.0.2",
-      "published": "3.0.2"
+      "declared": "3.0.3",
+      "published": "3.0.3"
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

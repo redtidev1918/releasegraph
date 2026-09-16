@@ -1,0 +1,92 @@
+name: PR Lifecycle
+
+# Open pull requests are a merge queue, not a backlog.
+#
+# This is the one schedule that enforces the pull-request lifecycle contract
+# across every managed repository. It replaces a `stale.yml` per repository:
+# one policy, one classifier, one audit trail, and no repository has to install
+# anything of its own.
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Close pull requests that are no longer merge candidates"
+        required: false
+        default: false
+        type: boolean
+      limit:
+        description: "Maximum pull requests that may leave the queue per repository"
+        required: false
+        # Canary value. The first production passes must be verifiable by hand:
+        # one pull request archived, commented, closed, with its branch intact.
+        # Raise it only once a real run has been confirmed end to end.
+        default: "1"
+        type: string
+  schedule:
+    - cron: "41 4 * * *"
+
+# The app installation token is the only writer, and it is created below with
+# the narrowest permissions the contract needs. Repository `permissions:` stays
+# read-only so no step can reach for the workflow's own token to mutate.
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-lifecycle
+  cancel-in-progress: false
+
+jobs:
+  lifecycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: go.mod
+      - name: Create the lifecycle app token
+        id: lifecycle-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
+          owner: ${{ vars.RELEASEGRAPH_OWNER }}
+          # Read-only: classification reads pull requests, issues-to-be-reused,
+          # the file that declares the contract, and CI verdicts.
+          #
+          # `checks: read` is required in addition to `actions: read`: a commit's
+          # check runs come from the Checks API, while `actions: read` only
+          # covers workflow runs and jobs. Without it every pull request would
+          # look like it has no CI at all, and green work would age into PARKED.
+          permission-metadata: read
+          permission-contents: read
+          permission-pull-requests: write
+          permission-issues: write
+          permission-actions: read
+          permission-checks: read
+      - name: Build releasegraph
+        run: go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph
+      - name: Audit every managed repository
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.lifecycle-token.outputs.token }}
+        run: |
+          "$RUNNER_TEMP/releasegraph" pr-lifecycle audit \
+            --report "$RUNNER_TEMP/pr-lifecycle.json" | tee "$RUNNER_TEMP/pr-lifecycle.txt"
+          cat "$RUNNER_TEMP/pr-lifecycle.txt" >> "$GITHUB_STEP_SUMMARY"
+      - name: Enforce the contract
+        # The schedule enforces; a manual run consults first unless asked to act.
+        if: ${{ github.event_name == 'schedule' || inputs.apply }}
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.lifecycle-token.outputs.token }}
+          # Bounds the blast radius of one pass. Archiving and closing are
+          # batched by the run, not by how many pull requests happen to be stale.
+          #
+          # This starts at 1 on purpose. The contract is allowed to close pull
+          # requests, so its first scheduled runs are a canary: at most one pull
+          # request leaves the queue per repository per day, which a human can
+          # check against the archive issue and the comment before the limit is
+          # raised to its steady-state value.
+          LIMIT: ${{ inputs.limit || '1' }}
+        run: |
+          "$RUNNER_TEMP/releasegraph" pr-lifecycle apply --limit "$LIMIT" \
+            | tee "$RUNNER_TEMP/pr-lifecycle-apply.txt"
+          cat "$RUNNER_TEMP/pr-lifecycle-apply.txt" >> "$GITHUB_STEP_SUMMARY"

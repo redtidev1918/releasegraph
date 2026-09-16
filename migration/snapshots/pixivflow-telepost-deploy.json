@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "hybrid",
     "versioning": {
@@ -42,21 +45,69 @@
       }
     },
     "release": {
-      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
+      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md docs/en/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
     },
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 3
+      "failed_draft": 3,
+      "pruneStable": true
     },
     "checksums": true,
-    "sbom": true
+    "sbom": true,
+    "repository": {
+      "pullRequests": {
+        "lifecycle": {
+          "enabled": true,
+          "parkedAfterDays": 7,
+          "archiveParkedToIssue": true,
+          "closeParked": true,
+          "deleteBranch": false,
+          "exempt": {
+            "branches": [
+              "release-please--*"
+            ],
+            "actors": [
+              "github-actions[bot]",
+              "dependabot[bot]"
+            ],
+            "labels": [
+              "keep-open"
+            ]
+          }
+        }
+      },
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true,
+          "operations": {
+            "cutover": {
+              "branches": [
+                "chore/cutover-*"
+              ],
+              "allowedPaths": [
+                "control-plane/wrangler.toml",
+                "fly/*.toml",
+                ".github/workflows/**"
+              ]
+            }
+          }
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "1.10.1",
-  "latest_release": "v1.10.1",
-  "latest_release_at": "2026-09-08T14:21:26Z",
-  "latest_tag": "v1.10.1",
+  "release_infra_version": null,
+  "desired_version": "1.13.0",
+  "latest_release": "v1.13.0",
+  "latest_release_at": "2026-09-12T10:06:27Z",
+  "latest_tag": "v1.13.0",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -72,17 +123,13 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy static content to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/34317712234",
-    "updated_at": "2026-09-09T06:07:58Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/35062231923",
+    "updated_at": "2026-09-16T06:06:25Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -92,63 +139,81 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
+    ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/schedule-watchdog.yml",
     ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml",
     ".github/workflows/validate.yml"
   ],
   "release_history": [
     {
-      "tag": "v1.10.1",
+      "tag": "v1.13.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-08T14:21:26Z",
+      "published_at": "2026-09-12T10:06:27Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2438765,
-          "sha256": "sha256:dd0317ab942b04cc984a9da354fea440112d8d6c00a6f257a1d76c4818524a1b"
+          "size": 2437838,
+          "sha256": "sha256:1230bfbe081957d72ba38400cbffab5d549970c6e7c00d9c43c91439711439a9"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2280482,
-          "sha256": "sha256:39b4809bdcebd688496da7946214ecaad300a6a2c5cbd32572ddf8d4e191e23c"
+          "size": 2281576,
+          "sha256": "sha256:06a43993d7c500a08512c4091bcd78de2b556c7407ebfcd6acc592fdb7ff57cf"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2406000,
-          "sha256": "sha256:b77fa49f2d9908599e335d88df84b3f28d5e84a0c8430ebfc4819a7b7c637c51"
+          "size": 2406263,
+          "sha256": "sha256:7dedab1c6eeb806f28dfbab58bb9a03206185ea0ae7e44c297d91e5fb797a55c"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2203759,
-          "sha256": "sha256:aa04331c1c192fb9115c1d49a8eb6c2868e7bee1e1be338fa9d44e15b53e9874"
+          "size": 2204832,
+          "sha256": "sha256:dca21d19327b8193807856b07b391a08f7aa2c54c02f164bf0129a18b5403bb4"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2464159,
-          "sha256": "sha256:341ba99ff4339d6046fdac03512f593f5c9aabaeefd5f4e727b1b6cb5aca1b3c"
+          "size": 2462492,
+          "sha256": "sha256:fc4856427e0b2a59353ad09539b200f0057a01a0817d67de5ffe46496c71f17d"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2230891,
-          "sha256": "sha256:9f072046a30ed4d123f5a98613733c1dbcd5c07ff0e84fd0cba28b8cc50cbef8"
+          "size": 2229396,
+          "sha256": "sha256:b2f1950541ebc0b28142080a871145766209317aed479bc22327eaec467e8c44"
         },
         {
           "name": "RELEASE-METADATA.json",
-          "size": 2101,
-          "sha256": "sha256:f4104beca9fc1563d8bf7ba3926d18c896cb9a2985bdcf84c458e540a4af32c5"
+          "size": 2735,
+          "sha256": "sha256:ba11a099836af0859e97273ff728dacad5d55af0c87d8bfbffdd9c0eae157962"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:89f852778abf11758c2e42b617e4ab46d0dca3360926fbda4e9c33b9e5973c9e"
+          "sha256": "sha256:3cb9741a8a7bd15c877e00d52f7aacffa8ecf50e78242d91cac83bca4be133f7"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.13.0",
+      "commit": "fe62cfe386a631a952b90a482c0a0749b43b6abd"
+    },
+    {
+      "name": "v1.12.0",
+      "commit": "2faf9cc3edd2543162f777d780ab10709ad134d1"
+    },
+    {
+      "name": "v1.11.0",
+      "commit": "2ba46b242fef59f0702867271c63a629b99fcd12"
+    },
+    {
+      "name": "v1.10.2",
+      "commit": "c69ea6265cb555789a58e2ded9c8af404140dc12"
+    },
     {
       "name": "v1.10.1",
       "commit": "675214c0801972eabb0f81137bfd90772d8bd47b"
@@ -159,6 +224,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.13.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -170,10 +238,20 @@
           "include-component-in-tag": false
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.10.1"
     }
   },
-  "registries": {}
+  "registries": {},
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": true,
+    "open": 2,
+    "inQueue": 2,
+    "shouldLeave": 0
+  }
 }

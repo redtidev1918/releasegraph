@@ -1,11 +1,23 @@
 #!/usr/bin/env sh
+# contract-compare — differential check across ReleaseGraph's language halves.
+#
+# Two contracts are compared here, not just one:
+#
+#   1. desired-version: Python `release_infra` and the Go core must agree on the
+#      version a policy desires.
+#   2. the graph plan: the Go binary's real output must still match the committed
+#      fixture, so `schemas/plan-v1.json` keeps describing what the tool emits.
+#      `tests/test_plan_schema.py` validates the fixture against the schema; this
+#      step catches the binary drifting away from the fixture.
 set -eu
 
 go build -o /tmp/releasegraph-contract ./cmd/releasegraph
 
 python_versions=$(mktemp)
 go_versions=$(mktemp)
-trap 'rm -f "$python_versions" "$go_versions"' EXIT
+actual=$(mktemp)
+expected=$(mktemp)
+trap 'rm -f "$python_versions" "$go_versions" "$actual" "$expected"' EXIT
 
 for policy in testdata/policy/binary.json; do
   root=$(dirname "$policy")
@@ -14,4 +26,22 @@ for policy in testdata/policy/binary.json; do
 done
 
 diff -u "$python_versions" "$go_versions"
+echo "desired-version contract ok"
+
+# The plan wire format. `generatedAt` is the only field that may vary, so it is
+# normalised rather than ignored: a field that disappears still fails.
+normalise='import json,sys; d=json.load(sys.stdin); d["generatedAt"]="<normalised>"; print(json.dumps(d,indent=2,ensure_ascii=False,sort_keys=True))'
+/tmp/releasegraph-contract plan --graph testdata/graph/diamond.yml \
+  --state testdata/graph/diamond-health.json --output json \
+  | python3 -c "$normalise" > "$actual"
+python3 -c "$normalise" < testdata/plan/graph-plan.json > "$expected"
+
+if ! diff -u "$expected" "$actual"; then
+  echo "the graph plan drifted from testdata/plan/graph-plan.json" >&2
+  echo "regenerate it with:" >&2
+  echo "  ./releasegraph plan --graph testdata/graph/diamond.yml --state testdata/graph/diamond-health.json --output json" >&2
+  exit 1
+fi
+echo "graph plan contract ok"
+
 echo "contract comparison ok"

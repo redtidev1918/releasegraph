@@ -1,0 +1,1157 @@
+{
+  "comment": "Release health assessment fixture. Expectations are written from the contract in docs/health.md, not generated from either implementation, and BOTH release_infra/health.py and internal/health must satisfy every case. Every observation states every field so no case depends on a language's zero value.",
+  "fields": [
+    "api_error",
+    "archived",
+    "assets",
+    "credential_missing",
+    "dependency_blocked",
+    "draft_release",
+    "fork",
+    "has_policy",
+    "needs_review",
+    "policy_parsable",
+    "release",
+    "run_conclusion",
+    "tag_drift",
+    "unmanaged"
+  ],
+  "cases": [
+    {
+      "name": "complete release",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "HEALTHY",
+        "reasons": []
+      }
+    },
+    {
+      "name": "missing declared binary",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "target_assets_missing"
+        ],
+        "missing_assets": [
+          "app-*.tgz"
+        ]
+      }
+    },
+    {
+      "name": "declared binary uploaded as zero bytes",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 0
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "asset_empty"
+        ],
+        "empty_assets": [
+          "app-*.tgz"
+        ]
+      }
+    },
+    {
+      "name": "missing metadata asset",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "target_assets_missing"
+        ],
+        "missing_assets": [
+          "RELEASE-METADATA.json"
+        ]
+      }
+    },
+    {
+      "name": "missing checksum manifest",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "target_assets_missing"
+        ],
+        "missing_assets": [
+          "SHA256SUMS"
+        ]
+      }
+    },
+    {
+      "name": "checksums disabled needs no manifest",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": false
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "HEALTHY",
+        "reasons": []
+      }
+    },
+    {
+      "name": "no declared assets needs only metadata",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": []
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "HEALTHY",
+        "reasons": []
+      }
+    },
+    {
+      "name": "no declared assets but metadata absent",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": []
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "target_assets_missing"
+        ],
+        "missing_assets": [
+          "RELEASE-METADATA.json"
+        ]
+      }
+    },
+    {
+      "name": "tag drift",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": true,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "version_drift"
+        ]
+      }
+    },
+    {
+      "name": "stray draft alongside a published release",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "v1.2.4",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "release_draft"
+        ]
+      }
+    },
+    {
+      "name": "release run failed",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "failure",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "release_run_failed"
+        ]
+      }
+    },
+    {
+      "name": "release run skipped",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "skipped",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "HEALTHY",
+        "reasons": []
+      }
+    },
+    {
+      "name": "release run succeeded",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "success",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "HEALTHY",
+        "reasons": []
+      }
+    },
+    {
+      "name": "no release at all",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "NO_RELEASE",
+        "reasons": [
+          "release_absent"
+        ]
+      }
+    },
+    {
+      "name": "only a draft exists",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "",
+        "draft_release": "v1.2.3",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "NO_RELEASE",
+        "reasons": [
+          "release_draft"
+        ]
+      }
+    },
+    {
+      "name": "archived repository",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": true,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "NO_RELEASE",
+        "reasons": [
+          "repository_archived"
+        ]
+      }
+    },
+    {
+      "name": "fork",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": true,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "NO_RELEASE",
+        "reasons": [
+          "repository_fork"
+        ]
+      }
+    },
+    {
+      "name": "not managed by a policy",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": true,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "UNMANAGED",
+        "reasons": [
+          "unmanaged_repo"
+        ]
+      }
+    },
+    {
+      "name": "policy absent",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": false,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "policy_absent"
+        ]
+      }
+    },
+    {
+      "name": "policy unparsable",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": false,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "policy_unparsable"
+        ]
+      }
+    },
+    {
+      "name": "needs a human decision",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [
+          {
+            "name": "app-1.2.3.tgz",
+            "size": 5
+          },
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": true
+      },
+      "expect": {
+        "health": "NEEDS_REVIEW",
+        "reasons": [
+          "manual_review_required"
+        ]
+      }
+    },
+    {
+      "name": "fleet credential missing",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": true,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "BLOCKED",
+        "reasons": [
+          "fleet_credential_required"
+        ]
+      }
+    },
+    {
+      "name": "dependency not healthy",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "golang",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "BLOCKED",
+        "reasons": [
+          "dependency_unhealthy"
+        ]
+      }
+    },
+    {
+      "name": "provider state unreadable",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": false,
+        "assets": [],
+        "run_conclusion": "",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "connection reset",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "BROKEN",
+        "reasons": [
+          "api_error"
+        ]
+      }
+    },
+    {
+      "name": "several failures at once keep reason order",
+      "policy": {
+        "kind": "binary",
+        "versioning": {
+          "mode": "manual",
+          "version": "1.2.3"
+        },
+        "assets": {
+          "required": [
+            "app-*.tgz"
+          ]
+        },
+        "checksums": true
+      },
+      "observation": {
+        "release": "v1.2.3",
+        "draft_release": "",
+        "tag_drift": true,
+        "assets": [
+          {
+            "name": "RELEASE-METADATA.json",
+            "size": 5
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 5
+          }
+        ],
+        "run_conclusion": "failure",
+        "has_policy": true,
+        "policy_parsable": true,
+        "archived": false,
+        "fork": false,
+        "unmanaged": false,
+        "api_error": "",
+        "dependency_blocked": "",
+        "credential_missing": false,
+        "needs_review": false
+      },
+      "expect": {
+        "health": "DEGRADED",
+        "reasons": [
+          "target_assets_missing",
+          "version_drift",
+          "release_run_failed"
+        ],
+        "missing_assets": [
+          "app-*.tgz"
+        ]
+      }
+    }
+  ]
+}

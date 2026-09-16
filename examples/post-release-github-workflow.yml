@@ -1,0 +1,21 @@
+# Example: post-release actions — dispatch a docs refresh and a site deploy
+# after a release is published (generic; replace owner/project with your repo).
+apiVersion: releasegraph.dev/v1
+kind: hybrid
+versioning:
+  mode: manual
+  version: "1.0.0"
+release:
+  postRelease:
+    - id: refresh-download-page
+      type: github-workflow
+      required: true
+      workflow: update-download-page.yml
+      inputs:
+        tag: "{{tag}}"
+        deploy-docs: "false"
+    - id: deploy-docs
+      type: github-workflow
+      required: true
+      workflow: docs.yml
+      ref: default # Pages deploys run from the default branch; no tag input needed

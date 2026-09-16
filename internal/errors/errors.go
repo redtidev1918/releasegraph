@@ -17,6 +17,15 @@ const (
 	VersionConflict    ErrorKind = "VERSION_CONFLICT_ERROR"
 	InvariantViolation ErrorKind = "INVARIANT_VIOLATION"
 	NotFound           ErrorKind = "NOT_FOUND"
+	// ScopeViolation means an operation targeted a repository outside the
+	// execution scope it was running under.
+	ScopeViolation ErrorKind = "SCOPE_VIOLATION"
+	// FleetCredentialRequired means fleet-scoped work ran without a fleet
+	// credential. It is detected before any API call returns 403.
+	FleetCredentialRequired ErrorKind = "FLEET_CREDENTIAL_REQUIRED"
+	// PlanStale means the remote state changed after a plan was produced.
+	// Applying a stale plan could mutate state that no longer matches it.
+	PlanStale ErrorKind = "PLAN_STALE"
 )
 
 type Error struct {

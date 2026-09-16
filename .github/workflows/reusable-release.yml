@@ -6,18 +6,28 @@ on:
       paths_released:
         description: "Release Please component paths released in this run"
         value: ${{ jobs.release_please.outputs.paths_released }}
+      # The plan's verdict, published so a caller can act on it without parsing
+      # logs. Every value is already an output of the `build-plan` job; this
+      # block only forwards them. `release_health` is the one field a caller
+      # should branch on; the rest say what the run targeted.
+      release_health:
+        description: "Plan verdict: healthy | tag-drift | partial | repair | missing"
+        value: ${{ jobs.build-plan.outputs.release_health }}
       version:
-        description: "Target release version"
+        description: "Version this run planned for"
         value: ${{ jobs.build-plan.outputs.version }}
       tag:
-        description: "Target release tag"
+        description: "Release tag this run planned for"
         value: ${{ jobs.build-plan.outputs.tag }}
+      tag_drift:
+        description: "'true' when the existing tag is not the current head"
+        value: ${{ jobs.build-plan.outputs.tag_drift }}
       run_release:
-        description: "Whether the release path should run"
+        description: "'1' when this run may release; '0' when it is a no-op"
         value: ${{ jobs.build-plan.outputs.run_release }}
-      release_health:
-        description: "Current release health"
-        value: ${{ jobs.build-plan.outputs.release_health }}
+      post_release_health:
+        description: "absent | pending | satisfied"
+        value: ${{ jobs.build-plan.outputs.post_release_health }}
       pypi_enabled:
         description: "Whether PyPI is a configured registry"
         value: ${{ jobs.build-plan.outputs.pypi_enabled }}
@@ -46,18 +56,73 @@ jobs:
     if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
+      # Only permissions every caller grants: a called workflow that requests a
+      # permission its callers do not grant makes the whole run fail at startup
+      # ("startup_failure") before any job is created. Label mutations use
+      # secrets.RELEASE_PLEASE_TOKEN, which carries its own scopes.
       contents: write
       pull-requests: write
     outputs:
       paths_released: ${{ steps.rp.outputs.paths_released }}
     steps:
-      - id: rp
-        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
-          skip-github-release: true
+          repository: redtidev1918/releasegraph
+          ref: main
+          path: .releasegraph
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: .releasegraph/go.mod
+          cache: false
+      # Version provider pre-reconciliation: release-please aborts every future
+      # version while a merged release PR still carries "autorelease: pending".
+      # Since this infrastructure sets skip-github-release: true, release-please
+      # never flips that label itself, so a publish that was interrupted before
+      # its ACK step would otherwise wedge the repository permanently.
+      - name: Provider pre-reconcile
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
+          # Dry-run first so an unexpected plan is visible in the log, then apply.
+          "$RUNNER_TEMP/releasegraph" provider reconcile --repo "$GITHUB_REPOSITORY" || true
+          "$RUNNER_TEMP/releasegraph" provider reconcile --repo "$GITHUB_REPOSITORY" --apply
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+        with:
+          node-version: "24"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: googleapis/release-please-action
+          ref: 45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+          path: .release-please-action
+      # Invoke the pinned bundle directly so only this step's GitHub API
+      # transient failures can be retried inside the same job.
+      - id: rp
+        name: Run release-please with bounded transient retry
+        env:
+          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          transient='Something went wrong while executing your query|ECONNRESET|ETIMEDOUT|socket hang up|API rate limit exceeded|secondary rate limit|HTTP 5[0-9][0-9]'
+          for attempt in 1 2 3 4; do
+            log="$RUNNER_TEMP/release-please-$attempt.log"
+            if env \
+              "INPUT_TOKEN=$RELEASE_PLEASE_TOKEN" \
+              "INPUT_CONFIG-FILE=release-please-config.json" \
+              "INPUT_MANIFEST-FILE=.release-please-manifest.json" \
+              "INPUT_SKIP-GITHUB-RELEASE=true" \
+              node .release-please-action/dist/index.js 2>&1 | tee "$log"; then
+              exit 0
+            fi
+            if (( attempt == 4 )) || ! grep -Eqi "$transient" "$log"; then
+              echo "release-please failed with a non-transient or exhausted error"
+              exit 1
+            fi
+            echo "Transient GitHub API failure; retry $attempt/3 after $((attempt * 10))s"
+            sleep $((attempt * 10))
+          done
 
   build-plan:
     needs: release_please
@@ -70,6 +135,7 @@ jobs:
       tag_drift: ${{ steps.plan.outputs.tag_drift }}
       version: ${{ steps.plan.outputs.version }}
       tag: ${{ steps.plan.outputs.tag }}
+      post_release_health: ${{ steps.plan.outputs.post_release_health }}
       test_command: ${{ steps.plan.outputs.test_command }}
       build_matrix: ${{ steps.plan.outputs.build_matrix }}
       has_assets: ${{ steps.plan.outputs.has_assets }}
@@ -247,8 +313,10 @@ jobs:
     if: always() && needs.build.result == 'success' && needs.build-plan.result == 'success'
     runs-on: ubuntu-latest
     permissions:
+      # Caller-compatible subset only (see release_please above).
       contents: write
       packages: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0}
@@ -261,6 +329,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # build_date for images: computed here because the github context has no
+      # run_started_at in a reusable workflow (actionlint rejects it).
+      - name: Stamp release identity
+        id: identity
+        run: echo "build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
       - name: Reload release plan
         id: plan
         env:
@@ -341,7 +414,7 @@ jobs:
           PYTHONPATH=.releasegraph python3 -m release_infra.cli asset-gate
           PYTHONPATH=.releasegraph python3 -m release_infra.cli stage "${args[@]}"
       - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
-        if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && contains(steps.plan.outputs.required_publish, 'npm publish')
+        if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && steps.plan.outputs.npm_publish_enabled == '1'
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org/
@@ -375,6 +448,17 @@ jobs:
           platforms: ${{ steps.plan.outputs.ghcr_platforms }}
           push: true
           tags: ${{ steps.plan.outputs.ghcr_image }}:${{ steps.plan.outputs.version }},${{ steps.plan.outputs.ghcr_image }}:latest
+          # Published images must be able to report the exact release they run.
+          # Images opt in by declaring these ARGs; Dockerfiles that do not declare
+          # them ignore the values (a warning, not a failure).
+          build-args: |
+            APP_VERSION=${{ steps.plan.outputs.version }}
+            GIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ steps.identity.outputs.build_date }}
+          labels: |
+            org.opencontainers.image.version=${{ steps.plan.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.identity.outputs.build_date }}
           provenance: mode=max
           sbom: true
           cache-from: type=gha
@@ -412,7 +496,15 @@ jobs:
           COMMAND: ${{ steps.plan.outputs.optional_verify }}
         run: bash -uo pipefail -c "$COMMAND"
       - name: Publish, set Latest, audit, then prune Release objects
-        if: steps.plan.outputs.run_release == '1'
+        # Remote publish/audit/retention are real-state operations: a PR or a
+        # manual dry_run never sits on the released tag commit, so auditing the
+        # remote Release hard-fails with "tag commit mismatch" even with
+        # --dry-run. A dry run validates everything up to this point (test,
+        # build, version gate, asset gate, draft transaction) and stops here.
+        if: >-
+          steps.plan.outputs.run_release == '1'
+          && github.event_name != 'pull_request'
+          && !inputs.dry_run
         env:
           GH_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run }}
@@ -427,6 +519,47 @@ jobs:
             [[ "$DRY_RUN" == true ]] && args+=(--dry-run)
             PYTHONPATH=.releasegraph python3 -m release_infra.cli publish "${args[@]}"
           fi
+      # Provider acknowledgement: only reached after the release transaction is
+      # public and audited. Labels are the provider's derived state; the ACK is
+      # idempotent and refuses anything that is not actually healthy.
+      - name: Provider acknowledgement
+        if: >-
+          steps.plan.outputs.run_release == '1'
+          && github.event_name != 'pull_request'
+          && !inputs.dry_run
+        continue-on-error: true
+        env:
+          # Label mutations need scopes this called workflow must not request
+          # (callers grant contents/pull-requests/packages), so use
+          # the release PAT, exactly as the pre-reconcile step above does.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
+          "$RUNNER_TEMP/releasegraph" provider reconcile \
+            --repo "$GITHUB_REPOSITORY" \
+            --version '${{ steps.plan.outputs.version }}' --apply
+
+      # Post-release actions (releasegraph.dev/v1 'release.postRelease'): run after
+      # the release is public and audited. The engine is idempotent and resumable:
+      # actions already 'success' are skipped, so a later scheduled run with
+      # release_health=healthy + post_release_health=pending re-enters here to
+      # finish only the missing steps. Required failures fail this job; the
+      # release itself stays published (transaction 'post-release pending').
+      - name: Post-release actions
+        if: >-
+          steps.plan.outputs.run_release == '1'
+          && !inputs.dry_run
+          && steps.plan.outputs.post_release_json != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=.releasegraph python3 -m release_infra.cli post-release run             --path .release-policy.yml             --version '${{ steps.plan.outputs.version }}'
+
       - name: Optional post-release task
         if: ${{ steps.plan.outputs.run_release == '1' && !inputs.dry_run && steps.plan.outputs.post_publish != '' }}
         continue-on-error: true

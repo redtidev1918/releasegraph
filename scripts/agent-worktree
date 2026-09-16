@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# agent-worktree — isolated worktrees for modifying agent sessions.
+#
+# Multiple long-running agent sessions must never share one checkout: a
+# `git switch` in one session silently replaces the working tree of another.
+# Every modifying task gets its own worktree and branch.
+#
+#   scripts/agent-worktree create provider-control-plane [base-ref]
+#   scripts/agent-worktree list
+#   scripts/agent-worktree remove provider-control-plane
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+repo="$(basename "$root")"
+worktrees_dir="${RELEASEGRAPH_WORKTREES_DIR:-$(dirname "$root")/worktrees}"
+
+usage() {
+  sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+  exit 2
+}
+
+create() {
+  local task_id="${1:-}" base="${2:-origin/main}"
+  [ -n "$task_id" ] || usage
+  git fetch origin --quiet
+  local path="$worktrees_dir/$repo-$task_id"
+  local branch="feat/$task_id"
+  if [ -e "$path" ]; then
+    echo "worktree already exists: $path" >&2
+    exit 1
+  fi
+  mkdir -p "$worktrees_dir"
+  git worktree add "$path" -b "$branch" "$base"
+  echo
+  echo "worktree ready (isolated from every other session):"
+  echo "  path:   $path"
+  echo "  branch: $branch (from $base)"
+  echo
+  echo "work only there; never run git switch in a shared checkout."
+}
+
+list() {
+  git worktree list
+}
+
+remove() {
+  local task_id="${1:-}"
+  [ -n "$task_id" ] || usage
+  local path="$worktrees_dir/$repo-$task_id"
+  git worktree remove "$path" --force
+  echo "removed $path (branch left in place; delete with git branch -d feat/$task_id)"
+}
+
+case "${1:-}" in
+  create) shift; create "$@" ;;
+  list) list ;;
+  remove) shift; remove "$@" ;;
+  *) usage ;;
+esac

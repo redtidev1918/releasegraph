@@ -10,6 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: go.mod
+      - name: Create a read-only fleet token
+        id: fleet-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
+          owner: ${{ vars.RELEASEGRAPH_OWNER }}
+          # The dashboard only reads, so this token only reads. `checks: read`
+          # is what makes CI verdicts visible; without it no pull request could
+          # ever be reported as MERGE_READY.
+          permission-metadata: read
+          permission-contents: read
+          permission-pull-requests: read
+          permission-issues: read
+          permission-actions: read
+          permission-checks: read
+      - name: Classify pull requests for the dashboard
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        # The sidecar feeds the PR Lifecycle column in STATUS.md. Python owns
+        # that field; the Go pass owns the classification.
+        run: |
+          go run ./cmd/releasegraph pr-lifecycle audit \
+            --report pr-lifecycle.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Scan every public owner repository
         env: {GH_TOKEN: "${{ github.token }}"}
         run: python3 -m release_infra.cli fleet-audit --owner redtidev1918 --public-only

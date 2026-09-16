@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "container",
     "versioning": {
@@ -36,12 +39,27 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
-    "sbom": true
+    "sbom": true,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
+  "release_infra_version": null,
   "desired_version": "1.0.1",
   "latest_release": "v1.0.1",
   "latest_release_at": "2026-09-09T05:01:47Z",
@@ -54,17 +72,13 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy static content to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/34317122937",
-    "updated_at": "2026-09-09T05:59:57Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/35061969089",
+    "updated_at": "2026-09-16T06:02:49Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -74,9 +88,11 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
@@ -100,8 +116,12 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.0.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "node",
@@ -111,9 +131,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.0.1"
     }
   },
   "registries": {
@@ -122,5 +139,18 @@
       "declared": "1.0.1",
       "published": null
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

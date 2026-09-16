@@ -7,6 +7,13 @@
   "template": false,
   "classification": "fork",
   "health": "NO_RELEASE",
+  "health_reasons": [
+    {
+      "code": "repository_fork"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": null,
   "release_infra_version": null,
   "desired_version": null,
@@ -92,7 +99,14 @@
     "npm": {
       "package": "@dietrichgebert/ponytail",
       "declared": "4.9.0",
-      "published": "4.9.0"
+      "published": "4.10.0"
     }
-  }
+  },
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
 }

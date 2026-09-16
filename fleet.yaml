@@ -1,0 +1,55 @@
+# fleet.yaml — the authoritative list of repositories ReleaseGraph may manage.
+#
+# Invariant: GitHub repository discovery never implies ownership. A repository
+# that exists under the owner account but is absent here is reported as
+# DISCOVERED_UNMANAGED and is never operated on.
+#
+#   releasegraph fleet audit      -> what the manifest says (authority)
+#   releasegraph fleet discover   -> what GitHub says (candidates only)
+version: 1
+
+repositories:
+  # Infrastructure canary: receives a new ReleaseGraph version first, and the
+  # fleet rollout stays blocked until it completes a full release lifecycle.
+  - name: redtidev1918/TelePost
+    enabled: true
+    canary: true
+
+  - name: redtidev1918/NekoTime
+    enabled: true
+  - name: redtidev1918/PixivFlow
+    enabled: true
+  - name: redtidev1918/dakit
+    enabled: true
+  - name: redtidev1918/daviewer
+    enabled: true
+  - name: redtidev1918/deviantart-downloader
+    enabled: true
+  - name: redtidev1918/deviantdrop
+    enabled: true
+  - name: redtidev1918/graf
+    enabled: true
+  - name: redtidev1918/ludum
+    enabled: true
+  - name: redtidev1918/paranote
+    enabled: true
+  - name: redtidev1918/pixiv-token-getter
+    enabled: true
+  - name: redtidev1918/pixivflow-telepost-deploy
+    enabled: true
+  - name: redtidev1918/pixivflow-webui
+    enabled: true
+  - name: redtidev1918/telepress
+    enabled: true
+
+  # Dogfood repository: promoted by pushing an immutable tag (infra-release.yml),
+  # not by calling reusable-release.yml.
+  - name: redtidev1918/releasegraph
+    enabled: true
+    note: self-managed, tag-promoted
+
+  # Carries a release policy but has no release workflow, so a repair dispatch
+  # could not be honoured. Disabled rather than silently broken.
+  - name: redtidev1918/svn-easy-kit
+    enabled: false
+    note: no release workflow; repair dispatch unsupported

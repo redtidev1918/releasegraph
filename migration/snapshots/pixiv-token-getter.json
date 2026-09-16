@@ -7,13 +7,16 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "node-library",
     "versioning": {
       "mode": "release-please"
     },
     "build": {
-      "test": "npm install --no-audit --no-fund && node cli.js --version && node cli.js --help >/dev/null",
+      "test": "npm install --no-audit --no-fund && npm test && node cli.js --version && node cli.js --help >/dev/null",
       "command": "npm install --no-audit --no-fund"
     },
     "assets": {
@@ -33,16 +36,31 @@
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": false,
-    "sbom": false
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "2.3.0",
-  "latest_release": "v2.3.0",
-  "latest_release_at": "2026-09-06T08:17:59Z",
-  "latest_tag": "v2.3.0",
+  "release_infra_version": null,
+  "desired_version": "2.6.1",
+  "latest_release": "v2.6.1",
+  "latest_release_at": "2026-09-11T16:40:25Z",
+  "latest_tag": "v2.6.1",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -51,66 +69,60 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy documentation to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixiv-token-getter/actions/runs/34317518042",
-    "updated_at": "2026-09-09T06:05:25Z"
+    "url": "https://github.com/redtidev1918/pixiv-token-getter/actions/runs/35062140186",
+    "updated_at": "2026-09-16T06:05:18Z"
   },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
+    "CHANGELOG.md",
     "package.json",
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
-      "tag": "v2.3.0",
+      "tag": "v2.6.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-06T08:17:59Z",
+      "published_at": "2026-09-11T16:40:25Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1117,
-          "sha256": "sha256:9f95a39dea1cd9a689a1996580ac7c85192638aeadcf508a4b3dc6542ec400b8"
+          "size": 1483,
+          "sha256": "sha256:e51630e0b988e1477adb69726feefe275f7d74bcf962f72941d2e8fce6d1e5f1"
         }
       ]
-    },
-    {
-      "tag": "v2.2.1",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-01T09:02:54Z",
-      "assets": []
-    },
-    {
-      "tag": "v2.2.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-27T15:06:08Z",
-      "assets": []
-    },
-    {
-      "tag": "v2.1.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-27T14:29:40Z",
-      "assets": []
     }
   ],
   "tags": [
+    {
+      "name": "v2.6.1",
+      "commit": "c2d92b138c18b034e183e9038e6db643e5155032"
+    },
+    {
+      "name": "v2.6.0",
+      "commit": "bc132fd3414adbf8cc9be9c8197fba2bdf5b71f0"
+    },
+    {
+      "name": "v2.5.0",
+      "commit": "b7ab4c3e8574a494973c1e2525791ad05dc6c32a"
+    },
+    {
+      "name": "v2.4.0",
+      "commit": "0b6f8cba8f3fab154946edbc7f094abc02d35229"
+    },
     {
       "name": "v2.3.0",
       "commit": "06f30db7a41fe8f24319d7b6d5d87c7753e29310"
@@ -129,8 +141,12 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.6.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "node",
@@ -140,16 +156,26 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.3.0"
     }
   },
   "registries": {
     "npm": {
       "package": "pixiv-token-getter",
-      "declared": "2.3.0",
-      "published": "2.3.0"
+      "declared": "2.6.1",
+      "published": "2.6.1"
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

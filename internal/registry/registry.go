@@ -47,7 +47,7 @@ func (v *Verifier) Verify(ctx context.Context, name string, config policy.Regist
 	case "github":
 		return nil
 	case "npm", "pypi", "pub":
-		packageName := packageName(name, config, repository, metadata)
+		packageName := packageName(name, repository, metadata)
 		if name == "npm" {
 			return v.expectStatus(ctx, v.npmBase+"/"+url.PathEscape(packageName)+"/"+url.PathEscape(version), packageName+"@"+version)
 		}
@@ -113,10 +113,7 @@ func (v *Verifier) get(ctx context.Context, endpoint string) ([]byte, bool, erro
 	return data, true, nil
 }
 
-func packageName(kind string, config policy.Registry, repository string, metadata []byte) string {
-	if config.File != "" && !strings.HasSuffix(config.File, "Dockerfile") {
-		return config.File
-	}
+func packageName(kind, repository string, metadata []byte) string {
 	pattern := regexp.MustCompile(`(?m)^\s*name\s*=\s*["']([^"']+)["']`)
 	if kind == "npm" || kind == "pub" {
 		pattern = regexp.MustCompile(`(?m)^\s*"name"\s*:\s*"([^"]+)"`)

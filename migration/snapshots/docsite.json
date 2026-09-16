@@ -1,0 +1,46 @@
+{
+  "repo": "redtidev1918/docsite",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "no-release",
+  "health": "NO_RELEASE",
+  "health_reasons": [
+    {
+      "code": "policy_absent"
+    },
+    {
+      "code": "release_absent"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": null,
+  "release_infra_version": null,
+  "desired_version": null,
+  "latest_release": null,
+  "latest_release_at": null,
+  "latest_tag": null,
+  "draft_releases": [],
+  "actual_assets": [],
+  "release_workflows": [],
+  "latest_release_run": null,
+  "signals": [],
+  "workflow_paths": [
+    ".github/workflows/navcheck.yml",
+    ".github/workflows/notify-profile.yml"
+  ],
+  "release_history": [],
+  "tags": [],
+  "release_config": {},
+  "registries": {},
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
+}

@@ -1,2 +1,6 @@
 __pycache__/
 *.py[cod]
+
+# Written by the fleet dashboard step as input to STATUS.md/status.json, which
+# carry the rendered field. The sidecar itself is per-run evidence, not state.
+pr-lifecycle.json

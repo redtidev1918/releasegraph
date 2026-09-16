@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"path"
 	"sort"
 	"strings"
 
 	"github.com/redtidev1918/releasegraph/internal/domain"
 	"github.com/redtidev1918/releasegraph/internal/github"
 	"github.com/redtidev1918/releasegraph/internal/graph"
+	"github.com/redtidev1918/releasegraph/internal/health"
 	"github.com/redtidev1918/releasegraph/internal/policy"
 	"github.com/redtidev1918/releasegraph/internal/registry"
 )
@@ -218,16 +218,14 @@ func missingAssets(p *policy.Policy, assets []struct {
 	Name string `json:"name"`
 	Size int64  `json:"size"`
 }) ([]string, error) {
-	required := append([]string{}, p.Assets.Required...)
-	required = append(required, "RELEASE-METADATA.json")
-	if p.Checksums && len(p.Assets.Required) > 0 {
-		required = append(required, "SHA256SUMS")
-	}
+	// One implementation of the required set, shared with the health assessment
+	// and (through testdata/health/cases.json) with the Python planner.
+	required := health.RequiredAssets(p)
 	missing := []string{}
 	for _, pattern := range required {
 		matched := false
 		for _, asset := range assets {
-			ok, err := path.Match(pattern, asset.Name)
+			ok, err := policy.MatchAsset(pattern, asset.Name)
 			if err != nil {
 				return nil, fmt.Errorf("invalid asset pattern %q: %w", pattern, err)
 			}

@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "hybrid",
     "versioning": {
@@ -36,7 +39,10 @@
       "required": [
         "telepost-linux-x64",
         "telepost-windows-x64.exe",
-        "telepost-macos-arm64"
+        "telepost-macos-arm64",
+        "telepost-*-linux-x64.tar.gz",
+        "telepost-*-macos-arm64.tar.gz",
+        "telepost-*-windows-x64.zip"
       ],
       "optional": []
     },
@@ -54,25 +60,73 @@
       }
     },
     "release": {
-      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
+      "postRelease": [
+        {
+          "id": "refresh-download-page",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "update-download-page.yml",
+          "inputs": {
+            "tag": "{{tag}}",
+            "deploy-docs": "false"
+          }
+        },
+        {
+          "id": "deploy-docs",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "static.yml",
+          "ref": "default"
+        }
+      ]
     },
     "retention": {
       "stable": 1,
       "prerelease": 1,
-      "failed_draft": 2
+      "failed_draft": 2,
+      "pruneStable": true
     },
     "checksums": true,
-    "sbom": true
+    "sbom": true,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true,
+          "operations": {
+            "cutover": {
+              "branches": [
+                "chore/cutover-*"
+              ],
+              "allowedPaths": [
+                "fly.toml",
+                "docker-compose.yml",
+                "Dockerfile"
+              ]
+            }
+          }
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "2.15.0",
-  "latest_release": "v2.15.0",
-  "latest_release_at": "2026-09-08T18:15:58Z",
-  "latest_tag": "v2.15.0",
+  "release_infra_version": null,
+  "desired_version": "2.31.3",
+  "latest_release": "v2.31.3",
+  "latest_release_at": "2026-09-16T03:31:45Z",
+  "latest_tag": "v2.31.3",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
+    "telepost-2.31.3-linux-x64.tar.gz",
+    "telepost-2.31.3-macos-arm64.tar.gz",
+    "telepost-2.31.3-windows-x64.zip",
     "telepost-linux-x64",
     "telepost-macos-arm64",
     "telepost-windows-x64.exe"
@@ -81,17 +135,13 @@
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy static content to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/34318486724",
-    "updated_at": "2026-09-09T06:18:49Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/35063472965",
+    "updated_at": "2026-09-16T06:23:32Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -101,46 +151,225 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
+    ".github/workflows/gitleaks.yml",
+    ".github/workflows/miniapp-ci.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
-      "tag": "v2.15.0",
+      "tag": "v2.31.3",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-08T18:15:58Z",
+      "published_at": "2026-09-16T03:31:45Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1559,
-          "sha256": "sha256:4c94f2cbfa69013d0246f41f15bf8f60cce3cf88391ccf104e81bd4a72955874"
+          "size": 2628,
+          "sha256": "sha256:0b16778fbb55b4851791909552bd1a599c684eef5aab1a2c52b4f346ba74833d"
         },
         {
           "name": "SHA256SUMS",
-          "size": 263,
-          "sha256": "sha256:2a9c8ba4c6ffdd10495590cfbdb1e29b6042384b4ad6b6a619b1e67c8ee02cf7"
+          "size": 561,
+          "sha256": "sha256:61ed9db6fa5ea555680fbfc3b052e6a732c55c2782b0831a0bd557864e8c3418"
+        },
+        {
+          "name": "telepost-2.31.3-linux-x64.tar.gz",
+          "size": 36840218,
+          "sha256": "sha256:cf47d686627e5fc42f65a8c44909912f2d0edc13e3cef0f799ab9835f12bf6f5"
+        },
+        {
+          "name": "telepost-2.31.3-macos-arm64.tar.gz",
+          "size": 18920684,
+          "sha256": "sha256:06e7d0b9620920b671a78c7c7a03a99cbf885ac9c04c791a7d7282a5b79681a9"
+        },
+        {
+          "name": "telepost-2.31.3-windows-x64.zip",
+          "size": 22312608,
+          "sha256": "sha256:b0628c737de6e57f352ae8f4fe5207fb1320f90e6626b31d7bf7c1239b55e34b"
         },
         {
           "name": "telepost-linux-x64",
-          "size": 33514776,
-          "sha256": "sha256:b85c2f6281df336e75444a20a18f0af08596baeb13c076c991874884455eb0cb"
+          "size": 37143072,
+          "sha256": "sha256:345507995f8fe322456eec85d1c1bd0627f39198ac88a6bfe0422593e596ce4b"
         },
         {
           "name": "telepost-macos-arm64",
-          "size": 18008144,
-          "sha256": "sha256:dc4094a7e032d9391d58262d647fb2f01e351ed3e86f31282723b6de03265336"
+          "size": 19130528,
+          "sha256": "sha256:560d3a5919431c931dd10e82d09d4a86178f64bb939ae57ef32948914277deeb"
         },
         {
           "name": "telepost-windows-x64.exe",
-          "size": 21508478,
-          "sha256": "sha256:c087c2ba0ba0776ab558d5106c2ed1b28951825b32bdce8c883492c9774e3d01"
+          "size": 22649286,
+          "sha256": "sha256:de59b29224b6bbb144271ed03858865aac03958a97786127d7c48561ed7e1474"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.31.3",
+      "commit": "890f7384c0a4656c15ecfda53aeffec72c8a44c5"
+    },
+    {
+      "name": "v2.31.2",
+      "commit": "48a27582047b2cadde553556a8a575663d74e8be"
+    },
+    {
+      "name": "v2.31.1",
+      "commit": "109885690fa06c178aab5b5ae33cba4e36094745"
+    },
+    {
+      "name": "v2.31.0",
+      "commit": "b12c81fb76ea2f5fbe55e70bd8dff26966a5e872"
+    },
+    {
+      "name": "v2.30.0",
+      "commit": "4751a1e150b72e695acc2f64b3311bf0ea45e141"
+    },
+    {
+      "name": "v2.29.0",
+      "commit": "446615d51b7bcfc6c59308af308fd7f26f7bb136"
+    },
+    {
+      "name": "v2.28.0",
+      "commit": "57ab1011f3bc1c444da7faa52aa175fc45d029a1"
+    },
+    {
+      "name": "v2.27.4",
+      "commit": "f78f96ea184141df772a945b6d13abc07eb8dc88"
+    },
+    {
+      "name": "v2.27.3",
+      "commit": "fdccc71ee9e463b9b1453d240bf2b274074bcbf6"
+    },
+    {
+      "name": "v2.27.2",
+      "commit": "5bfdea5ee66a6043eaf54ee299c7a3081e48ef9b"
+    },
+    {
+      "name": "v2.27.1",
+      "commit": "8bac6c9ab162fc2b5ab2f303f5b7730d65762b11"
+    },
+    {
+      "name": "v2.27.0",
+      "commit": "dba11e50bdd200b2c06b00b42b23a95c572e7d89"
+    },
+    {
+      "name": "v2.26.1",
+      "commit": "55293cf8dc76b1e2f993ec7c3ea1223667a5c5dc"
+    },
+    {
+      "name": "v2.26.0",
+      "commit": "44bd4d02e984e0bcddde50200a6845ee38d6d81e"
+    },
+    {
+      "name": "v2.25.0",
+      "commit": "5edcf0995562bce826109f477855c5def3521fc5"
+    },
+    {
+      "name": "v2.24.2",
+      "commit": "7cc5be8af5a9b6f1b17e11f3a2d2d6825c4e4f64"
+    },
+    {
+      "name": "v2.24.1",
+      "commit": "426b58dfb97a75aae21c0704c23af6af8a4132f2"
+    },
+    {
+      "name": "v2.24.0",
+      "commit": "bdf2ad1726fccc5ac03099f1b772a7d296685788"
+    },
+    {
+      "name": "v2.23.1",
+      "commit": "885de227d033a9c9b5dce7b32f3ffa706de0112d"
+    },
+    {
+      "name": "v2.23.0",
+      "commit": "6bd0f0aabb484ef2a8f9a45629e350f344806577"
+    },
+    {
+      "name": "v2.22.0",
+      "commit": "fc4ad4fe588f5b209718a42e79e88189f22846c7"
+    },
+    {
+      "name": "v2.21.1",
+      "commit": "36e9f2f9af89d457edb49b8cda1c40578b18e89b"
+    },
+    {
+      "name": "v2.21.0",
+      "commit": "6a1fbbaba630315cd9a597bea6bf798f18562f54"
+    },
+    {
+      "name": "v2.20.4",
+      "commit": "941e2c656277f2a19d9dc27ef0063d700b5b5ea4"
+    },
+    {
+      "name": "v2.20.3",
+      "commit": "6b84c355f15d39ef6c7c13682046776954b151f5"
+    },
+    {
+      "name": "v2.20.2",
+      "commit": "708256f25025f8d9b259ebb714c6a832548c408e"
+    },
+    {
+      "name": "v2.20.1",
+      "commit": "6ca5a3f6ae26fe7aa5af5e98665c0872ac28a627"
+    },
+    {
+      "name": "v2.20.0",
+      "commit": "fd34ee8ff74010e5e870ee83479d385794769973"
+    },
+    {
+      "name": "v2.19.0",
+      "commit": "4c01253a16481c170b0907c414d86203fb61d10a"
+    },
+    {
+      "name": "v2.18.0",
+      "commit": "b107fae5386526b67ef2847f8eee99bb874e146d"
+    },
+    {
+      "name": "v2.17.6",
+      "commit": "456aff2f20bdf9eb303d2bc78507d157347599c7"
+    },
+    {
+      "name": "v2.17.5",
+      "commit": "e67579e546644b8c65ea6b2950b6fb33964033b8"
+    },
+    {
+      "name": "v2.17.4",
+      "commit": "c9553c64af236f9112385047beee438771bb29b5"
+    },
+    {
+      "name": "v2.17.3",
+      "commit": "7b62659be70297a399233aa91af1d8f4fc873ad8"
+    },
+    {
+      "name": "v2.17.2",
+      "commit": "b108a5c04506c3cc1bdb4a25625b3c881b0dc744"
+    },
+    {
+      "name": "v2.17.1",
+      "commit": "3f2efeabb3f727cd817351e11a82f756498170fb"
+    },
+    {
+      "name": "v2.17.0",
+      "commit": "ee96e2dedbb19fa896a4529d6ef34afc4f0c839c"
+    },
+    {
+      "name": "v2.16.1",
+      "commit": "48ac75c6a3f197a982798e895ae0c4665072b3b7"
+    },
+    {
+      "name": "v2.16.0",
+      "commit": "b6c2fb5ed385faa6939db19bb037b6fdd9c90017"
+    },
+    {
+      "name": "v2.15.1",
+      "commit": "37e32a5ef8bba25a0c78ae4c939c20713a01a1f9"
+    },
     {
       "name": "v2.15.0",
       "commit": "c02e15f810948f6c513a7b7d014c0a4078caa41a"
@@ -151,21 +380,38 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.31.3"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "packages": {
         ".": {
           "release-type": "simple",
           "package-name": "TelePost",
           "include-v-in-tag": true,
           "include-component-in-tag": false,
-          "skip-github-release": true
+          "skip-github-release": true,
+          "extra-files": [
+            "telepost/build_info.py"
+          ]
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.15.0"
     }
   },
-  "registries": {}
+  "registries": {},
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
+  }
 }

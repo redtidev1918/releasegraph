@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"sort"
 	"time"
 
 	"github.com/redtidev1918/releasegraph/internal/assets"
 	rgdomain "github.com/redtidev1918/releasegraph/internal/domain"
-	"github.com/redtidev1918/releasegraph/internal/fleet"
+	rgerrors "github.com/redtidev1918/releasegraph/internal/errors"
 	"github.com/redtidev1918/releasegraph/internal/github"
 	"github.com/redtidev1918/releasegraph/internal/graph"
 	rgplan "github.com/redtidev1918/releasegraph/internal/plan"
@@ -36,15 +37,25 @@ type ErrorBody struct {
 	Message string `json:"message"`
 }
 
+// exitCode carries a documented outcome code out of a reporting command so
+// automation can distinguish healthy / repair available / retry / needs a human
+// / broken invariant without parsing output.
+var exitCode int
+
 func Run(args []string, stdout, stderr io.Writer) int {
+	exitCode = 0
 	if len(args) == 0 {
 		usage(stderr)
-		return 2
+		return rgdomain.ExitUsage
 	}
 	var err error
 	switch args[0] {
 	case "fleet":
 		err = fleetCommand(stdout, args[1:])
+	case "branch-contract":
+		err = branchContractCommand(stdout, args[1:])
+	case "pr-lifecycle":
+		err = prLifecycleCommand(stdout, args[1:])
 	case "doctor":
 		err = doctor(stdout, args[1:])
 	case "graph":
@@ -55,6 +66,24 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		err = inspect(stdout, args[1:])
 	case "plan":
 		err = planCommand(stdout, args[1:])
+	case "provider":
+		err = providerCommand(stdout, args[1:])
+	case "rollout":
+		err = rolloutCommand(stdout, args[1:])
+	case "status":
+		err = statusCommand(stdout, args[1:])
+	case "explain":
+		err = explainCommand(stdout, args[1:])
+	case "agent-context":
+		err = agentContextCommand(stdout, args[1:])
+	case "repair":
+		err = repairCommand(stdout, args[1:])
+	case "apply-plan":
+		err = applyPlanCommand(stdout, args[1:])
+	case "init":
+		err = initCommand(stdout, args[1:])
+	case "migrate":
+		err = migrateCommand(stdout, args[1:])
 	case "static-check":
 		err = staticCheck(stdout, args[1:])
 	case "version":
@@ -66,9 +95,27 @@ func Run(args []string, stdout, stderr io.Writer) int {
 	}
 	if err != nil {
 		fmt.Fprintln(stderr, "ERROR", err)
+		return exitCodeForError(err)
+	}
+	return exitCode
+}
+
+// exitCodeForError maps a failure onto the documented exit code contract.
+func exitCodeForError(err error) int {
+	switch {
+	case rgerrors.IsKind(err, rgerrors.ScopeViolation), rgerrors.IsKind(err, rgerrors.FleetCredentialRequired):
+		return rgdomain.ExitNeedsReview
+	case rgerrors.IsKind(err, rgerrors.Transient):
+		return rgdomain.ExitTransientRetry
+	case rgerrors.IsKind(err, rgerrors.TagConflict), rgerrors.IsKind(err, rgerrors.InvariantViolation):
+		return rgdomain.ExitBroken
+	case rgerrors.IsKind(err, rgerrors.PlanStale), rgerrors.IsKind(err, rgerrors.Permission):
+		return rgdomain.ExitNeedsReview
+	case rgerrors.IsKind(err, rgerrors.Policy), rgerrors.IsKind(err, rgerrors.VersionConflict):
+		return rgdomain.ExitBlocked
+	default:
 		return 1
 	}
-	return 0
 }
 
 func flags(outputFormat *string) *flag.FlagSet {
@@ -84,7 +131,7 @@ func doctor(w io.Writer, args []string) error {
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
-	info := map[string]any{"status": "ok", "mode": "read-only", "serverRequired": false, "databaseRequired": false, "commands": []string{"audit", "doctor", "fleet", "graph", "inspect", "plan", "static-check", "version"}}
+	info := map[string]any{"status": "ok", "mode": "read-only", "serverRequired": false, "databaseRequired": false, "commands": []string{"agent-context", "apply-plan", "audit", "branch-contract", "doctor", "explain", "fleet", "graph", "init", "inspect", "migrate", "plan", "pr-lifecycle", "provider", "repair", "rollout", "static-check", "status", "version"}}
 	return write(w, format, info, humanDoctor)
 }
 
@@ -149,29 +196,6 @@ func auditCommand(w io.Writer, args []string) error {
 	return write(w, format, gate, func(w io.Writer, _ any) {
 		for _, asset := range gate.Required {
 			fmt.Fprintf(w, "required %s %d %s\n", asset.Name, asset.Size, asset.SHA256)
-		}
-	})
-}
-
-func fleetCommand(w io.Writer, args []string) error {
-	var format, owner string
-	var publicOnly bool
-	fs := flags(&format)
-	fs.StringVar(&owner, "owner", "", "repository owner")
-	fs.BoolVar(&publicOnly, "public-only", false, "list public repositories only")
-	if err := fs.Parse(args); err != nil {
-		return err
-	}
-	if owner == "" {
-		return fmt.Errorf("--owner is required")
-	}
-	out, err := fleet.Discover(context.Background(), github.New(), owner, publicOnly)
-	if err != nil {
-		return err
-	}
-	return write(w, format, out, func(w io.Writer, _ any) {
-		for _, repo := range out.Repositories {
-			fmt.Fprintf(w, "%-40s %-12s %s\n", repo.Name, repo.Classification, repo.Health)
 		}
 	})
 }
@@ -313,5 +337,22 @@ func effectiveMode(p *policy.Policy) string {
 	}
 	return p.Versioning.Provider
 }
-func usage(w io.Writer) { fmt.Fprintln(w, "usage: releasegraph [doctor|graph|inspect|plan|version]") }
-func Main()             { os.Exit(Run(os.Args[1:], os.Stdout, os.Stderr)) }
+func usage(w io.Writer) {
+	fmt.Fprintln(w, "usage: releasegraph [audit|branch-contract|doctor|fleet|graph|inspect|plan|pr-lifecycle|provider|rollout|static-check|version]")
+}
+func Main() { os.Exit(Run(os.Args[1:], os.Stdout, os.Stderr)) }
+
+// actorName records who is acting, for the audit trail.
+func actorName() string {
+	if actor := os.Getenv("GITHUB_ACTOR"); actor != "" {
+		return actor
+	}
+	return "operator"
+}
+
+// runGit runs a read-only git command for local repository discovery.
+func runGit(ctx context.Context, args ...string) (string, error) {
+	cmd := exec.CommandContext(ctx, "git", args...)
+	out, err := cmd.Output()
+	return string(out), err
+}

@@ -1,0 +1,98 @@
+name: Provider Watchdog
+
+# Eventual consistency for the version provider layer. Anything the release
+# pipeline's last step missed (provider ACK, interrupted run, transient GitHub
+# API failure) is reconciled here on a low frequency. Read-only inspection plus
+# label-only acknowledgement; it never creates, moves, or deletes a tag or release.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Apply provider acknowledgements (unchecked = dry run)"
+        required: false
+        default: false
+        type: boolean
+      owner:
+        description: "Repository owner to scan"
+        required: false
+        default: redtidev1918
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: go.mod
+      - name: Create fleet installation token
+        id: fleet-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
+          owner: ${{ vars.RELEASEGRAPH_OWNER }}
+          permission-contents: read
+          permission-issues: write
+          permission-pull-requests: read
+      - name: Build releasegraph
+        run: go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph
+      - name: Inspect provider state across the fleet
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/releasegraph" provider inspect \
+            --all --owner '${{ inputs.owner || 'redtidev1918' }}' --format json \
+            > "$RUNNER_TEMP/provider-scan.json"
+          python3 - "$RUNNER_TEMP/provider-scan.json" <<'PY'
+          import json, sys
+          data = json.load(open(sys.argv[1]))["data"]
+          rows = data.get("reports", [])
+          print(f"scanned {len(rows)} managed release(s)")
+          for row in rows:
+              ctx, verdict = row["context"], row["verdict"]
+              print(f"  {ctx['repository']:45s} {ctx['version']:10s} {verdict['drift']:32s} {verdict['health']}")
+          for err in data.get("errors", []):
+              print(f"  ERROR {err}")
+          PY
+      - name: Report provider drift to the job summary
+        if: always()
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/releasegraph" provider inspect \
+            --all --owner '${{ inputs.owner || 'redtidev1918' }}' --format json \
+            > "$RUNNER_TEMP/provider-scan-summary.json" || true
+          python3 - "$RUNNER_TEMP/provider-scan-summary.json" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json, sys
+          try:
+              data = json.load(open(sys.argv[1]))["data"]
+          except Exception as exc:  # noqa: BLE001
+              print(f"provider scan unavailable: {exc}")
+              raise SystemExit(0)
+          print("## Version provider reconciliation\n")
+          print("| repository | version | drift | health |")
+          print("|---|---|---|---|")
+          for row in data.get("reports", []):
+              ctx, verdict = row["context"], row["verdict"]
+              print(f"| {ctx['repository']} | {ctx['version']} | {verdict['drift']} | {verdict['health']} |")
+          PY
+      - name: Acknowledge healthy releases (label-only, idempotent)
+        if: ${{ github.event_name == 'schedule' || inputs.apply }}
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/releasegraph" provider reconcile \
+            --all --owner '${{ inputs.owner || 'redtidev1918' }}' --apply --format json \
+            | tee "$RUNNER_TEMP/provider-ack.json"

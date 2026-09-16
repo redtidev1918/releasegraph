@@ -1,0 +1,19 @@
+- Getting Started
+  - [Overview](/en/README.md)
+  - [📥 Download](/en/download.md)
+  - [Quick Start](/en/quick-start.md)
+  - [Core Concepts](/en/concepts.md)
+- Usage & Configuration
+  - [Authentication](/en/authentication.md)
+  - [Post-release actions](/en/POST-RELEASE.md)
+  - [Release Health](/en/health.md)
+  - [Plan Contract](/en/plan.md)
+  - [Calling the Release Workflow](/en/callers.md)
+  - [Release Notes (user-facing)](/en/release-notes.md)
+  - [Branch Contract](/en/branch-contract.md)
+  - [PR Lifecycle](/en/pr-lifecycle.md)
+- Development
+  - [Architecture](/en/ARCHITECTURE.md)
+  - [Policy](/en/POLICY.md)
+  - [Recovery](/en/RECOVERY.md)
+  - [Migration](/en/MIGRATION.md)

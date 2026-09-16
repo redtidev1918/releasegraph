@@ -7,6 +7,9 @@
   "template": false,
   "classification": "managed",
   "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": {
     "kind": "python-library",
     "versioning": {
@@ -39,35 +42,45 @@
       "failed_draft": 2
     },
     "checksums": true,
-    "sbom": false
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
   },
-  "release_infra_version": "v1",
-  "desired_version": "0.6.1",
-  "latest_release": "v0.6.1",
-  "latest_release_at": "2026-09-08T06:02:14Z",
-  "latest_tag": "v0.6.1",
+  "release_infra_version": null,
+  "desired_version": "0.6.2",
+  "latest_release": "v0.6.2",
+  "latest_release_at": "2026-09-12T15:54:44Z",
+  "latest_tag": "v0.6.2",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
-    "telepress-0.6.1-py3-none-any.whl",
-    "telepress-0.6.1.tar.gz"
+    "telepress-0.6.2-py3-none-any.whl",
+    "telepress-0.6.2.tar.gz"
   ],
   "release_workflows": [
     {
       "name": "Release",
       "path": ".github/workflows/release.yml"
-    },
-    {
-      "name": "Deploy documentation to Pages",
-      "path": ".github/workflows/static.yml"
     }
   ],
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/telepress/actions/runs/34320006151",
-    "updated_at": "2026-09-09T06:39:29Z"
+    "url": "https://github.com/redtidev1918/telepress/actions/runs/35064927138",
+    "updated_at": "2026-09-16T06:42:25Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -77,96 +90,48 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml"
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
-      "tag": "v0.6.1",
+      "tag": "v0.6.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-08T06:02:14Z",
+      "published_at": "2026-09-12T15:54:44Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1282,
-          "sha256": "sha256:85c78f600106d50220c8dfa27d9a5be1d2136ec5667ed3b6c60cf7855cd5dabd"
+          "size": 1648,
+          "sha256": "sha256:c76c67364c5c7d5544d64ffdf96b36e3c6cd0344df792e9aea9cc8c93068e813"
         },
         {
           "name": "SHA256SUMS",
           "size": 188,
-          "sha256": "sha256:65fd95044d6bced6e7c43c4db4056d43d83d85f408a50834dcfb34dfd838765d"
+          "sha256": "sha256:761341cc9bc2b7391f895499930626be36b0cc2d7abe7deeb344552828d506ae"
         },
         {
-          "name": "telepress-0.6.1-py3-none-any.whl",
-          "size": 38487,
-          "sha256": "sha256:28e62da71ebb358459599b55ef830f67b764c320d49e48e281a9ee82fbc02b4a"
+          "name": "telepress-0.6.2-py3-none-any.whl",
+          "size": 38714,
+          "sha256": "sha256:7dce934d98b2e1be35116b3fff035fa9b7af48f0971a1bafcf0e9e2185db02c9"
         },
         {
-          "name": "telepress-0.6.1.tar.gz",
-          "size": 70920,
-          "sha256": "sha256:e7f8a60c69cee75ccfd8dcbb6df81023cd9b10a5e46efb1099122cae35d5a314"
-        }
-      ]
-    },
-    {
-      "tag": "v0.6.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-09-07T05:31:38Z",
-      "assets": [
-        {
-          "name": "telepress-0.6.0-py3-none-any.whl",
-          "size": 38488,
-          "sha256": "sha256:b8a73187e89fcff6b4892bbcecd9f5de2fe5435535dc8c1773574b6b12b4747b"
-        },
-        {
-          "name": "telepress-0.6.0.tar.gz",
-          "size": 70903,
-          "sha256": "sha256:b1d9c8f910a25dd0f9417d5606518cb85ed75dcf632ab12ce814266b27b2f59d"
-        }
-      ]
-    },
-    {
-      "tag": "v0.5.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-30T12:07:18Z",
-      "assets": [
-        {
-          "name": "telepress-0.5.0-py3-none-any.whl",
-          "size": 37852,
-          "sha256": "sha256:fbac283ec36a6050041eb5c012c641386daa8bfd66dffb5cf50385b04874b202"
-        },
-        {
-          "name": "telepress-0.5.0.tar.gz",
-          "size": 69592,
-          "sha256": "sha256:4a2f1d14e38c48577af199362fe00154593ac6f492da5aa550b37bc05e01b523"
-        }
-      ]
-    },
-    {
-      "tag": "v0.4.0",
-      "draft": false,
-      "prerelease": false,
-      "published_at": "2026-08-27T16:26:39Z",
-      "assets": [
-        {
-          "name": "telepress-0.4.0-py3-none-any.whl",
-          "size": 35838,
-          "sha256": "sha256:86c382c64ca661e5daf1adabb9f6a5242da42b6ced4cf78d9746d13b2bb09644"
-        },
-        {
-          "name": "telepress-0.4.0.tar.gz",
-          "size": 65254,
-          "sha256": "sha256:831f722d8dcd8a57d13ba0e8f7fc4776d204fda71b70f3e81d2706ff459b4723"
+          "name": "telepress-0.6.2.tar.gz",
+          "size": 73072,
+          "sha256": "sha256:c540f1749493413ee0ee9ce4020539242cb24bebbb28277ec8df000480d397d1"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v0.6.2",
+      "commit": "7e7170cf29dd0513c02d088862302b744b11db95"
+    },
     {
       "name": "v0.6.1",
       "commit": "4bd66bda51592c013f203eefce318073211473a4"
@@ -185,8 +150,12 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.6.2"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
       "bootstrap-sha": "44ccae7439e2c00df22a213f53c223881778274b",
       "packages": {
         ".": {
@@ -201,9 +170,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.6.1"
     }
   },
   "registries": {
@@ -212,5 +178,18 @@
       "declared": null,
       "published": "0.6.1"
     }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
   }
 }

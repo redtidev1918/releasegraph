@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/redtidev1918/releasegraph/main/schemas/health-v1.json",
+  "title": "ReleaseGraph release health v1",
+  "description": "Repository release health plus the reasons behind it. Health answers 'does the released state satisfy the policy?' and is never an instruction; the action to take is a separate axis (the workflow-facing release_health, and `releasegraph provider reconcile`).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "health",
+    "reasons"
+  ],
+  "properties": {
+    "health": {
+      "description": "HEALTHY the released state satisfies the policy. DEGRADED the release exists but an invariant fails (missing required assets, version drift, a stray draft, a failed release run, an unreadable policy); the reason codes say which. NO_RELEASE no non-draft release, or the repository is archived/a fork. UNMANAGED the repository declares no release policy. BROKEN provider state could not be read. BLOCKED a dependency or credential is missing. NEEDS_REVIEW a human must decide.",
+      "enum": [
+        "HEALTHY",
+        "DEGRADED",
+        "NO_RELEASE",
+        "UNMANAGED",
+        "BROKEN",
+        "BLOCKED",
+        "NEEDS_REVIEW"
+      ]
+    },
+    "reasons": {
+      "description": "Why this health value was chosen. Required and non-empty for every value except HEALTHY, which carries no reasons.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reason"
+      }
+    },
+    "missing_assets": {
+      "description": "Required asset patterns that matched no released asset.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "empty_assets": {
+      "description": "Required asset patterns that matched only zero-byte assets.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "health": {
+            "const": "HEALTHY"
+          }
+        },
+        "required": [
+          "health"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reasons": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "reason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "unmanaged_repo",
+            "api_error",
+            "release_absent",
+            "release_draft",
+            "repository_archived",
+            "repository_fork",
+            "version_drift",
+            "target_assets_missing",
+            "asset_empty",
+            "release_run_failed",
+            "policy_absent",
+            "policy_unparsable",
+            "dependency_unhealthy",
+            "fleet_credential_required",
+            "manual_review_required"
+          ]
+        },
+        "detail": {
+          "description": "Human-readable specifics: the offending tags, patterns or conclusion.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

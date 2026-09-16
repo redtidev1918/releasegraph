@@ -113,10 +113,10 @@ func (c *Client) get(ctx context.Context, path string) ([]byte, http.Header, err
 			return body, resp.Header, nil
 		}
 		if resp.StatusCode == 401 {
-			return nil, nil, rgerrors.New(rgerrors.Authentication, "GitHub authentication failed")
+			return nil, nil, rgerrors.New(rgerrors.Authentication, githubErrorDetail("GitHub authentication failed", resp.StatusCode, body))
 		}
 		if resp.StatusCode == 403 {
-			return nil, nil, rgerrors.New(rgerrors.Permission, "GitHub permission denied")
+			return nil, nil, rgerrors.New(rgerrors.Permission, githubErrorDetail("GitHub permission denied", resp.StatusCode, body))
 		}
 		if resp.StatusCode == 404 {
 			return nil, nil, rgerrors.New(rgerrors.NotFound, "GitHub resource not found")
@@ -180,4 +180,18 @@ func nextLink(header, baseURL string) string {
 		return strings.TrimPrefix(raw, base.String())
 	}
 	return ""
+}
+
+// githubErrorDetail renders a non-2xx response into an operator-readable
+// message, keeping both the status code and the provider's own words.
+//
+// The body is preserved on purpose for the authorization failures: with a
+// least-privilege GitHub App, a 403 body such as "Resource not accessible by
+// integration" is the only thing that identifies which permission is missing.
+func githubErrorDetail(label string, status int, body []byte) string {
+	message := strings.TrimSpace(string(body))
+	if message == "" {
+		return fmt.Sprintf("%s (%d)", label, status)
+	}
+	return fmt.Sprintf("%s (%d): %s", label, status, message)
 }

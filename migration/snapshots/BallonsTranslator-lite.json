@@ -7,6 +7,13 @@
   "template": false,
   "classification": "fork",
   "health": "NO_RELEASE",
+  "health_reasons": [
+    {
+      "code": "repository_fork"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
   "release_policy": null,
   "release_infra_version": null,
   "desired_version": null,
@@ -59,5 +66,12 @@
       "declared": "0.6.0",
       "published": null
     }
-  }
+  },
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
 }

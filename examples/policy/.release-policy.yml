@@ -16,3 +16,22 @@ retention:
   stable: 5
   prerelease: 1
   failedDraft: 2
+# Production-operation branch contract (optional namespace).
+repository:
+  git:
+    productionOperations:
+      base: default
+      branches:
+        - "chore/cutover-*"
+        - "ops/*"
+        - "release/*"
+        - "hotfix/*"
+      requireLatestBase: true
+      operations:
+        cutover:
+          branches:
+            - "chore/cutover-*"
+          allowedPaths:
+            - "control-plane/wrangler.toml"
+            - "fly/*.toml"
+            - ".github/workflows/**"

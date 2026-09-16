@@ -60,9 +60,149 @@
         }
       }
     },
-    "retention": {"type": "object", "properties": {"stable": {"type": "integer", "minimum": 1}, "prerelease": {"type": "integer", "minimum": 0}, "failed_draft": {"type": "integer", "minimum": 0}}},
-    "release": {"type": "object", "properties": {"prerelease": {"type": "boolean"}, "post_publish": {"type": "string"}}},
+    "retention": {"type": "object", "properties": {"stable": {"type": "integer", "minimum": 1}, "prerelease": {"type": "integer", "minimum": 0}, "failed_draft": {"type": "integer", "minimum": 0}, "pruneStable": {"type": "boolean", "default": false, "description": "Opt-in to deleting published stable releases beyond `stable`. Off by default: published stable releases are history, not cache."}}},
+    "release": {
+      "type": "object",
+      "properties": {
+        "prerelease": {"type": "boolean", "description": "Force pre-release even for a version without a SemVer pre-release component. A version such as 1.5.0-rc.1 is always published as a pre-release and never takes Latest."},
+        "post_publish": {"type": "string"},
+        "postRelease": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "type"], "properties": {"id": {"type": "string"}, "type": {"enum": ["github-workflow"]}, "required": {"type": "boolean"}, "workflow": {"type": "string"}, "ref": {"enum": ["tag", "default"]}, "inputs": {"type": "object", "additionalProperties": {"type": "string"}}}}},
+        "notes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "language": {
+              "enum": ["auto", "en", "zh"],
+              "default": "auto",
+              "description": "Language of the GitHub Release body. auto follows the repository's primary README."
+            }
+          }
+        }
+      }
+    },
     "checksums": {"type": "boolean"},
-    "sbom": {"type": "boolean"}
+    "sbom": {"type": "boolean"},
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "git": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "productionOperations": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["base", "branches"],
+              "properties": {
+                "base": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Production base ref: a branch name (main, master) or the literal \"default\" to resolve the repository default branch."
+                },
+                "branches": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {"type": "string", "minLength": 1},
+                  "description": "Glob patterns naming production-operation branches (chore/cutover-*, ops/*, release/*, hotfix/*)."
+                },
+                "requireLatestBase": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Must be true: a production-operation branch must descend from the current HEAD of the production base."
+                },
+                "operations": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["branches"],
+                    "properties": {
+                      "branches": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {"type": "string", "minLength": 1}
+                      },
+                      "allowedPaths": {
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {"type": "string", "minLength": 1},
+                        "description": "Optional change-scope whitelist for the operation; glob patterns, \"**\" crosses directories."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pullRequests": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lifecycle": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Nil or true enforces the contract; false declares it for auditing without acting on pull requests."
+                },
+                "parkedAfterDays": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 365,
+                  "default": 7,
+                  "description": "Inactivity window after which a draft or conflicting pull request is classified PARKED."
+                },
+                "archiveParkedToIssue": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Archive parked work into an issue before closing the pull request. Must be true while closeParked is true."
+                },
+                "closeParked": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Parked pull requests leave the merge queue once their work has been archived."
+                },
+                "deleteBranch": {
+                  "type": "boolean",
+                  "const": false,
+                  "description": "Must be false: the lifecycle contract never deletes a branch."
+                },
+                "exempt": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "branches": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 1},
+                      "description": "Head-branch glob patterns managed elsewhere, such as release-please's branches."
+                    },
+                    "actors": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 1},
+                      "description": "Authors whose pull requests are managed elsewhere (bots)."
+                    },
+                    "labels": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 1},
+                      "description": "Labels that retain a pull request on purpose. keep-open is the human escape hatch."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

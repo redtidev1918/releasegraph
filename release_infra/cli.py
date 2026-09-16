@@ -4,7 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-from .assets import collect_assets, write_checksums
+from . import notes
+from .assets import AssetError, collect_assets, write_checksums
 from .inventory import scan, write_outputs
 from .policy import desired_version, load_policy
 from .release import assert_no_cleanup_tag, audit, plan, publish, stage
@@ -32,8 +33,24 @@ def main(argv: list[str] | None = None) -> int:
         command_parser.add_argument("--version")
         if name != "audit":
             command_parser.add_argument("--dry-run", action="store_true")
+    post_release_parser = sub.add_parser("post-release")
+    post_release_sub = post_release_parser.add_subparsers(dest="pr_command", required=True)
+    run_parser = post_release_sub.add_parser("run")
+    run_parser.add_argument("--path", default=".release-policy.yml")
+    run_parser.add_argument("--version")
+    run_parser.add_argument("--dry-run", action="store_true")
+    run_parser.add_argument("--max-wait", type=int, default=30 * 60)
+    status_parser = post_release_sub.add_parser("status")
+    status_parser.add_argument("--path", default=".release-policy.yml")
+    status_parser.add_argument("--version")
     static_parser = sub.add_parser("static-check")
     static_parser.add_argument("--root", default=".")
+    notes_parser = sub.add_parser("notes")
+    notes_parser.add_argument("--path", default=".release-policy.yml")
+    notes_parser.add_argument("--version")
+    notes_parser.add_argument("--tag")
+    notes_parser.add_argument("--root", default=".")
+    notes_parser.add_argument("--output")
     plan_parser = sub.add_parser("workflow-plan")
     plan_parser.add_argument("--path", default=".release-policy.yml")
     plan_parser.add_argument("--version")
@@ -61,6 +78,11 @@ def main(argv: list[str] | None = None) -> int:
         print(publish(args.path, args.version, dry_run=args.dry_run))
     elif args.command == "audit":
         audit(args.path, args.version)
+    elif args.command == "post-release":
+        from . import actions
+        if args.pr_command == "run":
+            return actions.run(args.path, args.version, dry_run=args.dry_run, max_wait=args.max_wait)
+        return actions.show_status(args.path, args.version)
     elif args.command == "workflow-plan":
         result = plan(args.path, args.version, force=args.force, repair=args.repair)
         if args.github_output:
@@ -69,8 +91,26 @@ def main(argv: list[str] | None = None) -> int:
                     output.write(f"{key}={value}\n")
         else:
             print(json.dumps(result, indent=2))
-    else:
+    elif args.command == "static-check":
         assert_no_cleanup_tag(args.root)
+    elif args.command == "notes":
+        policy = load_policy(args.path)
+        version = desired_version(policy, args.version, args.root)
+        tag = args.tag or policy.get("tag", {}).get("template", "v{version}").format(version=version)
+        try:
+            built = collect_assets(policy.get("assets", {}).get("required", []),
+                                   policy.get("assets", {}).get("optional", []))
+        except AssetError:
+            # A preview before the build produced anything is still useful: the
+            # body then explains where the repository actually delivers from.
+            built = []
+        body = notes.build_for_release(policy, version, tag, root=args.root,
+                                       asset_names=[path.name for path in built],
+                                       asset_sizes={path.name: path.stat().st_size for path in built})
+        if args.output:
+            Path(args.output).write_text(body, encoding="utf-8")
+        else:
+            print(body, end="")
     return 0
 
 

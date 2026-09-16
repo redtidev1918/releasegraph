@@ -1,0 +1,59 @@
+name: Fleet Rollout
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "ReleaseGraph version, for example v1.4.4"
+        required: true
+        type: string
+      apply:
+        description: "Open upgrade pull requests after planning"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: releasegraph-fleet-rollout
+  cancel-in-progress: false
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: go.mod
+      - name: Create fleet installation token
+        id: fleet-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
+          owner: ${{ vars.RELEASEGRAPH_OWNER }}
+          permission-actions: read
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+      - name: Build releasegraph
+        run: go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph
+      - name: Plan rollout
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        run: |
+          "$RUNNER_TEMP/releasegraph" rollout plan \
+            --version '${{ inputs.version }}' | tee "$RUNNER_TEMP/rollout-plan.txt"
+          cat "$RUNNER_TEMP/rollout-plan.txt" >> "$GITHUB_STEP_SUMMARY"
+      - name: Apply rollout
+        if: ${{ inputs.apply }}
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ steps.fleet-token.outputs.token }}
+        run: |
+          "$RUNNER_TEMP/releasegraph" rollout apply \
+            --version '${{ inputs.version }}' --apply \
+            | tee "$RUNNER_TEMP/rollout-apply.txt"
+          cat "$RUNNER_TEMP/rollout-apply.txt" >> "$GITHUB_STEP_SUMMARY"

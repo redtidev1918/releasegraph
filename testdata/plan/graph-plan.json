@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "releasegraphVersion": "0.1.0-go-readonly",
+  "generatedAt": "2026-01-01T00:00:00Z",
+  "data": {
+    "ready": [
+      "cli",
+      "web"
+    ],
+    "blocked": {
+      "deploy": [
+        "cli",
+        "web"
+      ]
+    },
+    "noop": [
+      "core"
+    ]
+  }
+}
