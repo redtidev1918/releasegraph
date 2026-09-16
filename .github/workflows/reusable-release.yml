@@ -507,6 +507,12 @@ jobs:
         # remote Release hard-fails with "tag commit mismatch" even with
         # --dry-run. A dry run validates everything up to this point (test,
         # build, version gate, asset gate, draft transaction) and stops here.
+        # A healthy, already-published release whose immutable tag does not
+        # point at this run's HEAD (historical tag drift, force-recovery) is
+        # deliberately left untouched: audit's tag==HEAD invariant is
+        # incompatible with published history, and there is nothing to
+        # re-publish when release_health is healthy. The run simply proceeds
+        # to provider acknowledgement and post-release resume.
         if: >-
           steps.plan.outputs.run_release == '1'
           && github.event_name != 'pull_request'
@@ -519,7 +525,11 @@ jobs:
         run: |
           set -euo pipefail
           if [[ '${{ steps.plan.outputs.release_health }}' == healthy ]]; then
-            PYTHONPATH=.releasegraph python3 -m release_infra.cli audit --version '${{ steps.plan.outputs.version }}'
+            if [[ '${{ steps.plan.outputs.tag_drift }}' == true ]]; then
+              echo "release is healthy and its tag is immutable/drifted; skipping audit and republish for recovery resume"
+            else
+              PYTHONPATH=.releasegraph python3 -m release_infra.cli audit --version '${{ steps.plan.outputs.version }}'
+            fi
           else
             args=(--version '${{ steps.plan.outputs.version }}')
             [[ "$DRY_RUN" == true ]] && args+=(--dry-run)

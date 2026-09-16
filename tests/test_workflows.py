@@ -150,6 +150,21 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn("steps.plan.outputs.release_health != 'healthy'", finalize)
         self.assertIn('release_infra.cli audit --version', finalize)
 
+    def test_healthy_tag_drift_recovery_skips_audit_and_republish(self):
+        # A healthy, already-published release whose immutable tag does not point
+        # at the recovery run's HEAD must not trip audit's tag==HEAD invariant.
+        # Force recovery should skip both audit and publish (nothing to mutate),
+        # then continue to post-release resume on the same release body.
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        finalize = workflow.split("  finalize:", 1)[1]
+        tx = finalize.split("Publish, set Latest, audit, then prune Release objects", 1)[1]
+        self.assertIn("steps.plan.outputs.tag_drift", tx)
+        audit_pos = tx.index("release_infra.cli audit --version")
+        drift_guard = tx.index("steps.plan.outputs.tag_drift }}' == true")
+        self.assertLess(drift_guard, audit_pos)
+        self.assertIn("skipping audit and republish", tx)
+        self.assertIn("Post-release actions", finalize)
+
 
 if __name__ == "__main__":
     unittest.main()
