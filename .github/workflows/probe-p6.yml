@@ -5,7 +5,7 @@ on:
       tag:
         type: string
         required: false
-        description: Exact release tag to render (default: latest stable)
+        description: "Exact release tag to render (default: latest stable)"
       deploy-docs:
         type: boolean
         required: false
@@ -47,11 +47,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ steps.resolve.outputs.tag }}"
-          ARGS=""
+          SCRIPT_ARGS=()
           if [ -n "$TAG" ]; then
-            ARGS="--tag $TAG"
+            SCRIPT_ARGS+=(--tag "$TAG")
           fi
-          python3 .github/scripts/update_download_page.py "${{ github.repository }}" $ARGS
+          python3 .github/scripts/update_download_page.py "${{ github.repository }}" "${SCRIPT_ARGS[@]}"
           echo "tag=${TAG:-latest}" >> "$GITHUB_OUTPUT"
 
       - name: Commit if changed
