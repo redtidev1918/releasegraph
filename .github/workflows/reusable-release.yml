@@ -315,14 +315,15 @@ jobs:
     permissions:
       # Caller-compatible subset only (see release_please above). The finalize
       # job runs release.postRelease `github-workflow` actions, which dispatch a
-      # same-repo workflow_dispatch with the ephemeral actions GITHUB_TOKEN.
-      # That endpoint requires Actions write, so callers must grant it too
-      # (TelePost/PixivFlow do); a reusable workflow cannot elevate past the
-      # caller's permissions.
+      # same-repo workflow_dispatch with the ephemeral actions GITHUB_TOKEN
+      # (Actions write) and npm publish with Sigstore provenance (id-token
+      # write). A reusable workflow cannot elevate past its caller, so both must
+      # stay present.
       contents: write
       packages: write
       pull-requests: write
       actions: write
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0}
