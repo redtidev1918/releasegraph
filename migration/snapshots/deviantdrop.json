@@ -90,8 +90,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/35062314048",
-    "updated_at": "2026-09-16T06:07:37Z"
+    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/35196261264",
+    "updated_at": "2026-09-17T07:47:16Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -196,9 +196,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "1.10.0"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -211,6 +208,9 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "1.10.0"
     }
   },
   "registries": {

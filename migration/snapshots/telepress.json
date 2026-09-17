@@ -59,16 +59,16 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.6.2",
-  "latest_release": "v0.6.2",
-  "latest_release_at": "2026-09-12T15:54:44Z",
-  "latest_tag": "v0.6.2",
+  "desired_version": "0.10.0",
+  "latest_release": "v0.10.0",
+  "latest_release_at": "2026-09-17T07:47:40Z",
+  "latest_tag": "v0.10.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
-    "telepress-0.6.2-py3-none-any.whl",
-    "telepress-0.6.2.tar.gz"
+    "telepress-0.10.0-py3-none-any.whl",
+    "telepress-0.10.0.tar.gz"
   ],
   "release_workflows": [
     {
@@ -79,8 +79,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/telepress/actions/runs/35064927138",
-    "updated_at": "2026-09-16T06:42:25Z"
+    "url": "https://github.com/redtidev1918/telepress/actions/runs/35196102804",
+    "updated_at": "2026-09-17T07:48:24Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -98,6 +98,146 @@
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
+    {
+      "tag": "v0.10.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-17T07:47:40Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1656,
+          "sha256": "sha256:fafd1ec49bb319304158cf39fe6e39e8e0d0e4ae066aef7978804865ac1187f1"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 190,
+          "sha256": "sha256:aa2cfb87fc6ba6e3b47889c2ad36308c6361592f22a97643e259fba451138191"
+        },
+        {
+          "name": "telepress-0.10.0-py3-none-any.whl",
+          "size": 44649,
+          "sha256": "sha256:2ec7c547552716f469c1f36a160c216b1d392a8ace860e4a21f24415710ae5a6"
+        },
+        {
+          "name": "telepress-0.10.0.tar.gz",
+          "size": 85871,
+          "sha256": "sha256:053caa86b74f03cac82592466eaf95cbe14325a39f43d508689e82386fe0bcd6"
+        }
+      ]
+    },
+    {
+      "tag": "v0.9.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-17T05:11:59Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1648,
+          "sha256": "sha256:745c9bd622112d101a22db6d9228563ab67dd0ce15ce30a1115567719e1d9c7f"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 188,
+          "sha256": "sha256:f26694ea45e43fadb463b30924aecbf903686e78fcd7feea839b623c00b47532"
+        },
+        {
+          "name": "telepress-0.9.0-py3-none-any.whl",
+          "size": 43154,
+          "sha256": "sha256:a58424f444172627c2884b76e07356479e5c05fd9d56a002046686a373f97e54"
+        },
+        {
+          "name": "telepress-0.9.0.tar.gz",
+          "size": 82977,
+          "sha256": "sha256:e80be7e4b51e9839705398b09f5c5461346479f0bff3d16166be23d5b338ffab"
+        }
+      ]
+    },
+    {
+      "tag": "v0.8.1",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-16T11:44:41Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1648,
+          "sha256": "sha256:9aa15d2b3aaa7839fef2ce044895350b615493f04cfd7ee4ff66c175c66a9cc8"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 188,
+          "sha256": "sha256:490a7a724723c428ead70d84d155064c476d62b1442e5b9c4947090bc470074c"
+        },
+        {
+          "name": "telepress-0.8.1-py3-none-any.whl",
+          "size": 41925,
+          "sha256": "sha256:22c7f5a96261442ae5b97e40fb5121d70ed423f27420701bc64187e4c2c48385"
+        },
+        {
+          "name": "telepress-0.8.1.tar.gz",
+          "size": 79953,
+          "sha256": "sha256:12ad4e65857ec7b72b4ef51b63a800b016e497418dfa2d75bc625a5e1958f888"
+        }
+      ]
+    },
+    {
+      "tag": "v0.8.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-16T10:59:37Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1648,
+          "sha256": "sha256:e39b05ca467bc49a3f5d3b3e76b141c6f0f83c750d0c5413375b0cfe7850464f"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 188,
+          "sha256": "sha256:7302d1b02a9e64195085c89a3e11e2cc6a47eb9c98dc9992334aa882a8fa07b0"
+        },
+        {
+          "name": "telepress-0.8.0-py3-none-any.whl",
+          "size": 41927,
+          "sha256": "sha256:34005ce65180ecb6fc720718797bbfbf7830a0b410aa98367cbdda35681f693f"
+        },
+        {
+          "name": "telepress-0.8.0.tar.gz",
+          "size": 79852,
+          "sha256": "sha256:8a91f9d072c6367d3048d852ac3ff99e9d8d517dff981ab938ba3b900365a391"
+        }
+      ]
+    },
+    {
+      "tag": "v0.7.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-16T10:01:07Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1648,
+          "sha256": "sha256:7cedd08496986fd8d10f60f1823daaf076480c251f95adac60f274c7c2507d29"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 188,
+          "sha256": "sha256:2191fd6057058d15036e3e7d3aa48b58a1296d30a04d454b4150ca02e2494275"
+        },
+        {
+          "name": "telepress-0.7.0-py3-none-any.whl",
+          "size": 39519,
+          "sha256": "sha256:dd925cf05199b0bab59078021f80f97b255af97a2512a786dd3d2b4ec7001d93"
+        },
+        {
+          "name": "telepress-0.7.0.tar.gz",
+          "size": 75244,
+          "sha256": "sha256:b00d9162d6ad749ce47528bf8e07e839c0014d716e8a59b3693b6effd836f2b5"
+        }
+      ]
+    },
     {
       "tag": "v0.6.2",
       "draft": false,
@@ -129,6 +269,26 @@
   ],
   "tags": [
     {
+      "name": "v0.10.0",
+      "commit": "e13386d1b6cb1c073e3b39461b9153e29e802cd7"
+    },
+    {
+      "name": "v0.9.0",
+      "commit": "e35588f5429dbd7f41c1e440159bbec29e2918e2"
+    },
+    {
+      "name": "v0.8.1",
+      "commit": "c10d100ea3ee27a228286054878eaeb3811d8c74"
+    },
+    {
+      "name": "v0.8.0",
+      "commit": "7850b51d56f18533f89d557b64b6de13a0384141"
+    },
+    {
+      "name": "v0.7.0",
+      "commit": "57050d9b4e20201398ef51eb7769d08a3a2cecbc"
+    },
+    {
       "name": "v0.6.2",
       "commit": "7e7170cf29dd0513c02d088862302b744b11db95"
     },
@@ -150,9 +310,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "0.6.2"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -170,13 +327,16 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "0.10.0"
     }
   },
   "registries": {
     "pypi": {
       "package": "telepress",
       "declared": null,
-      "published": "0.6.1"
+      "published": "0.10.0"
     }
   },
   "branchContract": {
@@ -188,8 +348,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }
