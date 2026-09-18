@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/35196007307",
-    "updated_at": "2026-09-17T07:44:15Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/35312896910",
+    "updated_at": "2026-09-18T05:58:54Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -138,6 +138,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "3.0.3"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -150,9 +153,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "3.0.3"
     }
   },
   "registries": {
