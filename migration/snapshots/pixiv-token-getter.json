@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixiv-token-getter/actions/runs/35312890406",
-    "updated_at": "2026-09-18T05:58:22Z"
+    "url": "https://github.com/redtidev1918/pixiv-token-getter/actions/runs/35425324764",
+    "updated_at": "2026-09-19T05:58:03Z"
   },
   "signals": [
     ".release-please-manifest.json",

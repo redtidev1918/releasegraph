@@ -6,8 +6,13 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "HEALTHY",
-  "health_reasons": [],
+  "health": "DEGRADED",
+  "health_reasons": [
+    {
+      "code": "version_drift",
+      "detail": "v1.0.1"
+    }
+  ],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -60,10 +65,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.0.1",
+  "desired_version": "1.1.0",
   "latest_release": "v1.0.1",
   "latest_release_at": "2026-09-09T05:01:47Z",
-  "latest_tag": "v1.0.1",
+  "latest_tag": "v1.1.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -77,12 +82,13 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/35312735571",
-    "updated_at": "2026-09-18T05:55:54Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/35425159668",
+    "updated_at": "2026-09-19T05:53:59Z"
   },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
+    "CHANGELOG.md",
     "Dockerfile",
     "package.json",
     "release-please-config.json"
@@ -111,13 +117,17 @@
   ],
   "tags": [
     {
+      "name": "v1.1.0",
+      "commit": "43ad36ef00b82e6c080232b8d4191505df83552a"
+    },
+    {
       "name": "v1.0.1",
       "commit": "12d300861e8bb3e6d765c5038b887ab47493e2db"
     }
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.0.1"
+      ".": "1.1.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -136,7 +146,7 @@
   "registries": {
     "npm": {
       "package": "pixivflow-webui",
-      "declared": "1.0.1",
+      "declared": "1.1.0",
       "published": null
     }
   },

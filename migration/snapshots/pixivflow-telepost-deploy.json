@@ -126,10 +126,10 @@
     }
   ],
   "latest_release_run": {
-    "status": "queued",
-    "conclusion": null,
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/35323574140",
-    "updated_at": "2026-09-18T08:16:54Z"
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/35430853298",
+    "updated_at": "2026-09-19T08:02:10Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -143,6 +143,7 @@
     ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
+    ".github/workflows/schedule-watchdog.yml",
     ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml",
     ".github/workflows/validate.yml"
@@ -250,8 +251,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 3,
-    "inQueue": 3,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

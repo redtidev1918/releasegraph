@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/dakit/actions/runs/35315678861",
-    "updated_at": "2026-09-18T06:37:37Z"
+    "url": "https://github.com/redtidev1918/dakit/actions/runs/35427011079",
+    "updated_at": "2026-09-19T06:35:36Z"
   },
   "signals": [
     ".release-please-manifest.json",
