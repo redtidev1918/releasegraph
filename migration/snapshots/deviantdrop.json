@@ -51,32 +51,14 @@
       }
     },
     "release": {
-      "postRelease": [
-        {
-          "id": "refresh-download-page",
-          "type": "github-workflow",
-          "required": true,
-          "workflow": "update-download-page.yml",
-          "inputs": {
-            "tag": "{{tag}}",
-            "deploy-docs": "false"
-          }
-        },
-        {
-          "id": "deploy-docs",
-          "type": "github-workflow",
-          "required": true,
-          "workflow": "static.yml",
-          "ref": "default"
-        }
-      ]
+      "postRelease": []
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.10.0",
-  "latest_release": "v1.10.0",
-  "latest_release_at": "2026-09-14T03:02:27Z",
-  "latest_tag": "v1.10.0",
+  "desired_version": "1.12.1",
+  "latest_release": "v1.12.1",
+  "latest_release_at": "2026-09-19T15:31:12Z",
+  "latest_tag": "v1.12.1",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -90,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/35425354093",
-    "updated_at": "2026-09-19T05:58:45Z"
+    "url": "https://github.com/redtidev1918/deviantdrop/actions/runs/35494096826",
+    "updated_at": "2026-09-20T06:23:31Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -112,20 +94,32 @@
   ],
   "release_history": [
     {
-      "tag": "v1.10.0",
+      "tag": "v1.12.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-14T03:02:27Z",
+      "published_at": "2026-09-19T15:31:12Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1224,
-          "sha256": "sha256:5728d717d1f897392c0b9d0a612adb7edf152ab76b7c1d8a40d3a6e1d5f44958"
+          "sha256": "sha256:a2d7edef644e9d956db4700331d4a06926727994050ed1127231c92d5690dce1"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.12.1",
+      "commit": "6a1b1d889029771dd99dfe1e077761228386cba7"
+    },
+    {
+      "name": "v1.12.0",
+      "commit": "8be63f7b74873147239a838a619576c9837738d5"
+    },
+    {
+      "name": "v1.11.0",
+      "commit": "c36ee6f644c485fcb8991e461bfc662c726d5397"
+    },
     {
       "name": "v1.10.0",
       "commit": "351756ad08d7114370ac80c8a68c1125d034827a"
@@ -197,7 +191,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.10.0"
+      ".": "1.12.1"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -216,7 +210,7 @@
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.10.0",
+      "declared": "1.12.1",
       "published": null
     }
   },
@@ -229,8 +223,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

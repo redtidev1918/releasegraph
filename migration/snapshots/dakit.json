@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/dakit/actions/runs/35427011079",
-    "updated_at": "2026-09-19T06:35:36Z"
+    "url": "https://github.com/redtidev1918/dakit/actions/runs/35499390722",
+    "updated_at": "2026-09-20T08:24:22Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -123,6 +123,7 @@
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
+    ".github/workflows/publish-web.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
@@ -456,10 +457,11 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      "packages/dakit_core": "1.0.0",
-      "packages/dakit_api": "1.0.0",
+      "packages/dakit_core": "1.1.0",
+      "packages/dakit_api": "1.1.0",
       "packages/dakit_flutter": "1.0.0",
-      "packages/dakit_cli": "0.4.1"
+      "packages/dakit_cli": "0.4.1",
+      "packages/dakit_web": "0.2.1"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -496,6 +498,15 @@
           "release-type": "dart",
           "package-name": "dakit_cli",
           "component": "dakit_cli",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        },
+        "packages/dakit_web": {
+          "release-type": "dart",
+          "package-name": "dakit_web",
+          "component": "dakit_web",
           "include-v-in-tag": true,
           "include-component-in-tag": true,
           "tag-separator": "-",

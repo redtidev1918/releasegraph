@@ -102,13 +102,13 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.38.0",
-  "latest_release": "v2.38.0",
-  "latest_release_at": "2026-09-19T06:47:42Z",
-  "latest_tag": "v2.38.0",
+  "desired_version": "2.41.0",
+  "latest_release": "v2.41.0",
+  "latest_release_at": "2026-09-19T12:56:54Z",
+  "latest_tag": "v2.41.0",
   "draft_releases": [],
   "actual_assets": [
-    "pixivflow-2.38.0.tgz",
+    "pixivflow-2.41.0.tgz",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -121,8 +121,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/35430837799",
-    "updated_at": "2026-09-19T08:02:07Z"
+    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/35495543951",
+    "updated_at": "2026-09-20T06:56:55Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -145,30 +145,42 @@
   ],
   "release_history": [
     {
-      "tag": "v2.38.0",
+      "tag": "v2.41.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-19T06:47:42Z",
+      "published_at": "2026-09-19T12:56:54Z",
       "assets": [
         {
-          "name": "pixivflow-2.38.0.tgz",
-          "size": 2411962,
-          "sha256": "sha256:6a09f6d252705e37b0c05db55a020274070c6d3b5a25d4eb18154423dd54ae95"
+          "name": "pixivflow-2.41.0.tgz",
+          "size": 2417174,
+          "sha256": "sha256:0607277a60e59ae2aa23171c90633915d325c16fe1dd244e0c2e9ead47faffcd"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2250,
-          "sha256": "sha256:cbd6569d5ada9a6ad659618aec452418516abaf838f0ff681493de3f152fd9ea"
+          "sha256": "sha256:1c50ddc73a5506ea3b4635e2f034630854b4a23306df1a48d07ec37e1c094431"
         },
         {
           "name": "SHA256SUMS",
           "size": 87,
-          "sha256": "sha256:7db766dc75ab0b5d89bd5b1deeacbc5f8f974a8e2aae70a6f07f66e190532dc5"
+          "sha256": "sha256:793028824417f85ddd6dc2e36d9398191d868f19590a8104bfd7a3a3d4093861"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.41.0",
+      "commit": "471ff53f25c9e23bc3df5333232746b697ea915a"
+    },
+    {
+      "name": "v2.40.0",
+      "commit": "8d72f5f5761aedcd32109ecb30d79392086f7243"
+    },
+    {
+      "name": "v2.39.0",
+      "commit": "6cee00e9c813acdf9340cb780abc6230c9407ebc"
+    },
     {
       "name": "v2.38.0",
       "commit": "66e1379b588c3a2bb635eba06370555a7e490492"
@@ -352,7 +364,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "2.38.0"
+      ".": "2.41.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -371,8 +383,8 @@
   "registries": {
     "npm": {
       "package": "pixivflow",
-      "declared": "2.38.0",
-      "published": "2.38.0"
+      "declared": "2.41.0",
+      "published": "2.41.0"
     }
   },
   "branchContract": {
@@ -384,8 +396,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

@@ -6,8 +6,13 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "HEALTHY",
-  "health_reasons": [],
+  "health": "DEGRADED",
+  "health_reasons": [
+    {
+      "code": "version_drift",
+      "detail": "v0.2.187"
+    }
+  ],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -73,7 +78,7 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.2.187",
+  "desired_version": "0.3.0",
   "latest_release": "v0.2.187",
   "latest_release_at": "2026-09-14T03:12:11Z",
   "latest_tag": "v0.2.187",
@@ -92,10 +97,10 @@
     }
   ],
   "latest_release_run": {
-    "status": "completed",
-    "conclusion": "success",
-    "url": "https://github.com/redtidev1918/daviewer/actions/runs/35426105329",
-    "updated_at": "2026-09-19T06:15:24Z"
+    "status": "in_progress",
+    "conclusion": null,
+    "url": "https://github.com/redtidev1918/daviewer/actions/runs/35499516365",
+    "updated_at": "2026-09-20T08:30:04Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -559,7 +564,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "0.2.187"
+      ".": "0.3.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -578,7 +583,7 @@
   "registries": {
     "pub": {
       "package": "daviewer",
-      "declared": "0.2.187",
+      "declared": "0.3.0",
       "published": null
     }
   },
