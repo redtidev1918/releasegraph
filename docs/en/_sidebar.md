@@ -17,3 +17,5 @@
   - [Policy](/en/POLICY.md)
   - [Recovery](/en/RECOVERY.md)
   - [Migration](/en/MIGRATION.md)
+- 中文
+  - [中文文档](/)
