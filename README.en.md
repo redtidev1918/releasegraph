@@ -2,7 +2,9 @@
 
 Serverless, declarative, DAG-driven release orchestration for GitHub Actions.
 
-**Language / 语言:** [中文](README.md) · English · [Documentation](https://redtidev1918.github.io/releasegraph/)
+**Language / 语言:** [中文](README.md) · English
+
+📖 Documentation: <https://redtidev1918.github.io/releasegraph/>
 
 ```text
         core

@@ -2,7 +2,9 @@
 
 面向 GitHub Actions 的无服务器、声明式、DAG 驱动多仓库发布编排器。
 
-**语言 / Language:** 中文 · [English](README.en.md) · [文档站](https://redtidev1918.github.io/releasegraph/)
+**语言 / Language:** 中文 · [English](README.en.md)
+
+📖 文档站：<https://redtidev1918.github.io/releasegraph/>
 
 ```text
         core
