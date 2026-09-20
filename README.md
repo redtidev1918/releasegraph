@@ -121,7 +121,7 @@ workflow（见 [POST-RELEASE](docs/POST-RELEASE.md)）。
 
 GitHub Release 页面上的说明文字同样由 ReleaseGraph 生成：面向下载用户，过滤掉 CI/治理/依赖机器人的噪音，语言跟随仓库主 README。详见 [Release 说明（面向用户）](docs/release-notes.md)。
 
-## 文档
+延伸阅读：
 
 - [架构说明](docs/concepts.md)
 - [快速开始](docs/quick-start.md)
