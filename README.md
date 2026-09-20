@@ -128,3 +128,21 @@ GitHub Release 页面上的说明文字同样由 ReleaseGraph 生成：面向下
 - [认证与权限](docs/authentication.md)
 - [Release 说明（面向用户）](docs/release-notes.md)
 - [英文文档](docs/README.md)
+
+## 文档
+
+README 只讲定位；契约、认证与运维在文档站 <https://redtidev1918.github.io/releasegraph/>：
+
+| 你想做什么 | 文档 |
+| --- | --- |
+| 先跑通一次发布 | [快速开始](docs/quick-start.md) |
+| 理解概念与 DAG 契约 | [核心概念](docs/concepts.md) · [计划契约](docs/plan.md) |
+| 在自己的仓库里调用 | [如何调用发布工作流](docs/callers.md) |
+| 配权限与凭据 | [认证与权限](docs/authentication.md) |
+| 排障、回滚、恢复 | [发布健康](docs/health.md) · [恢复](docs/RECOVERY.md) |
+| 分支契约与 PR 流程 | [生产操作分支契约](docs/branch-contract.md) · [PR 生命周期](docs/pr-lifecycle.md) |
+
+## 致谢
+
+- [gopkg.in/yaml.v3](https://github.com/go-yaml/yaml)：图定义解析（Go 侧唯一依赖）。
+- [GitHub Actions](https://github.com/features/actions)：ReleaseGraph 的执行平面——它编排的是 Actions 工作流，不是自建调度器。
