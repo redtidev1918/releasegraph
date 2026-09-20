@@ -2,9 +2,7 @@
 
 Serverless, declarative, DAG-driven release orchestration for GitHub Actions.
 
-**Language / 语言:** [中文](README.md) · English
-
-📖 Documentation: <https://redtidev1918.github.io/releasegraph/>
+**Language / 语言:** [中文](README.md) · English · [Documentation](https://redtidev1918.github.io/releasegraph/)
 
 ```text
         core
@@ -127,3 +125,22 @@ See:
 - [Policy](docs/en/POLICY.md)
 - [Migration](docs/en/MIGRATION.md)
 - [Recovery](docs/en/RECOVERY.md)
+
+## Documentation
+
+This README covers what ReleaseGraph is; the contracts, auth, and operations live on the docs site
+<https://redtidev1918.github.io/releasegraph/>:
+
+| What you want | Where |
+| --- | --- |
+| Get one release through | [Quick start](docs/quick-start.md) |
+| Concepts and the DAG plan contract | [Concepts](docs/concepts.md) · [Plan](docs/plan.md) |
+| Call it from your repository | [Callers](docs/callers.md) |
+| Permissions and credentials | [Authentication](docs/authentication.md) |
+| Troubleshooting, rollback, recovery | [Health](docs/health.md) · [Recovery](docs/RECOVERY.md) |
+| Branch contract and PR flow | [Branch contract](docs/branch-contract.md) · [PR lifecycle](docs/pr-lifecycle.md) |
+
+## Acknowledgements
+
+- [gopkg.in/yaml.v3](https://github.com/go-yaml/yaml): plan parsing (the only Go dependency).
+- [GitHub Actions](https://github.com/features/actions): the execution plane — ReleaseGraph orchestrates workflows rather than running its own scheduler.
