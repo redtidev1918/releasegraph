@@ -56,6 +56,7 @@ jobs:
 acknowledge:
   needs: [release, publish-pypi]
   if: >-
+    always() &&
     needs.release.result == 'success' &&
     needs.release.outputs.run_release == '1' &&
     (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') &&
