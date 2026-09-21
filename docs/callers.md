@@ -48,6 +48,27 @@ jobs:
 
 全部可选：`RELEASE_PLEASE_TOKEN`、`NPM_TOKEN`、`ANDROID_KEYSTORE_B64`、`ANDROID_KEYSTORE_PROPERTIES`。缺某个 secret 只会关掉对应的发布，不会让整次运行失败。
 
+## Caller 侧注册表发布与 ACK 时序
+
+`finalize` 里的 Provider acknowledgement 是发布事务的最后一步。若仓库把必需的注册表发布放在 caller 自己的独立 job 里（例如 PyPI Trusted Publishing），ACK 会在那个 job 之前执行，健康门禁会以 `REGISTRY_INCOMPLETE` 拒绝 ACK——门禁在正常工作，不是流水线故障。这类仓库要在注册表 job 之后追加一个薄 caller job，复用本仓库的 `reusable-acknowledge.yml`：
+
+```yaml
+acknowledge:
+  needs: [release, publish-pypi]
+  if: >-
+    needs.release.result == 'success' &&
+    needs.release.outputs.run_release == '1' &&
+    (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') &&
+    github.event_name != 'pull_request' &&
+    !(github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true')
+  uses: redtidev1918/releasegraph/.github/workflows/reusable-acknowledge.yml@<pinned-ref>
+  with:
+    version: ${{ needs.release.outputs.version }}
+  secrets: inherit
+```
+
+该 workflow 从 `job.workflow_sha` 构建引擎，与 caller 的 pin 严格同 commit，重跑同一幂等 `provider reconcile --apply`，并在注册表索引传播期间有界重试；只有真正出现 ACK 记录、或 `providerState == "TAGGED"` 且 `health == "HEALTHY"` 才算成功。`provider reconcile` 本身在 ACK 被拒绝时也会正常退出，所以 caller job 绝不能只看退出码。没有独立注册表 job 的仓库不需要这个 job。
+
 ## Release 正文
 
 Release 页面上的说明文字由 ReleaseGraph 生成，调用方不需要提供：`feat` / `fix` / 破坏性变更会被归类并改写成用户措辞，而 `chore` / `ci` / `governance` / 依赖机器人 / 版本号 bump 不会出现在页面上。特殊发版可以用提交正文里的 `release-note:` 覆盖，或放 `.github/release-notes/<version>.md` 整篇替换。语言跟随仓库主 README。详见 [Release 说明（面向用户）](release-notes.md)。

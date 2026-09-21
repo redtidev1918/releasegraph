@@ -325,6 +325,38 @@ class ProviderReconciliationWorkflowTest(unittest.TestCase):
         # A non-dry run on a real branch only: never ACK from a pull request.
         self.assertIn("github.event_name != 'pull_request'", ack_block)
 
+    def test_caller_ack_workflow_builds_engine_from_its_own_pin(self):
+        workflow = Path(".github/workflows/reusable-acknowledge.yml").read_text()
+        self.assertIn("workflow_call:", workflow)
+        inputs = workflow.split("    inputs:", 1)[1].split("    secrets:", 1)[0]
+        self.assertIn("version:", inputs)
+        self.assertIn("required: true", inputs)
+        self.assertIn("repository: ${{ job.workflow_repository }}", workflow)
+        self.assertIn("ref: ${{ job.workflow_sha }}", workflow)
+        self.assertNotIn("ref: main", workflow)
+        self.assertNotIn("ref: v1", workflow)
+        self.assertIn("name: Assert engine provenance", workflow)
+        self.assertIn("provider reconcile", workflow)
+        self.assertIn("--apply", workflow)
+        self.assertIn("--output json", workflow)
+        self.assertIn(".data.acknowledged", workflow)
+        self.assertIn('providerState == "TAGGED"', workflow)
+        self.assertIn("RELEASE_PLEASE_TOKEN", workflow)
+
+    def test_caller_ack_convergence_is_verified_not_just_return_code(self):
+        workflow = Path(".github/workflows/reusable-acknowledge.yml").read_text()
+        step = workflow.split("Acknowledge provider after registry publication", 1)[1]
+        self.assertIn("jq -e", step)
+        self.assertIn("for attempt in 1 2 3 4 5 6 7 8 9 10 11 12", step)
+        self.assertIn("sleep 30", step)
+        self.assertIn("exit 1", step)
+
+    def test_caller_docs_prescribe_thin_ack_job(self):
+        for path in ("docs/callers.md", "docs/en/callers.md"):
+            with self.subTest(path=path):
+                text = Path(path).read_text()
+                self.assertIn("reusable-acknowledge.yml", text)
+
     def test_provider_watchdog_never_rewrites_release_history(self):
         workflow = Path(".github/workflows/provider-watchdog.yml").read_text()
         self.assertIn("provider inspect", workflow)
