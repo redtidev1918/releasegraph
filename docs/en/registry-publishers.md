@@ -40,6 +40,11 @@ search results.
   not change.
 - For multi-package repositories, use one component tag per package, for example
   `dakit_core-v1.2.3`; never try to publish directly from a main-branch push.
+- Tag pushes made with `GITHUB_TOKEN` never trigger workflows (GitHub's
+  recursion guard). Either push the tag with a PAT/App token that can trigger
+  workflows, or have the release pipeline explicitly dispatch the publishing
+  workflow at the tag ref (`gh workflow run ... --ref <tag>`) so the OIDC
+  token still has `refType=tag`.
 
 ## Complete checklist after a repository rename
 
