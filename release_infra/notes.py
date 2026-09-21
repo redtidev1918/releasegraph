@@ -37,6 +37,14 @@ CJK_THRESHOLD = 30
 
 LANGUAGES = ("auto", "en", "zh")
 
+# Every GitHub Release body is user-facing and every repository in this fleet
+# has Chinese users, so a body with zero Chinese characters is never shipped.
+# The auto-detected language still decides the main sections; this notice is
+# the guarantee that the page contains Chinese no matter which language wins.
+CHINESE_NOTICE = (
+    "> 中文说明：本版本内容请以仓库 README 与下载页为准，中文用户可查看中文文档。"
+)
+
 
 def detect_language(root: str | Path = ".") -> str:
     """The repository's primary user-facing language, from its primary README.
@@ -64,6 +72,13 @@ def resolve_language(policy: dict, root: str | Path = ".") -> str:
     if declared not in LANGUAGES:
         raise ValueError(f"release.notes.language must be one of: {', '.join(LANGUAGES)}")
     return detect_language(root) if declared == "auto" else declared
+
+
+def ensure_chinese(body: str) -> str:
+    """Return a Release body that always contains at least one Chinese character."""
+    if CJK.search(body):
+        return body
+    return body.rstrip() + "\n\n" + CHINESE_NOTICE + "\n"
 
 
 SECTIONS = {
@@ -669,9 +684,11 @@ def build_for_release(
         body = override.read_text(encoding="utf-8").strip() + "\n"
         if f"## {SECTIONS[language]['downloads']}" not in body:
             body += "\n" + "\n".join(downloads_block(policy, language, version, assets)).strip() + "\n"
-        return body
+        return ensure_chinese(body)
     if commits is None:
         commits = collect_commits(root, since=previous_tag(tag, root))
     entries = collect_entries(commits, language)
-    return render_body(policy, version, tag, language=language, entries=entries, assets=assets,
-                       prerelease=prerelease)
+    return ensure_chinese(
+        render_body(policy, version, tag, language=language, entries=entries, assets=assets,
+                    prerelease=prerelease),
+    )

@@ -31,6 +31,13 @@ To force one, declare it in the business repository's `.release-policy.yml`:
 
 Allowed values are `auto` (default), `en`, `zh`.
 
+## Hard constraint: the body must contain Chinese
+
+Every user-facing Release body must contain at least one Chinese character.
+If auto-detection or a hand-written override produces a body with no Chinese,
+ReleaseGraph appends a Chinese notice at the end so the page a download user
+sees is never purely English.
+
 ## Automatic derivation covers 80–90%
 
 ReleaseGraph treats Conventional Commits as an **input signal**, never as the final copy:
