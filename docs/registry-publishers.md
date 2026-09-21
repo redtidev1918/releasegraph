@@ -35,6 +35,10 @@
   pattern 也按包名区分，改名不改变 pattern。
 - 多包仓库建议每个包一个组件 tag，例如 `dakit_core-v1.2.3`；不要在 main push
   里尝试直接发布。
+- `GITHUB_TOKEN` 推 tag 不会触发任何 workflow（GitHub 防递归设计）。tag 发布
+  workflow 要么由 PAT / App token 推送真实触发，要么由 release 流水线在推完
+  tag 后显式 `gh workflow run publish-pub.yml --ref <tag>`，让 OIDC token 的
+  refType 保持 `tag`。
 
 ## 仓库改名后的完整步骤
 
