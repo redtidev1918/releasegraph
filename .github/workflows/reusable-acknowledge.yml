@@ -87,7 +87,7 @@ jobs:
                jq -e --arg repo "$GITHUB_REPOSITORY" --arg version "$RELEASE_VERSION" '
                  (.data.errors | length) == 0 and (
                    ([.data.acknowledged[] | select(.context.repository == $repo and .context.version == $version)] | length) > 0 or
-                   ([.data.reports[] | select(.context.repository == $repo and .context.version == $version and .observed.providerState == "TAGGED" and .verdict.health == "HEALTHY")] | length) > 0
+                   ([.data.reports[] | select(.context.repository == $repo and .context.version == $version and .observed.ProviderState == "TAGGED" and .verdict.health == "HEALTHY")] | length) > 0
                  )' "$ack" >/dev/null; then
               echo "provider acknowledged $RELEASE_VERSION"
               exit 0
