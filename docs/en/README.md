@@ -6,7 +6,7 @@ ReleaseGraph computes release plans from desired state, current GitHub and regis
 
 **Language / 语言:** [中文](/) · English · [GitHub repository](https://github.com/redtidev1918/releasegraph)
 
-## Start here
+## Get started
 
 1. Read the [architecture](ARCHITECTURE.md) and [policy contract](POLICY.md).
 2. Copy the [control repository example](https://github.com/redtidev1918/releasegraph/tree/v1/examples/control).

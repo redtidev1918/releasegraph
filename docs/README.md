@@ -6,7 +6,7 @@ ReleaseGraph 是一个面向 GitHub Actions 的无服务器、多仓库发布编
 
 **语言 / Language:** 中文 · [English](/en/) · [GitHub 仓库](https://github.com/redtidev1918/releasegraph)
 
-## 从这里开始
+## 快速开始
 
 - [快速开始](quick-start.md)：先以只读方式生成 live plan。
 - [核心概念](concepts.md)：Desired/Actual、事件、DAG 与恢复语义。
