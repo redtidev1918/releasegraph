@@ -543,7 +543,10 @@ func registryState(ctx context.Context, client *github.Bound, verifier *registry
 // idempotent: no tag/release mutation, label-only. dryRun returns the plan
 // without applying it.
 func Acknowledge(ctx context.Context, client *github.Bound, report *Report, dryRun bool) ([]LabelMutation, error) {
-	if !report.Verdict.ACKAllowed {
+	// A waiver is the explicit human decision that a historical version must
+	// not block newer ones; the outstanding autorelease label IS that block,
+	// so a waived PR is acknowledged exactly like a missed ACK would be.
+	if !report.Verdict.ACKAllowed && !report.Verdict.Waived {
 		return nil, fmt.Errorf("ACK refused: %s (%s)", report.Verdict.Health, report.Verdict.Drift)
 	}
 	if report.Context.ReleasePR == 0 {
@@ -575,6 +578,92 @@ func Acknowledge(ctx context.Context, client *github.Bound, report *Report, dryR
 		}
 	}
 	return mutations, nil
+}
+
+// OutstandingReleasePR is a merged release pull request whose autorelease
+// label still blocks release-please from opening the next version, paired
+// with the version the pull request was resolved to.
+type OutstandingReleasePR struct {
+	Number         int            `json:"number"`
+	Title          string         `json:"title"`
+	MergeCommitSHA string         `json:"mergeCommitSha,omitempty"`
+	Version        domain.Version `json:"version,omitempty"`
+	// Source records which signal resolved the version: EvidenceTitle,
+	// EvidenceManifest, or empty when neither could.
+	Source string `json:"source,omitempty"`
+}
+
+// OutstandingReleasePRs lists merged pull requests whose pending/triggered
+// autorelease label still blocks release-please. The manifest-version report
+// cannot see them once its own evidence resolves (the manifest bump PR has no
+// reason to carry a stale label), so the wedge list must be scanned directly.
+// Resolution order: the release-please title pattern first, then the manifest
+// version the merge commit introduced.
+func OutstandingReleasePRs(ctx context.Context, client *github.Bound, p *policy.Policy, repo string) ([]OutstandingReleasePR, error) {
+	prs, err := client.MergedPullRequests(ctx, repo)
+	if err != nil {
+		return nil, err
+	}
+	out := []OutstandingReleasePR{}
+	for i := range prs {
+		stale := false
+		for _, label := range prs[i].Labels {
+			if label.Name == labelPending || label.Name == labelTriggered {
+				stale = true
+				break
+			}
+		}
+		if !stale {
+			continue
+		}
+		item := OutstandingReleasePR{
+			Number:         prs[i].Number,
+			Title:          prs[i].Title,
+			MergeCommitSHA: prs[i].MergeCommitSHA,
+		}
+		if m := releasePRPattern.FindStringSubmatch(prs[i].Title); m != nil {
+			item.Version = domain.Version(m[1])
+			item.Source = EvidenceTitle
+		} else if v := manifestIntroducedAt(ctx, client, p, repo, prs[i].MergeCommitSHA); v != "" {
+			item.Version = domain.Version(v)
+			item.Source = EvidenceManifest
+		}
+		out = append(out, item)
+	}
+	return out, nil
+}
+
+// ScanOutstanding inspects every outstanding release PR whose version is not
+// already covered, so reconcile ACK decisions keep the same health gates as
+// the manifest version: a healthy transaction is acknowledged, a superseded
+// or broken one reports its drift and waits for an explicit waive, and an
+// unresolvable one surfaces as an error instead of a guess.
+func ScanOutstanding(ctx context.Context, client *github.Bound, verifier *registry.Verifier, p *policy.Policy, repo string, knownVersions map[string]bool) ([]Report, []string) {
+	outstanding, err := OutstandingReleasePRs(ctx, client, p, repo)
+	if err != nil {
+		return nil, []string{fmt.Sprintf("%s: outstanding release PR scan failed: %v", repo, err)}
+	}
+	reports := []Report{}
+	errs := []string{}
+	for _, item := range outstanding {
+		if item.Version == "" {
+			errs = append(errs, fmt.Sprintf(
+				"%s: PR #%d still carries a blocking autorelease label and its version cannot be resolved from title or manifest; waive it (`provider waive --version <v>`) or repair the label manually",
+				repo, item.Number))
+			continue
+		}
+		if knownVersions[string(item.Version)] {
+			continue
+		}
+		knownVersions[string(item.Version)] = true
+		report, err := Inspect(ctx, client, verifier, p, repo, string(item.Version))
+		if err != nil {
+			errs = append(errs, fmt.Sprintf("%s: %v", repo, err))
+			continue
+		}
+		reports = append(reports, *report)
+	}
+	return reports, errs
 }
 
 // ScanResult is the fleet-wide outcome of a provider scan. It is pure data:

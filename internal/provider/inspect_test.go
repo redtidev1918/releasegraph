@@ -39,6 +39,9 @@ type fakeGitHub struct {
 	prTitle           string
 	manifestAtMerge   string
 	manifestAtParent  string
+	manifestByRef     map[string]string
+	extraPRs          []string
+	commitsBySHA      map[string]string
 	noManifestCommits bool
 	packageManifest   string
 	mutations         []string
@@ -61,10 +64,25 @@ func (f *fakeGitHub) handler() http.Handler {
 		if f.prUnmerged {
 			mergedAt = "null"
 		}
-		fmt.Fprintf(w, `[{"number":30,"title":%q,"state":"closed","merged_at":%s,"merge_commit_sha":"b6c2","labels":[%s]}]`, title, mergedAt, strings.TrimSuffix(labels, ","))
+		pages := []string{
+			fmt.Sprintf(`{"number":30,"title":%q,"state":"closed","merged_at":%s,"merge_commit_sha":"b6c2","labels":[%s]}`,
+				title, mergedAt, strings.TrimSuffix(labels, ",")),
+		}
+		pages = append(pages, f.extraPRs...)
+		fmt.Fprintf(w, "[%s]", strings.Join(pages, ","))
 	})
 
 	mux.HandleFunc("/repos/"+acme+"/contents/.release-please-manifest.json", func(w http.ResponseWriter, r *http.Request) {
+		if f.manifestByRef != nil {
+			body, ok := f.manifestByRef[r.URL.Query().Get("ref")]
+			if !ok {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+			fmt.Fprintf(w, `{"encoding":"base64","content":%q}`,
+				base64.StdEncoding.EncodeToString([]byte(body)))
+			return
+		}
 		body := f.manifestAtMerge
 		if strings.Contains(r.URL.RawQuery, "parent1") {
 			body = f.manifestAtParent
@@ -111,6 +129,16 @@ func (f *fakeGitHub) handler() http.Handler {
 
 	mux.HandleFunc("/repos/"+acme+"/commits/b6c2", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, `{"sha":"b6c2","parents":[{"sha":"parent1"}]}`)
+	})
+
+	mux.HandleFunc("/repos/"+acme+"/commits/", func(w http.ResponseWriter, r *http.Request) {
+		sha := strings.TrimPrefix(r.URL.Path, "/repos/"+acme+"/commits/")
+		parent, ok := f.commitsBySHA[sha]
+		if !ok {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		fmt.Fprintf(w, `{"sha":%q,"parents":[{"sha":%q}]}`, sha, parent)
 	})
 
 	mux.HandleFunc("/repos/"+acme+"/commits", func(w http.ResponseWriter, r *http.Request) {

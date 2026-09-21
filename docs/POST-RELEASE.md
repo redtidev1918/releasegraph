@@ -66,3 +66,14 @@ python3 -m release_infra.cli post-release run    --path .release-policy.yml   # 
 `releasegraph workflow-plan`（以及 reusable `reusable-release.yml` 的 build-plan job）
 现在输出 `post_release_health`：`absent`（未配置动作）· `pending`（Release 已发布、动作未完成）·
 `satisfied`（全部动作成功）。
+
+## 发版 PR 的阻塞标签
+
+release-please 在任何已合并发版 PR 还挂着 `autorelease: pending` / `autorelease: triggered`
+时会拒绝开新版本。`provider reconcile` 因此扫描**所有**这样的 PR（不只 manifest 当前版本）：
+
+- 版本号从 PR 标题反解，标题不行就从 merge commit 引入的 manifest 版本反解；
+- 该版本发布事务健康 → 自动 ACK（加 `autorelease: tagged`、删 pending）；
+- 版本已被更新版本取代、事务无法修复 → 先 `provider waive --repo <repo> --version <v>`
+  （人工豁免，落 `releasegraph: historical-waived` 标签），再 reconcile 完成 ACK；
+- 标题和 manifest 都解不出版本 → reconcile 报错并给出上述处置提示，绝不猜测。
