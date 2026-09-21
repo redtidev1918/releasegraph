@@ -357,6 +357,15 @@ class ProviderReconciliationWorkflowTest(unittest.TestCase):
                 text = Path(path).read_text()
                 self.assertIn("reusable-acknowledge.yml", text)
 
+    def test_caller_ack_escapes_a_skipped_registry_job_with_always(self):
+        for path in (
+            ".github/workflows/reusable-acknowledge.yml",
+            "docs/callers.md",
+            "docs/en/callers.md",
+        ):
+            with self.subTest(path=path):
+                self.assertIn("always()", Path(path).read_text())
+
     def test_provider_watchdog_never_rewrites_release_history(self):
         workflow = Path(".github/workflows/provider-watchdog.yml").read_text()
         self.assertIn("provider inspect", workflow)

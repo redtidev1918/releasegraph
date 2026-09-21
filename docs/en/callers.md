@@ -74,6 +74,7 @@ repositories append a thin caller job after the registry job that reuses
 acknowledge:
   needs: [release, publish-pypi]
   if: >-
+    always() &&
     needs.release.result == 'success' &&
     needs.release.outputs.run_release == '1' &&
     (needs.publish-pypi.result == 'success' || needs.publish-pypi.result == 'skipped') &&
