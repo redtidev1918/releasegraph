@@ -635,5 +635,43 @@ class SingleSourceOfTruthTest(unittest.TestCase):
         self.assertFalse([command for command in commands if command.startswith("gh release edit")], commands)
 
 
+class ChineseReleaseBodyConstraintTest(unittest.TestCase):
+    """Every user-facing Release body must contain Chinese, regardless of the
+    language auto-detection or a hand-written override."""
+
+    def test_english_generated_body_appends_chinese_notice(self):
+        with tempfile.TemporaryDirectory() as directory:
+            body = notes.build_for_release(
+                policy(),
+                "1.0.0",
+                "v1.0.0",
+                root=Path(directory),
+                commits=[],
+                asset_names=[],
+            )
+        self.assertIsNotNone(notes.CJK.search(body), body)
+        self.assertIn(notes.CHINESE_NOTICE, body)
+
+    def test_english_hand_written_override_appends_chinese_notice(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            override_dir = root / ".github" / "release-notes"
+            override_dir.mkdir(parents=True)
+            (override_dir / "v1.0.0.md").write_text(
+                "English only release body.\n",
+                encoding="utf-8",
+            )
+            body = notes.build_for_release(
+                policy(),
+                "1.0.0",
+                "v1.0.0",
+                root=root,
+                asset_names=[],
+            )
+        self.assertIn("English only release body", body)
+        self.assertIsNotNone(notes.CJK.search(body), body)
+        self.assertIn(notes.CHINESE_NOTICE, body)
+
+
 if __name__ == "__main__":
     unittest.main()
