@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/35568068372",
-    "updated_at": "2026-09-21T06:21:01Z"
+    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/35610192364",
+    "updated_at": "2026-09-21T14:09:17Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -123,6 +123,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.2.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -135,9 +138,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.2.0"
     }
   },
   "registries": {
@@ -153,5 +153,11 @@
     "gatePinned": true,
     "policyValid": true
   },
-  "prLifecycle": null
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 1,
+    "inQueue": 1,
+    "shouldLeave": 0
+  }
 }

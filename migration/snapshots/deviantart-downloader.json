@@ -42,6 +42,21 @@
       "failed_draft": 2,
       "pruneStable": true
     },
+    "release": {
+      "postRelease": [
+        {
+          "id": "refresh-download-page",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "update-download-page.yml",
+          "ref": "default",
+          "inputs": {
+            "tag": "{{tag}}",
+            "deploy-docs": "true"
+          }
+        }
+      ]
+    },
     "checksums": true,
     "sbom": false,
     "repository": {
@@ -60,14 +75,14 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "4.3.0",
-  "latest_release": "v4.3.0",
-  "latest_release_at": "2026-09-19T12:32:05Z",
-  "latest_tag": "v4.3.0",
+  "desired_version": "4.3.3",
+  "latest_release": "v4.3.3",
+  "latest_release_at": "2026-09-21T14:10:48Z",
+  "latest_tag": "v4.3.3",
   "draft_releases": [],
   "actual_assets": [
-    "devart_dl-4.3.0-py3-none-any.whl",
-    "devart_dl-4.3.0.tar.gz",
+    "devart_dl-4.3.3-py3-none-any.whl",
+    "devart_dl-4.3.3.tar.gz",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -80,8 +95,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/35562376579",
-    "updated_at": "2026-09-21T04:49:58Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/35610035372",
+    "updated_at": "2026-09-21T14:12:31Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -101,35 +116,47 @@
   ],
   "release_history": [
     {
-      "tag": "v4.3.0",
+      "tag": "v4.3.3",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-19T12:32:05Z",
+      "published_at": "2026-09-21T14:10:48Z",
       "assets": [
         {
-          "name": "devart_dl-4.3.0-py3-none-any.whl",
-          "size": 45900,
-          "sha256": "sha256:6f36fe6364a3c2d8bb7aa41938f8a958cae372a9363d2caf5f2a3d585ec85c39"
+          "name": "devart_dl-4.3.3-py3-none-any.whl",
+          "size": 46794,
+          "sha256": "sha256:f92ad06ff0acf52d5b6a0edc50fe8fb5d9d4411b435d6255416102d8e899c2d7"
         },
         {
-          "name": "devart_dl-4.3.0.tar.gz",
-          "size": 59142,
-          "sha256": "sha256:cb21837d3d9bff7f817af3eccaf8d9fe7c3d434f1bb9d0b7391bc1b31f32d32d"
+          "name": "devart_dl-4.3.3.tar.gz",
+          "size": 58180,
+          "sha256": "sha256:9ecbbc60be5e07eec13968725a0fed014defd7e40ae8f856a1906a04669764d0"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 1684,
-          "sha256": "sha256:5b6f7b26fe02266b3e4045b7d5d080bd44a776fde544bca1aaefd04fb841c7b8"
+          "sha256": "sha256:85b84cbe915ca040ebca8714c5d7de877717bd78f9a93fa0b1b63325f72dc288"
         },
         {
           "name": "SHA256SUMS",
           "size": 188,
-          "sha256": "sha256:f157a2f68b2387062d81c3e26a617d02cca093da97f6899f956b36532fc23795"
+          "sha256": "sha256:ee4474d087c4a304cdd3047e7fff9f01b0498c75d608db07fe42543f5725c0f7"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v4.3.3",
+      "commit": "d18fb4c41a908c86a46d46ab5cbb14b65ee8b787"
+    },
+    {
+      "name": "v4.3.2",
+      "commit": "0142ff21ebf4c351709bbaf7cee55e8cfeaad300"
+    },
+    {
+      "name": "v4.3.1",
+      "commit": "c2a6d559b9ae6ed500bd8db9fb4d83624e39719e"
+    },
     {
       "name": "v4.3.0",
       "commit": "5ec50bf0f48a12477336f61bc81bc960c9f12159"
@@ -180,6 +207,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "4.3.3"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -192,16 +222,13 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "4.3.0"
     }
   },
   "registries": {
     "pypi": {
       "package": "devart-dl",
-      "declared": "4.3.0",
-      "published": "4.3.0"
+      "declared": "4.3.3",
+      "published": "4.3.3"
     }
   },
   "branchContract": {
