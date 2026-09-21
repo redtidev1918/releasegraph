@@ -4,7 +4,7 @@
 
 > **面向 GitHub Actions 的无服务器、声明式、DAG 驱动多仓库发布编排器。**
 
-📖 [文档站](https://redtidev1918.github.io/releasegraph/)
+[文档站](https://redtidev1918.github.io/releasegraph/)
 
 ```text
         core
@@ -17,6 +17,16 @@
 ReleaseGraph 根据期望状态、GitHub 与 registry 实际状态、项目 policy 和依赖图生成发布计划，验证 Release，并恢复未完成的同版本事务。
 
 不需要服务器，不需要数据库，不运行轮询 daemon。
+
+## 目录
+
+- [当前状态](#当前状态)
+- [无服务器控制仓库](#无服务器控制仓库)
+- [30 秒只读试用](#30-秒只读试用)
+- [声明式依赖图](#声明式依赖图)
+- [项目策略](#项目策略)
+- [文档](#文档)
+- [致谢](#致谢)
 
 ## 当前状态
 
