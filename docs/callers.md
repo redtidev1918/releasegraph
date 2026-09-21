@@ -68,7 +68,7 @@ acknowledge:
   secrets: inherit
 ```
 
-该 workflow 从 `job.workflow_sha` 构建引擎，与 caller 的 pin 严格同 commit，重跑同一幂等 `provider reconcile --apply`，并在注册表索引传播期间有界重试；只有真正出现 ACK 记录、或 `providerState == "TAGGED"` 且 `health == "HEALTHY"` 才算成功。`provider reconcile` 本身在 ACK 被拒绝时也会正常退出，所以 caller job 绝不能只看退出码。没有独立注册表 job 的仓库不需要这个 job。
+该 workflow 从 `job.workflow_sha` 构建引擎，与 caller 的 pin 严格同 commit，重跑同一幂等 `provider reconcile --apply`，并在注册表索引传播期间有界重试；只有真正出现 ACK 记录、或 `ProviderState == "TAGGED"` 且 `health == "HEALTHY"` 才算成功。`provider reconcile` 本身在 ACK 被拒绝时也会正常退出，所以 caller job 绝不能只看退出码。没有独立注册表 job 的仓库不需要这个 job。
 
 ## Release 正文
 

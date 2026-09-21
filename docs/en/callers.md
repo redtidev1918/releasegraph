@@ -90,7 +90,7 @@ The workflow builds its engine from `job.workflow_sha`, so it executes exactly
 the caller's pinned commit, re-runs the same idempotent
 `provider reconcile --apply`, and retries for a bounded time while the registry
 index propagates. It only succeeds on an actual ACK record, or when
-`providerState == "TAGGED"` and `health == "HEALTHY"`. `provider reconcile`
+`ProviderState == "TAGGED"` and `health == "HEALTHY"`. `provider reconcile`
 itself exits successfully even when the ACK is refused, so a caller job must
 never trust the exit code alone. Repositories without an independent registry
 job do not need it.

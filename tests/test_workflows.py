@@ -340,7 +340,7 @@ class ProviderReconciliationWorkflowTest(unittest.TestCase):
         self.assertIn("--apply", workflow)
         self.assertIn("--output json", workflow)
         self.assertIn(".data.acknowledged", workflow)
-        self.assertIn('providerState == "TAGGED"', workflow)
+        self.assertIn('ProviderState == "TAGGED"', workflow)
         self.assertIn("RELEASE_PLEASE_TOKEN", workflow)
 
     def test_caller_ack_convergence_is_verified_not_just_return_code(self):
