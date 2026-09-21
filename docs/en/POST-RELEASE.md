@@ -76,3 +76,21 @@ python3 -m release_infra.cli post-release run    --path .release-policy.yml   # 
 `build-plan` job) now reports `post_release_health`:
 `absent` (no actions configured) · `pending` (release public, actions
 incomplete) · `satisfied` (all actions success).
+
+## Blocking labels on release PRs
+
+release-please refuses to open the next version while any merged release PR
+still carries `autorelease: pending` / `autorelease: triggered`.
+`provider reconcile` therefore scans **all** such PRs (not just the manifest's
+current version):
+
+- The version is resolved from the PR title first, then from the manifest
+  version the merge commit introduced.
+- A healthy release transaction is acknowledged automatically
+  (add `autorelease: tagged`, remove pending).
+- A version superseded by newer releases that cannot be repaired gets an
+  explicit human waiver first (`provider waive --repo <repo> --version <v>`,
+  recorded as `releasegraph: historical-waived`), then reconcile completes
+  the ACK.
+- If neither the title nor the manifest resolves the version, reconcile
+  errors with the guidance above instead of guessing.

@@ -365,6 +365,16 @@ func scanTargets(ctx context.Context, opts providerOptions, client *github.Bound
 			continue
 		}
 		scan.Reports = append(scan.Reports, *report)
+		// Outstanding release PRs are what actually wedge release-please: a
+		// merged PR still carrying "autorelease: pending" blocks every future
+		// version, and the manifest-version report above cannot see them once
+		// its own evidence resolves. Scan them explicitly and route each
+		// through the same Inspect health gates.
+		if provider.ResolveProvider(p) == provider.KindReleasePlease {
+			outstanding, scanErrs := provider.ScanOutstanding(ctx, client, verifier, p, repo, map[string]bool{version: true})
+			scan.Reports = append(scan.Reports, outstanding...)
+			scan.Errors = append(scan.Errors, scanErrs...)
+		}
 	}
 	return scan, nil
 }
