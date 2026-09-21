@@ -1,10 +1,10 @@
 # ReleaseGraph
 
-面向 GitHub Actions 的无服务器、声明式、DAG 驱动多仓库发布编排器。
-
 **语言 / Language:** 中文 · [English](README.en.md)
 
-📖 文档站：<https://redtidev1918.github.io/releasegraph/>
+**面向 GitHub Actions 的无服务器、声明式、DAG 驱动多仓库发布编排器。**
+
+📖 [文档站](https://redtidev1918.github.io/releasegraph/)
 
 ```text
         core
@@ -131,7 +131,7 @@ GitHub Release 页面上的说明文字同样由 ReleaseGraph 生成：面向下
 
 ## 文档
 
-README 只讲定位；契约、认证与运维在文档站 <https://redtidev1918.github.io/releasegraph/>：
+README 只讲定位；契约、认证与运维在[文档站](https://redtidev1918.github.io/releasegraph/)：
 
 | 你想做什么 | 文档 |
 | --- | --- |

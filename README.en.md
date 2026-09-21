@@ -1,10 +1,10 @@
 # ReleaseGraph
 
-Serverless, declarative, DAG-driven release orchestration for GitHub Actions.
-
 **Language / 语言:** [中文](README.md) · English
 
-📖 Full documentation: <https://redtidev1918.github.io/releasegraph/>
+**Serverless, declarative, DAG-driven release orchestration for GitHub Actions.**
+
+📖 [Full documentation](https://redtidev1918.github.io/releasegraph/)
 
 ```text
         core
@@ -130,8 +130,8 @@ See:
 
 ## Documentation
 
-This README covers what ReleaseGraph is; the contracts, auth, and operations live on the docs site
-<https://redtidev1918.github.io/releasegraph/>:
+This README covers what ReleaseGraph is; the contracts, auth, and operations live on the
+[docs site](https://redtidev1918.github.io/releasegraph/):
 
 | What you want | Where |
 | --- | --- |
