@@ -45,6 +45,11 @@ releasegraph plan --graph release-graph.yml --live --output json
 
 `schemas/plan-v1.json` **只**描述图视图，因为只有它有生产消费方。它被刻意收窄：`RepositoryPlanIsOutOfScopeTest` 会把一份仓库计划的载荷喂进去并要求校验**失败**，所以这条范围边界是被强制的，不是写在散文里的。等仓库计划需要契约时，它单独拥有一份 schema —— 一份 schema 无法诚实地同时覆盖两份对同一字段类型有分歧的载荷。
 
+图里的 `dependsOn` 是**声明的编排关系**，不是依赖清单分析。`plan --graph`
+不会读取下游 `pubspec.yaml` / `package.json` 里的版本约束，也不会在
+上游发版后自动给下游开依赖更新 PR；那是一个独立原语/人工步骤。它只回答
+“哪些节点现在能开始、哪些被上游阻塞”。
+
 ## state 输入
 
 `--state <file>` 把项目 id 映射到该节点的当前状态。它接受**完整的** `internal/domain.Health` 词表，比 [发布健康](health.md) 里的仓库健康词表更宽：

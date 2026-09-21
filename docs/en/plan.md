@@ -59,6 +59,13 @@ validation to **fail**, so the scope boundary is enforced rather than asserted i
 prose. When the repository plan needs a contract, it gets its own schema — one
 schema cannot honestly cover two payloads that disagree about a field's type.
 
+The graph's `dependsOn` is a **declared orchestration relationship**, not a
+dependency-manifest analysis. `plan --graph` does not read downstream
+`pubspec.yaml` / `package.json` version constraints, and it does not open
+dependency-update pull requests in downstream repositories after an upstream
+release. That is a separate primitive or manual step. It only answers which
+nodes may start now and which are blocked by upstream nodes.
+
 ## The state input
 
 `--state <file>` maps a project id to that node's current state. It accepts the
