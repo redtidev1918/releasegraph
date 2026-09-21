@@ -29,8 +29,10 @@
   "latest_release_run": null,
   "signals": [],
   "workflow_paths": [
+    ".github/workflows/docs.yml",
     ".github/workflows/navcheck.yml",
-    ".github/workflows/notify-profile.yml"
+    ".github/workflows/notify-profile.yml",
+    ".github/workflows/update-download-page.yml"
   ],
   "release_history": [],
   "tags": [],

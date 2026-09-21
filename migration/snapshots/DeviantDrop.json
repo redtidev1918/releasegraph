@@ -1,0 +1,228 @@
+{
+  "repo": "redtidev1918/DeviantDrop",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "managed",
+  "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": {
+    "kind": "none",
+    "versioning": {
+      "mode": "release-please"
+    },
+    "build": {
+      "test": "npm ci && npm test && npx wrangler deploy --dry-run --outdir dist/wrangler",
+      "command": "npm ci && npm run check"
+    },
+    "assets": {
+      "required": [],
+      "optional": []
+    },
+    "registries": {
+      "github": {
+        "required": true
+      }
+    },
+    "retention": {
+      "stable": 1,
+      "prerelease": 1,
+      "failed_draft": 2,
+      "pruneStable": true
+    },
+    "checksums": false,
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    },
+    "release": {
+      "postRelease": []
+    }
+  },
+  "release_infra_version": null,
+  "desired_version": "1.12.2",
+  "latest_release": "v1.12.2",
+  "latest_release_at": "2026-09-20T16:46:15Z",
+  "latest_tag": "v1.12.2",
+  "draft_releases": [],
+  "actual_assets": [
+    "RELEASE-METADATA.json"
+  ],
+  "release_workflows": [
+    {
+      "name": "Release",
+      "path": ".github/workflows/release.yml"
+    }
+  ],
+  "latest_release_run": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/35568653390",
+    "updated_at": "2026-09-21T06:28:45Z"
+  },
+  "signals": [
+    ".release-please-manifest.json",
+    ".release-policy.yml",
+    "CHANGELOG.md",
+    "Dockerfile",
+    "package.json",
+    "release-please-config.json"
+  ],
+  "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/deploy.yml",
+    ".github/workflows/notify-profile.yml",
+    ".github/workflows/release.yml",
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
+  ],
+  "release_history": [
+    {
+      "tag": "v1.12.2",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-20T16:46:15Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1224,
+          "sha256": "sha256:25f51610a84c95d7981a61c51211a29021515abb9b761f284b9b97b12d5e3ff5"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "v1.12.2",
+      "commit": "ea2f1d46ced5a11f03614d3cd0c66144639d6580"
+    },
+    {
+      "name": "v1.12.1",
+      "commit": "6a1b1d889029771dd99dfe1e077761228386cba7"
+    },
+    {
+      "name": "v1.12.0",
+      "commit": "8be63f7b74873147239a838a619576c9837738d5"
+    },
+    {
+      "name": "v1.11.0",
+      "commit": "c36ee6f644c485fcb8991e461bfc662c726d5397"
+    },
+    {
+      "name": "v1.10.0",
+      "commit": "351756ad08d7114370ac80c8a68c1125d034827a"
+    },
+    {
+      "name": "v1.9.0",
+      "commit": "e45c60513fcefe91196b9c3aec5947f9e2981ce0"
+    },
+    {
+      "name": "v1.8.0",
+      "commit": "9bc8b78d1288b3cca73d3fcee1a47d47caeb38c7"
+    },
+    {
+      "name": "v1.7.0",
+      "commit": "bfb5efe8925527ed8d731453d30ab8b458bf3407"
+    },
+    {
+      "name": "v1.6.3",
+      "commit": "06a813390ea75cfee904a3b04dee8252a17e7984"
+    },
+    {
+      "name": "v1.6.2",
+      "commit": "60b9946514b304e24b0a4409f0bbc750e570b2ce"
+    },
+    {
+      "name": "v1.6.1",
+      "commit": "54a1d249aa5aeb51c2fa02c6fe4b7a358c9bd93d"
+    },
+    {
+      "name": "v1.6.0",
+      "commit": "03fd3704fcc2a1ab55319fdeaf11d7032ba13678"
+    },
+    {
+      "name": "v1.5.0",
+      "commit": "920f20c535a1e0be9263e846a5e5a6588c0cb12a"
+    },
+    {
+      "name": "v1.4.0",
+      "commit": "5c21db8c17967a12f8346f342a31be6b0d9bd8e2"
+    },
+    {
+      "name": "v1.3.2",
+      "commit": "079cf0c8abc59cceb4d970f255261f70c3189ebc"
+    },
+    {
+      "name": "v1.3.1",
+      "commit": "8151625ddf302bceff1d0e57dd24fec0f7b8ba64"
+    },
+    {
+      "name": "v1.3.0",
+      "commit": "6a53b4f6b3465b2f73113e9ca1af8c8072233e8b"
+    },
+    {
+      "name": "v1.2.1",
+      "commit": "746e0e82a343a6a920f5dec1d6c2aae9761513a9"
+    },
+    {
+      "name": "v1.2.0",
+      "commit": "89c6702c70ba034e790366a9132a72b1cd09d771"
+    },
+    {
+      "name": "v1.1.0",
+      "commit": "3c645e88c7dbef3f15c38ec19a15647dd7de74f8"
+    },
+    {
+      "name": "v1.0.0",
+      "commit": "8b5a347586b701599833f05bf0c59bc752d5e282"
+    }
+  ],
+  "release_config": {
+    "release-please-config.json": {
+      "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
+      "packages": {
+        ".": {
+          "release-type": "node",
+          "package-name": "deviantdrop",
+          "include-v-in-tag": true,
+          "include-component-in-tag": false,
+          "skip-github-release": true
+        }
+      }
+    },
+    ".release-please-manifest.json": {
+      ".": "1.12.2"
+    }
+  },
+  "registries": {
+    "npm": {
+      "package": "deviantdrop",
+      "declared": "1.12.2",
+      "published": null
+    }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": null
+}

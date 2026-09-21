@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/35494029797",
-    "updated_at": "2026-09-20T06:21:57Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/35569272779",
+    "updated_at": "2026-09-21T06:39:05Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -225,9 +225,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "1.13.0"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -239,6 +236,9 @@
           "include-component-in-tag": false
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "1.13.0"
     }
   },
   "registries": {},
@@ -251,8 +251,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 0,
-    "inQueue": 0,
+    "open": 2,
+    "inQueue": 2,
     "shouldLeave": 0
   }
 }

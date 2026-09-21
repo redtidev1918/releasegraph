@@ -1,0 +1,532 @@
+{
+  "repo": "redtidev1918/DAKit",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "managed",
+  "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": {
+    "kind": "binary",
+    "versioning": {
+      "mode": "release-please",
+      "package": "packages/dakit_cli"
+    },
+    "tag": {
+      "template": "dakit_cli-v{version}"
+    },
+    "build": {
+      "test": "flutter analyze && flutter test packages/dakit_cli/test",
+      "flutter_version": "3.47.1",
+      "matrix": [
+        {
+          "runner": "ubuntu-24.04",
+          "command": "TARGET=linux-x64 scripts/build-release"
+        },
+        {
+          "runner": "ubuntu-24.04",
+          "command": "TARGET=linux-arm64 scripts/build-release"
+        },
+        {
+          "runner": "macos-15",
+          "command": "TARGET=macos-arm64-unsigned-preview scripts/build-release"
+        },
+        {
+          "runner": "macos-15-intel",
+          "command": "TARGET=macos-x64-unsigned-preview scripts/build-release"
+        },
+        {
+          "runner": "windows-2025",
+          "command": "TARGET=windows-x64 scripts/build-release"
+        }
+      ]
+    },
+    "assets": {
+      "required": [
+        "dakit-cli-*-linux-x64.tar.gz",
+        "dakit-cli-*-linux-arm64.tar.gz",
+        "dakit-cli-*-macos-arm64-unsigned-preview.tar.gz",
+        "dakit-cli-*-macos-x64-unsigned-preview.tar.gz",
+        "dakit-cli-*-windows-x64.zip"
+      ],
+      "optional": []
+    },
+    "registries": {
+      "github": {
+        "required": true
+      }
+    },
+    "release": {
+      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/download.md && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push))"
+    },
+    "retention": {
+      "stable": 1,
+      "prerelease": 1,
+      "failed_draft": 2,
+      "pruneStable": true
+    },
+    "checksums": true,
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
+  },
+  "release_infra_version": null,
+  "desired_version": "0.4.1",
+  "latest_release": "dakit_cli-v0.4.1",
+  "latest_release_at": "2026-09-08T06:13:11Z",
+  "latest_tag": "python-preview-1.0.0a1",
+  "draft_releases": [],
+  "actual_assets": [
+    "dakit-cli-0.4.1-linux-arm64.tar.gz",
+    "dakit-cli-0.4.1-linux-x64.tar.gz",
+    "dakit-cli-0.4.1-macos-arm64-unsigned-preview.tar.gz",
+    "dakit-cli-0.4.1-macos-x64-unsigned-preview.tar.gz",
+    "dakit-cli-0.4.1-windows-x64.zip",
+    "RELEASE-METADATA.json",
+    "SHA256SUMS"
+  ],
+  "release_workflows": [
+    {
+      "name": "Release",
+      "path": ".github/workflows/release.yml"
+    }
+  ],
+  "latest_release_run": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/35564572870",
+    "updated_at": "2026-09-21T05:27:16Z"
+  },
+  "signals": [
+    ".release-please-manifest.json",
+    ".release-policy.yml",
+    "pubspec.yaml",
+    "release-please-config.json"
+  ],
+  "workflow_paths": [
+    ".github/workflows/branch-contract.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/notify-profile.yml",
+    ".github/workflows/publish-web.yml",
+    ".github/workflows/release.yml",
+    ".github/workflows/static.yml",
+    ".github/workflows/update-download-page.yml"
+  ],
+  "release_history": [
+    {
+      "tag": "dakit_cli-v0.4.1",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-08T06:13:11Z",
+      "assets": [
+        {
+          "name": "dakit-cli-0.4.1-linux-arm64.tar.gz",
+          "size": 3249360,
+          "sha256": "sha256:687d9d98ab170357733f4dc01211dcec720d0aa8f052b835d89db51ec17f71f1"
+        },
+        {
+          "name": "dakit-cli-0.4.1-linux-x64.tar.gz",
+          "size": 3370479,
+          "sha256": "sha256:cb28e7efaa39c4d1a9de07defe346a90283b0db7e6b38812f7fa1d69f312b7a7"
+        },
+        {
+          "name": "dakit-cli-0.4.1-macos-arm64-unsigned-preview.tar.gz",
+          "size": 3159315,
+          "sha256": "sha256:1831443bf367443f4e92bb9adfe1eef1663617352a07d5a6b6b181ba1706b482"
+        },
+        {
+          "name": "dakit-cli-0.4.1-macos-x64-unsigned-preview.tar.gz",
+          "size": 3362610,
+          "sha256": "sha256:da6dbd9ca0c61d09f67e5d89c44f6b06ee731fd28080d3383544acbd593e07e1"
+        },
+        {
+          "name": "dakit-cli-0.4.1-windows-x64.zip",
+          "size": 3440682,
+          "sha256": "sha256:747ae82ea94402ac419bf34c7cc6712b55ddda9e648f15f108c9a5e8869608e6"
+        },
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1726,
+          "sha256": "sha256:71536bf45c360ea7b53774896e6cbfebcbdff01917fce23c15a19568075bd6e0"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 532,
+          "sha256": "sha256:f45e4a4af55b42cc901cb2ca378a11672ae80a933582c687a22a1ab5cedf03b6"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "python-preview-1.0.0a1",
+      "commit": "a38360da35e93fee39ed9a9cff31ecd2908bbbdd"
+    },
+    {
+      "name": "dakit_flutter-v1.0.0",
+      "commit": "6828bbca3bbe8655c7ed6de6d5bd9ecbb894e9da"
+    },
+    {
+      "name": "dakit_flutter-v0.1.13",
+      "commit": "60ec841094979eb94b6af7f88aee869945904aae"
+    },
+    {
+      "name": "dakit_flutter-v0.1.12",
+      "commit": "c9ad7fdc56789466fe3e73ff7de7b1bbf4b881a4"
+    },
+    {
+      "name": "dakit_flutter-v0.1.11",
+      "commit": "2deabc3f312a021802ec521e696b6006e625d524"
+    },
+    {
+      "name": "dakit_flutter-v0.1.10",
+      "commit": "ccf95a071f1d3b1cf5897faf51b0528826f7fe16"
+    },
+    {
+      "name": "dakit_flutter-v0.1.9",
+      "commit": "cb2ccf828aec0e5b50a4e2a78603663ee538f5cf"
+    },
+    {
+      "name": "dakit_flutter-v0.1.8",
+      "commit": "244e00e31d25bfc9b16e74c6fa05fcaead7f4885"
+    },
+    {
+      "name": "dakit_flutter-v0.1.7",
+      "commit": "b9bcff9d4a6e4c2bf01f1aff240b5acc5b0e8369"
+    },
+    {
+      "name": "dakit_flutter-v0.1.6",
+      "commit": "c8eded56accb641953f6625b20def38de5742e95"
+    },
+    {
+      "name": "dakit_flutter-v0.1.5",
+      "commit": "874f7dfa6632c6a55a6f626c4ac612a4685f24c1"
+    },
+    {
+      "name": "dakit_flutter-v0.1.4",
+      "commit": "9e596ddf16cb0a9d44e3c05efb5a9f895ecba078"
+    },
+    {
+      "name": "dakit_flutter-v0.1.3",
+      "commit": "8e00235157e73ca029d348928ae65df2fe8a6e2c"
+    },
+    {
+      "name": "dakit_flutter-v0.1.2",
+      "commit": "602f0f6aa5eb4d450baee42b037e48619876935b"
+    },
+    {
+      "name": "dakit_flutter-v0.1.1",
+      "commit": "d6a8d886135bba25c54549ed0659c9f3e048b58f"
+    },
+    {
+      "name": "dakit_core-v1.0.0",
+      "commit": "4c4aec379ff513391c6948ea95d796dd59d1140c"
+    },
+    {
+      "name": "dakit_core-v0.2.0",
+      "commit": "b93927cb208d388ecdf3198a5f00e8994f3dfff8"
+    },
+    {
+      "name": "dakit_core-v0.1.15",
+      "commit": "c9ad7fdc56789466fe3e73ff7de7b1bbf4b881a4"
+    },
+    {
+      "name": "dakit_core-v0.1.14",
+      "commit": "2deabc3f312a021802ec521e696b6006e625d524"
+    },
+    {
+      "name": "dakit_core-v0.1.13",
+      "commit": "1209d3a897db1a2f7a5ee5bacfe1c49ce21db6e0"
+    },
+    {
+      "name": "dakit_core-v0.1.12",
+      "commit": "cad0323c0a26cb0c62c505499fb0d729ef9542f8"
+    },
+    {
+      "name": "dakit_core-v0.1.11",
+      "commit": "244e00e31d25bfc9b16e74c6fa05fcaead7f4885"
+    },
+    {
+      "name": "dakit_core-v0.1.10",
+      "commit": "243bfa05a0eba44f73e333d50ebec89372c843a4"
+    },
+    {
+      "name": "dakit_core-v0.1.9",
+      "commit": "b535604ea6e87610ea62d66f5b14e833a74461c8"
+    },
+    {
+      "name": "dakit_core-v0.1.8",
+      "commit": "0bdf15061294d2287f68286d19890f46699a3eaf"
+    },
+    {
+      "name": "dakit_core-v0.1.7",
+      "commit": "f6a2674ad084a66a04bfc5217a867309af716729"
+    },
+    {
+      "name": "dakit_core-v0.1.6",
+      "commit": "9e596ddf16cb0a9d44e3c05efb5a9f895ecba078"
+    },
+    {
+      "name": "dakit_core-v0.1.5",
+      "commit": "602f0f6aa5eb4d450baee42b037e48619876935b"
+    },
+    {
+      "name": "dakit_core-v0.1.4",
+      "commit": "c78cfbff7abb51bde09b8c2bed842a840fb5904b"
+    },
+    {
+      "name": "dakit_core-v0.1.3",
+      "commit": "2dc6271ee055b6499b84e0012681aa6b913b95bd"
+    },
+    {
+      "name": "dakit_core-v0.1.2",
+      "commit": "00e4749c717fff928e5087b861ec192711c1a6d7"
+    },
+    {
+      "name": "dakit_core-v0.1.1",
+      "commit": "11d8c49c5c313821801236b73022fde84f80c4a3"
+    },
+    {
+      "name": "dakit_cli-v0.4.1",
+      "commit": "708f86620dca8a0be26bc39b19dd8f5e74bbbcf7"
+    },
+    {
+      "name": "dakit_cli-v0.4.0",
+      "commit": "4c4aec379ff513391c6948ea95d796dd59d1140c"
+    },
+    {
+      "name": "dakit_cli-v0.3.0",
+      "commit": "b93927cb208d388ecdf3198a5f00e8994f3dfff8"
+    },
+    {
+      "name": "dakit_cli-v0.2.3",
+      "commit": "6992ac8123aa2b1ef55e8c71e19e13e60b7d55e0"
+    },
+    {
+      "name": "dakit_cli-v0.2.2",
+      "commit": "aa4499ce59192cdb7023074db765d1aebc4545fa"
+    },
+    {
+      "name": "dakit_cli-v0.2.1",
+      "commit": "4772723931553c3fc1bfbe59348aed2a9c678b66"
+    },
+    {
+      "name": "dakit_cli-v0.2.0",
+      "commit": "31873a80865b4134c80b33e1d4ce822b5eda791b"
+    },
+    {
+      "name": "dakit_api-v1.0.0",
+      "commit": "6828bbca3bbe8655c7ed6de6d5bd9ecbb894e9da"
+    },
+    {
+      "name": "dakit_api-v0.2.0",
+      "commit": "b93927cb208d388ecdf3198a5f00e8994f3dfff8"
+    },
+    {
+      "name": "dakit_api-v0.1.30",
+      "commit": "0765cbb4b838e0bdc5b28e2016bb670a81d6df7a"
+    },
+    {
+      "name": "dakit_api-v0.1.29",
+      "commit": "c9ad7fdc56789466fe3e73ff7de7b1bbf4b881a4"
+    },
+    {
+      "name": "dakit_api-v0.1.28",
+      "commit": "2deabc3f312a021802ec521e696b6006e625d524"
+    },
+    {
+      "name": "dakit_api-v0.1.27",
+      "commit": "da94dc5bbc5444b21224dfde378c44cecf2f3fed"
+    },
+    {
+      "name": "dakit_api-v0.1.26",
+      "commit": "1209d3a897db1a2f7a5ee5bacfe1c49ce21db6e0"
+    },
+    {
+      "name": "dakit_api-v0.1.25",
+      "commit": "256a6c84115a0b9cb9b8460ba1a8f46cea077107"
+    },
+    {
+      "name": "dakit_api-v0.1.24",
+      "commit": "7ddd9e1b96836bc800fa37c34d7e4c269e6f1b48"
+    },
+    {
+      "name": "dakit_api-v0.1.23",
+      "commit": "4b1567e9a3de9a26e9f11f2b1b83fb1b8656189a"
+    },
+    {
+      "name": "dakit_api-v0.1.22",
+      "commit": "cade2c75271223b60b184034de7f86aea9a60d6b"
+    },
+    {
+      "name": "dakit_api-v0.1.21",
+      "commit": "a442d7307a9b7bfec7a4310a09a065816619cb04"
+    },
+    {
+      "name": "dakit_api-v0.1.20",
+      "commit": "c31414cb6bb40ac751f9029c41ab153f980b22ce"
+    },
+    {
+      "name": "dakit_api-v0.1.19",
+      "commit": "cad0323c0a26cb0c62c505499fb0d729ef9542f8"
+    },
+    {
+      "name": "dakit_api-v0.1.18",
+      "commit": "50f95308fdc69a2199706d4969a0d87e360809e9"
+    },
+    {
+      "name": "dakit_api-v0.1.17",
+      "commit": "8b811295e3f7da215182d7ac4f45d0e1cb40f392"
+    },
+    {
+      "name": "dakit_api-v0.1.16",
+      "commit": "96afbeea1403a5f9c1eb86d32bb42e2fd9c3e6b3"
+    },
+    {
+      "name": "dakit_api-v0.1.15",
+      "commit": "244e00e31d25bfc9b16e74c6fa05fcaead7f4885"
+    },
+    {
+      "name": "dakit_api-v0.1.14",
+      "commit": "4e8853620dcaca172da6570982fece8d7ac124cf"
+    },
+    {
+      "name": "dakit_api-v0.1.13",
+      "commit": "bcf677eb707356fb25cb9473ee8a3777980b506c"
+    },
+    {
+      "name": "dakit_api-v0.1.12",
+      "commit": "243bfa05a0eba44f73e333d50ebec89372c843a4"
+    },
+    {
+      "name": "dakit_api-v0.1.11",
+      "commit": "b535604ea6e87610ea62d66f5b14e833a74461c8"
+    },
+    {
+      "name": "dakit_api-v0.1.10",
+      "commit": "0bdf15061294d2287f68286d19890f46699a3eaf"
+    },
+    {
+      "name": "dakit_api-v0.1.9",
+      "commit": "2c9de59512e52b8d6c783862710912be71d11323"
+    },
+    {
+      "name": "dakit_api-v0.1.8",
+      "commit": "bd2984b3d9b2860aca67bfba75705565f8e48240"
+    },
+    {
+      "name": "dakit_api-v0.1.7",
+      "commit": "d1df323270242ad262589118aecc8012ad128ef6"
+    },
+    {
+      "name": "dakit_api-v0.1.6",
+      "commit": "5c357d9b4e643a1e51dafa417ea9abd0bf756441"
+    },
+    {
+      "name": "dakit_api-v0.1.5",
+      "commit": "0943d413bad9de9a50d1c073dd6573b47d626c1b"
+    },
+    {
+      "name": "dakit_api-v0.1.4",
+      "commit": "b0fbfbbd57468836e165da927640c53faf7737dc"
+    },
+    {
+      "name": "dakit_api-v0.1.3",
+      "commit": "c78cfbff7abb51bde09b8c2bed842a840fb5904b"
+    },
+    {
+      "name": "dakit_api-v0.1.2",
+      "commit": "2dc6271ee055b6499b84e0012681aa6b913b95bd"
+    }
+  ],
+  "release_config": {
+    "release-please-config.json": {
+      "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
+      "packages": {
+        "packages/dakit_core": {
+          "release-type": "dart",
+          "package-name": "dakit_core",
+          "component": "dakit_core",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        },
+        "packages/dakit_api": {
+          "release-type": "dart",
+          "package-name": "dakit_api",
+          "component": "dakit_api",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        },
+        "packages/dakit_flutter": {
+          "release-type": "dart",
+          "package-name": "dakit_flutter",
+          "component": "dakit_flutter",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        },
+        "packages/dakit_cli": {
+          "release-type": "dart",
+          "package-name": "dakit_cli",
+          "component": "dakit_cli",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        },
+        "packages/dakit_web": {
+          "release-type": "dart",
+          "package-name": "dakit_web",
+          "component": "dakit_web",
+          "include-v-in-tag": true,
+          "include-component-in-tag": true,
+          "tag-separator": "-",
+          "skip-github-release": true
+        }
+      }
+    },
+    ".release-please-manifest.json": {
+      "packages/dakit_core": "1.1.0",
+      "packages/dakit_api": "1.1.0",
+      "packages/dakit_flutter": "1.0.0",
+      "packages/dakit_cli": "0.4.1",
+      "packages/dakit_web": "0.2.1"
+    }
+  },
+  "registries": {
+    "pub": {
+      "package": "dakit_workspace",
+      "declared": "0.1.0",
+      "published": null
+    }
+  },
+  "branchContract": {
+    "configured": true,
+    "gateInstalled": true,
+    "gatePinned": true,
+    "policyValid": true
+  },
+  "prLifecycle": null
+}
