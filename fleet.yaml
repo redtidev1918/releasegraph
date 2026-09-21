@@ -19,19 +19,19 @@ repositories:
     enabled: true
   - name: redtidev1918/PixivFlow
     enabled: true
-  - name: redtidev1918/dakit
+  - name: redtidev1918/DAKit
     enabled: true
-  - name: redtidev1918/daviewer
+  - name: redtidev1918/DAViewer
     enabled: true
   - name: redtidev1918/deviantart-downloader
     enabled: true
-  - name: redtidev1918/deviantdrop
+  - name: redtidev1918/DeviantDrop
     enabled: true
-  - name: redtidev1918/graf
+  - name: redtidev1918/Graf
     enabled: true
   - name: redtidev1918/ludum
     enabled: true
-  - name: redtidev1918/paranote
+  - name: redtidev1918/ParaNote
     enabled: true
   - name: redtidev1918/pixiv-token-getter
     enabled: true
@@ -39,7 +39,7 @@ repositories:
     enabled: true
   - name: redtidev1918/pixivflow-webui
     enabled: true
-  - name: redtidev1918/telepress
+  - name: redtidev1918/TelePress
     enabled: true
 
   # Dogfood repository: promoted by pushing an immutable tag (infra-release.yml),
