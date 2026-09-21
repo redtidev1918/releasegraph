@@ -6,6 +6,7 @@
 - 使用与配置
   - [认证与权限](/authentication.md)
   - [发版后动作](/POST-RELEASE.md)
+  - [注册表发布与仓库改名](/registry-publishers.md)
   - [发布健康](/health.md)
   - [计划契约](/plan.md)
   - [如何调用发布工作流](/callers.md)

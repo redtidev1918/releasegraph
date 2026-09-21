@@ -6,6 +6,7 @@
 - Usage & Configuration
   - [Authentication](/en/authentication.md)
   - [Post-release actions](/en/POST-RELEASE.md)
+  - [Registry publishing and repository renames](/en/registry-publishers.md)
   - [Release Health](/en/health.md)
   - [Plan Contract](/en/plan.md)
   - [Calling the Release Workflow](/en/callers.md)

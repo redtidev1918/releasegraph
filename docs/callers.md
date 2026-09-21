@@ -70,6 +70,8 @@ acknowledge:
 
 该 workflow 从 `job.workflow_sha` 构建引擎，与 caller 的 pin 严格同 commit，重跑同一幂等 `provider reconcile --apply`，并在注册表索引传播期间有界重试；只有真正出现 ACK 记录、或 `ProviderState == "TAGGED"` 且 `health == "HEALTHY"` 才算成功。`provider reconcile` 本身在 ACK 被拒绝时也会正常退出，所以 caller job 绝不能只看退出码。没有独立注册表 job 的仓库不需要这个 job。
 
+仓库改名后要同步的 OIDC publisher、fleet 清单和快照规则，见 [注册表发布与仓库改名](registry-publishers.md)。
+
 ## Release 正文
 
 Release 页面上的说明文字由 ReleaseGraph 生成，调用方不需要提供：`feat` / `fix` / 破坏性变更会被归类并改写成用户措辞，而 `chore` / `ci` / `governance` / 依赖机器人 / 版本号 bump 不会出现在页面上。特殊发版可以用提交正文里的 `release-note:` 覆盖，或放 `.github/release-notes/<version>.md` 整篇替换。语言跟随仓库主 README。详见 [Release 说明（面向用户）](release-notes.md)。
