@@ -63,6 +63,12 @@ and its own build/test configuration.
     AGENTS.md is guidance — the scheduled
     `.github/workflows/pr-lifecycle.yml` is the enforcement (see
     `docs/pr-lifecycle.md`).
+13. **Transient reports never enter business repositories.** One-off reports,
+    phase snapshots, handoff notes and audit/verification outputs default to the
+    working archive and are removed when the task closes. Anything that must be
+    kept as evidence goes to `docs/archive/` with the docsite lifecycle block and
+    stays out of the user sidebar; `python3 docsite.py lifecyclecheck` is the
+    account-wide gate.
 
 ## Scope and credentials
 
