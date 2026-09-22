@@ -229,7 +229,14 @@ def stage(policy_path: str = ".release-policy.yml", version: str | None = None, 
     _ensure_tag(tag, commit, dry_run=dry_run)
     release = _release(tag)
     if release and not release["isDraft"]:
-        raise ReleaseError(f"{tag} is already public; run audit instead")
+        missing = missing_required_assets(policy, release.get("assets", []))
+        if not missing:
+            raise ReleaseError(f"{tag} is already public and complete; run audit instead")
+        print(f"note: {tag} is public but incomplete; reopening as draft for repair")
+        _run(["gh", "release", "edit", tag, "--draft"])
+        release = _release(tag)
+        if not release or not release["isDraft"]:
+            raise ReleaseError(f"could not reopen {tag} as a draft")
     if not release and not dry_run:
         _publish_notes(policy, desired, tag, [*assets, *([checksums] if checksums else [])])
     _upload_idempotent(tag, [*assets, *([checksums] if checksums else [])], dry_run=dry_run)
