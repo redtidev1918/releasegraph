@@ -28,7 +28,9 @@ A dry run never performs a remote publish/audit/retention operation. In particul
 
 ## Repair covers
 
-- GitHub Release exists but is missing required assets or checksums.
+- GitHub Release exists but is missing required assets or checksums. `stage`
+  reopens that Release as a draft, uploads the rebuilt artifacts, and publishes
+  it again at the same tag without moving the tag.
 - npm/PyPI package published but GitHub assets missing (existing registry versions are verified, never re-published).
 - GHCR image pushed but the Release finalize step was interrupted.
 - Workflow interrupted between tag creation and publication.

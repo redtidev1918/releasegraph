@@ -246,6 +246,60 @@ class ReleaseTest(unittest.TestCase):
         remote.assert_not_called()
         upload.assert_not_called()
 
+    def test_stage_reopens_incomplete_public_release_as_draft(self):
+        policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "9.9.9"}, "assets": {"required": ["app"]}, "registries": {"github": {"required": True}}}
+        public = {"isDraft": False, "assets": []}
+        reopened = {"isDraft": True, "assets": []}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".release-policy.yml").write_text(json.dumps(policy))
+            (root / "dist/release").mkdir(parents=True)
+            (root / "dist/release/app").write_text("ok")
+            previous = Path.cwd()
+            with mock.patch.object(release, "_release", side_effect=[public, reopened]) as fetch, \
+                    mock.patch.object(release, "_upload_idempotent") as upload, \
+                    mock.patch("os.getcwd", return_value=directory):
+                try:
+                    import os
+                    os.chdir(directory)
+                    release.stage()
+                finally:
+                    os.chdir(previous)
+        commands = [call.args[0] for call in release._run.call_args_list]
+        self.assertIn(["gh", "release", "edit", "v9.9.9", "--draft"], commands)
+        self.assertEqual(fetch.call_count, 2)
+        upload.assert_called_once()
+
+    def test_stage_refuses_complete_public_release(self):
+        policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "9.9.9"}, "assets": {"required": ["app"]}, "registries": {"github": {"required": True}}}
+        public = {
+            "isDraft": False,
+            "assets": [
+                {"name": "app", "size": 1},
+                {"name": "SHA256SUMS", "size": 1},
+                {"name": "RELEASE-METADATA.json", "size": 1},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".release-policy.yml").write_text(json.dumps(policy))
+            (root / "dist/release").mkdir(parents=True)
+            (root / "dist/release/app").write_text("ok")
+            previous = Path.cwd()
+            with mock.patch.object(release, "_release", return_value=public), \
+                    mock.patch.object(release, "_upload_idempotent") as upload, \
+                    mock.patch("os.getcwd", return_value=directory):
+                try:
+                    import os
+                    os.chdir(directory)
+                    with self.assertRaisesRegex(release.ReleaseError, "already public and complete"):
+                        release.stage()
+                finally:
+                    os.chdir(previous)
+        commands = [call.args[0] for call in release._run.call_args_list]
+        self.assertFalse(any(call[:4] == ["gh", "release", "edit", "v9.9.9"] for call in commands))
+        upload.assert_not_called()
+
 
 
     def test_plan_pypi_missing_repairs(self):
