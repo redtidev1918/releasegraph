@@ -116,17 +116,17 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.60.0",
-  "latest_release": "v2.60.0",
-  "latest_release_at": "2026-09-21T13:57:19Z",
-  "latest_tag": "v2.60.0",
+  "desired_version": "2.63.0",
+  "latest_release": "v2.63.0",
+  "latest_release_at": "2026-09-22T04:47:17Z",
+  "latest_tag": "v2.63.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
-    "telepost-2.60.0-linux-x64.tar.gz",
-    "telepost-2.60.0-macos-arm64.tar.gz",
-    "telepost-2.60.0-windows-x64.zip",
+    "telepost-2.63.0-linux-x64.tar.gz",
+    "telepost-2.63.0-macos-arm64.tar.gz",
+    "telepost-2.63.0-windows-x64.zip",
     "telepost-linux-x64",
     "telepost-macos-arm64",
     "telepost-windows-x64.exe"
@@ -140,8 +140,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/35612058042",
-    "updated_at": "2026-09-21T14:25:43Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/35701731146",
+    "updated_at": "2026-09-22T07:51:57Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -157,59 +157,96 @@
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
-    ".github/workflows/update-download-page.yml"
+    ".github/workflows/update-download-page.yml",
+    ".github/workflows/version-sync-check.yml"
   ],
   "release_history": [
     {
-      "tag": "v2.60.0",
+      "tag": "v2.63.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-21T13:57:19Z",
+      "published_at": "2026-09-22T04:47:17Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 2628,
-          "sha256": "sha256:cfb97c828f01650d0bba8e2986e23f6cb1693df833f48a1f6211429b9006ad85"
+          "sha256": "sha256:6a71cedbd3c2316e21651d35cda9df0af5ba4817c49430a9d7292250553c56a5"
         },
         {
           "name": "SHA256SUMS",
           "size": 561,
-          "sha256": "sha256:e396ce2cc86a6e9a288670d45024c436a017beead4b8ee8b82a27d9a0d7c7165"
+          "sha256": "sha256:93408f3f5d71d6e77aa0267e032d02a0842ecad7aced34837a0eee6ebcfd1fbc"
         },
         {
-          "name": "telepost-2.60.0-linux-x64.tar.gz",
-          "size": 36959570,
-          "sha256": "sha256:30f8aceff4256d652f2060fef0105e5a808cd6272b64454d6fd601e72d2860df"
+          "name": "telepost-2.63.0-linux-x64.tar.gz",
+          "size": 36991196,
+          "sha256": "sha256:66f6d732278244dc01666dd6940d6055638e36cba0dd2c01fff6eed7892cb3bc"
         },
         {
-          "name": "telepost-2.60.0-macos-arm64.tar.gz",
-          "size": 19018362,
-          "sha256": "sha256:08c25accdb7ed69ebe53fc957d7803a834f29008c972ad1ee777aa0ed65648b6"
+          "name": "telepost-2.63.0-macos-arm64.tar.gz",
+          "size": 19033732,
+          "sha256": "sha256:846b7e16c6456a2791b02ae66e3ffd2d58151db038df6e9e06bedee00bea9097"
         },
         {
-          "name": "telepost-2.60.0-windows-x64.zip",
-          "size": 22409275,
-          "sha256": "sha256:520f8a7b626ed55dd545addd4f23f884a51eece34a6c8bb5d34a920dd80e2c02"
+          "name": "telepost-2.63.0-windows-x64.zip",
+          "size": 22426865,
+          "sha256": "sha256:0040ac19e9886b2135e48a65c578894489e9f96080cf91004cf5b5dbde29a7d7"
         },
         {
           "name": "telepost-linux-x64",
-          "size": 37263192,
-          "sha256": "sha256:6dc5e45ff01ea5148c151026603305f8e6a5d94d252afe41d3031d389f7d3f3c"
+          "size": 37294888,
+          "sha256": "sha256:c35a20dd5c4812110e159302e116d04b5a8c5acb9aee0ac253fc034d14b5cff1"
         },
         {
           "name": "telepost-macos-arm64",
-          "size": 19229456,
-          "sha256": "sha256:bc3d3de3616b14899fa7084f066534955c783e061b32cd24293d62ab4caf52a4"
+          "size": 19245232,
+          "sha256": "sha256:7cf228dbac57fe0a4b32c125392a9b9cf391523f4eacc687922d32ec570c2b8e"
         },
         {
           "name": "telepost-windows-x64.exe",
-          "size": 22745621,
-          "sha256": "sha256:3a5c1e7568e5ca54fadd6926ca4bb06fb1a44d37b5eb7f5873e278ac483ac302"
+          "size": 22763009,
+          "sha256": "sha256:cf575b5aee7a74c942e80c5ccf1954ac23e4cdaaf69e35010252c898752daae0"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.63.0",
+      "commit": "31493608fea8367d6ca4dbad3781b6a9bda594fe"
+    },
+    {
+      "name": "v2.62.4",
+      "commit": "5692da7d4e59933de39420c507d8ea37a089df00"
+    },
+    {
+      "name": "v2.62.3",
+      "commit": "a82642d7b8ef05758f66675c89ae01b427a06e32"
+    },
+    {
+      "name": "v2.62.2",
+      "commit": "c28f2a35e382051e591dc6c77d7be42567d789d1"
+    },
+    {
+      "name": "v2.62.1",
+      "commit": "034bb9d4bef44ce98173db9c37bb0b3d3c7bc660"
+    },
+    {
+      "name": "v2.62.0",
+      "commit": "f01af9e3d372cf3fa058d8fcda8c146e222c32ac"
+    },
+    {
+      "name": "v2.61.1",
+      "commit": "2c48a395d9319420f1a4e5efe632fcde2dc47c37"
+    },
+    {
+      "name": "v2.61.0",
+      "commit": "52caf97ce9fb371f8dbfdd82fa5d32349e600d81"
+    },
+    {
+      "name": "v2.60.1",
+      "commit": "8bae62d4d7e8a766984a53269940cebfa25c932a"
+    },
     {
       "name": "v2.60.0",
       "commit": "54129044175cdb46cdb42a9ae47258a1f68fdf75"
@@ -561,7 +598,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "2.60.0"
+      ".": "2.63.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",

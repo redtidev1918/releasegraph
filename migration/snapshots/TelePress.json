@@ -6,8 +6,13 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "HEALTHY",
-  "health_reasons": [],
+  "health": "DEGRADED",
+  "health_reasons": [
+    {
+      "code": "release_run_failed",
+      "detail": "startup_failure"
+    }
+  ],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -81,9 +86,9 @@
   ],
   "latest_release_run": {
     "status": "completed",
-    "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePress/actions/runs/35613436503",
-    "updated_at": "2026-09-21T14:38:09Z"
+    "conclusion": "startup_failure",
+    "url": "https://github.com/redtidev1918/TelePress/actions/runs/35690333879",
+    "updated_at": "2026-09-22T05:20:41Z"
   },
   "signals": [
     ".release-please-manifest.json",

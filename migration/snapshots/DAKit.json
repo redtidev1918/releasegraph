@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAKit/actions/runs/35606989708",
-    "updated_at": "2026-09-21T13:41:46Z"
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/35703930247",
+    "updated_at": "2026-09-22T08:18:41Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -123,6 +123,7 @@
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
+    ".github/workflows/publish-pub.yml",
     ".github/workflows/publish-web.yml",
     ".github/workflows/release.yml",
     ".github/workflows/static.yml",
@@ -177,6 +178,22 @@
     {
       "name": "python-preview-1.0.0a1",
       "commit": "a38360da35e93fee39ed9a9cff31ecd2908bbbdd"
+    },
+    {
+      "name": "dakit_web-v0.2.5",
+      "commit": "106be8d8bdbbad9c9f63f732f02a760c3d897263"
+    },
+    {
+      "name": "dakit_web-v0.2.4",
+      "commit": "e4441c1b5f2b61db3c40de6d7ff4ed01f6e27a64"
+    },
+    {
+      "name": "dakit_web-v0.2.3",
+      "commit": "04edc1845b6a488df62923eee1297290d177d6db"
+    },
+    {
+      "name": "dakit_web-v0.2.2",
+      "commit": "e49ac581c0e6513d062de8fe43ce8515c498632d"
     },
     {
       "name": "dakit_flutter-v1.0.0",
@@ -331,6 +348,10 @@
       "commit": "31873a80865b4134c80b33e1d4ce822b5eda791b"
     },
     {
+      "name": "dakit_api-v1.1.1",
+      "commit": "17f920021dbe20aa949c62f010d1a0b7ddede446"
+    },
+    {
       "name": "dakit_api-v1.0.0",
       "commit": "6828bbca3bbe8655c7ed6de6d5bd9ecbb894e9da"
     },
@@ -458,10 +479,10 @@
   "release_config": {
     ".release-please-manifest.json": {
       "packages/dakit_core": "1.1.0",
-      "packages/dakit_api": "1.1.0",
+      "packages/dakit_api": "1.1.1",
       "packages/dakit_flutter": "1.0.0",
       "packages/dakit_cli": "0.4.1",
-      "packages/dakit_web": "0.2.1"
+      "packages/dakit_web": "0.2.5"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
