@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.12.2",
-  "latest_release": "v1.12.2",
-  "latest_release_at": "2026-09-20T16:46:15Z",
-  "latest_tag": "v1.12.2",
+  "desired_version": "1.12.3",
+  "latest_release": "v1.12.3",
+  "latest_release_at": "2026-09-23T00:59:13Z",
+  "latest_tag": "v1.12.3",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/35701271872",
-    "updated_at": "2026-09-22T07:46:24Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/35825050814",
+    "updated_at": "2026-09-23T06:04:12Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -94,20 +94,24 @@
   ],
   "release_history": [
     {
-      "tag": "v1.12.2",
+      "tag": "v1.12.3",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-20T16:46:15Z",
+      "published_at": "2026-09-23T00:59:13Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1224,
-          "sha256": "sha256:25f51610a84c95d7981a61c51211a29021515abb9b761f284b9b97b12d5e3ff5"
+          "sha256": "sha256:966f17d272df10ae7ee5c3b62d7559bda21d60fb8c1e65df922649bd92e8cf48"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.12.3",
+      "commit": "ad7f41e5c498cfadc1bac8a78bf0b22bd77f6b73"
+    },
     {
       "name": "v1.12.2",
       "commit": "ea2f1d46ced5a11f03614d3cd0c66144639d6580"
@@ -194,9 +198,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "1.12.2"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -209,12 +210,15 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "1.12.3"
     }
   },
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.12.2",
+      "declared": "1.12.3",
       "published": null
     }
   },
@@ -227,8 +231,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

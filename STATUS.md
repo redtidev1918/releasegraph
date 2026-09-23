@@ -5,15 +5,15 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-09-22T08:36:04.664409+00:00`
+Generated: `2026-09-23T08:37:58.907929+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
 | redtidev1918/BallonsTranslator-lite | fork | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/DAKit | managed | 0.4.1 | dakit_cli-v0.4.1 | 7 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DAViewer | managed | 0.4.18 | v0.4.17 | 5 | failure | policy+gate | — | DEGRADED |
-| redtidev1918/deviantart-downloader | managed | 4.3.3 | v4.3.3 | 4 | startup_failure | policy+gate | — | DEGRADED |
-| redtidev1918/DeviantDrop | managed | 1.12.2 | v1.12.2 | 1 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DAViewer | managed | 0.5.3 | v0.5.3 | 5 | success | policy+gate | — | HEALTHY |
+| redtidev1918/deviantart-downloader | managed | 4.3.4 | v4.3.4 | 4 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DeviantDrop | managed | 1.12.3 | v1.12.3 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/Graf | managed | 1.2.1 | v1.2.1 | 10 | success | policy+gate | — | HEALTHY |
 | redtidev1918/ludum | managed | 3.0.3 | v3.0.3 | 1 | success | policy+gate | — | HEALTHY |
