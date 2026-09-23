@@ -1,5 +1,5 @@
 {
-  "repo": "redtidev1918/Graf",
+  "repo": "redtidev1918/graf",
   "default_branch": "master",
   "visibility": "public",
   "archived": false,
@@ -91,8 +91,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/Graf/actions/runs/35569767250",
-    "updated_at": "2026-09-21T06:44:39Z"
+    "url": "https://github.com/redtidev1918/graf/actions/runs/35494727574",
+    "updated_at": "2026-09-20T06:38:07Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -234,6 +234,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.2.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -246,9 +249,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.2.1"
     }
   },
   "registries": {
@@ -264,5 +264,11 @@
     "gatePinned": true,
     "policyValid": true
   },
-  "prLifecycle": null
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
+  }
 }

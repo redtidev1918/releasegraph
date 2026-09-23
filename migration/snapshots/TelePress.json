@@ -1,5 +1,5 @@
 {
-  "repo": "redtidev1918/TelePress",
+  "repo": "redtidev1918/telepress",
   "default_branch": "master",
   "visibility": "public",
   "archived": false,
@@ -82,8 +82,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePress/actions/runs/35564505776",
-    "updated_at": "2026-09-21T05:25:49Z"
+    "url": "https://github.com/redtidev1918/telepress/actions/runs/35495690218",
+    "updated_at": "2026-09-20T07:00:19Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -537,6 +537,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.14.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -610,9 +613,6 @@
           ]
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.14.1"
     }
   },
   "registries": {
@@ -628,5 +628,11 @@
     "gatePinned": true,
     "policyValid": true
   },
-  "prLifecycle": null
+  "prLifecycle": {
+    "status": "evaluated",
+    "enabled": false,
+    "open": 0,
+    "inQueue": 0,
+    "shouldLeave": 0
+  }
 }
