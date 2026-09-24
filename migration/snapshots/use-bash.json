@@ -1,0 +1,83 @@
+{
+  "repo": "redtidev1918/use-bash",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "observe-only",
+  "health": "UNMANAGED",
+  "health_reasons": [
+    {
+      "code": "unmanaged_repo"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": null,
+  "release_infra_version": null,
+  "desired_version": null,
+  "latest_release": "v2.0.1",
+  "latest_release_at": "2026-09-23T21:56:16Z",
+  "latest_tag": "v2.0.1",
+  "draft_releases": [],
+  "actual_assets": [],
+  "release_workflows": [],
+  "latest_release_run": null,
+  "signals": [],
+  "workflow_paths": [
+    ".github/workflows/docs.yml",
+    ".github/workflows/notify-profile.yml",
+    ".github/workflows/update-download-page.yml"
+  ],
+  "release_history": [
+    {
+      "tag": "v2.0.1",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-23T21:56:16Z",
+      "assets": []
+    },
+    {
+      "tag": "v2.0.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-23T21:52:25Z",
+      "assets": []
+    },
+    {
+      "tag": "v1.0.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-23T21:31:35Z",
+      "assets": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "v2.0.1",
+      "commit": "d32844080d33c6d2ae2006168f0ebdf3aae244c3"
+    },
+    {
+      "name": "v2.0.0",
+      "commit": "030e6d5b05e01f753e86510ae7fed8b6782584c5"
+    },
+    {
+      "name": "v1.0.1",
+      "commit": "85e8b4ccb89ad8c11ac8f8c7fd1398922de32540"
+    },
+    {
+      "name": "v1.0.0",
+      "commit": "138d6352b86447bda382079bd75f80dafdee9689"
+    }
+  ],
+  "release_config": {},
+  "registries": {},
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
+}

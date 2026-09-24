@@ -5,15 +5,15 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-09-23T08:37:58.907929+00:00`
+Generated: `2026-09-24T08:30:48.657943+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
 | redtidev1918/BallonsTranslator-lite | fork | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/DAKit | managed | 0.4.1 | dakit_cli-v0.4.1 | 7 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DAViewer | managed | 0.5.3 | v0.5.3 | 5 | success | policy+gate | — | HEALTHY |
-| redtidev1918/deviantart-downloader | managed | 4.3.4 | v4.3.4 | 4 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DeviantDrop | managed | 1.12.3 | v1.12.3 | 1 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DAViewer | managed | 0.5.7 | v0.5.7 | 5 | success | policy+gate | — | HEALTHY |
+| redtidev1918/deviantart-downloader | managed | 4.4.0 | v4.4.0 | 4 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DeviantDrop | managed | 1.14.0 | v1.14.0 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/Graf | managed | 1.2.1 | v1.2.1 | 10 | success | policy+gate | — | HEALTHY |
 | redtidev1918/ludum | managed | 3.0.3 | v3.0.3 | 1 | success | policy+gate | — | HEALTHY |
@@ -27,5 +27,6 @@ Generated: `2026-09-23T08:37:58.907929+00:00`
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.12 | 9 | — | — | — | HEALTHY |
 | redtidev1918/shengxiu_feedbot | fork | — | — | 0 | — | — | — | NO_RELEASE |
-| redtidev1918/TelePost | managed | 2.63.0 | v2.63.0 | 8 | success | policy+gate | — | HEALTHY |
+| redtidev1918/TelePost | managed | 2.64.3 | v2.64.3 | 8 | success | policy+gate | — | HEALTHY |
 | redtidev1918/TelePress | managed | 0.14.2 | v0.14.2 | 4 | startup_failure | policy+gate | — | DEGRADED |
+| redtidev1918/use-bash | observe-only | — | v2.0.1 | 0 | — | — | — | UNMANAGED |

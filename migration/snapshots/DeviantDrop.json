@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.12.3",
-  "latest_release": "v1.12.3",
-  "latest_release_at": "2026-09-23T00:59:13Z",
-  "latest_tag": "v1.12.3",
+  "desired_version": "1.14.0",
+  "latest_release": "v1.14.0",
+  "latest_release_at": "2026-09-23T22:05:06Z",
+  "latest_tag": "v1.14.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/35825050814",
-    "updated_at": "2026-09-23T06:04:12Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/35958073464",
+    "updated_at": "2026-09-24T05:01:03Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -94,20 +94,36 @@
   ],
   "release_history": [
     {
-      "tag": "v1.12.3",
+      "tag": "v1.14.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-23T00:59:13Z",
+      "published_at": "2026-09-23T22:05:06Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1224,
-          "sha256": "sha256:966f17d272df10ae7ee5c3b62d7559bda21d60fb8c1e65df922649bd92e8cf48"
+          "sha256": "sha256:cf4c15e1c9a235562c48bc2c96e4ffefa34526af80065d1a5f27307beca3883c"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.14.0",
+      "commit": "28e523fcf4d079323df142afb1d3f5f6add93203"
+    },
+    {
+      "name": "v1.13.1",
+      "commit": "62db4d974050005d317b725cd104846791437e62"
+    },
+    {
+      "name": "v1.13.0",
+      "commit": "2b7651e196ecb9f028b0f0262e7c7d6d518c24ab"
+    },
+    {
+      "name": "v1.12.4",
+      "commit": "da30f9971174f2e9842d923388378463886c54e6"
+    },
     {
       "name": "v1.12.3",
       "commit": "ad7f41e5c498cfadc1bac8a78bf0b22bd77f6b73"
@@ -198,6 +214,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.14.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -210,15 +229,12 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.12.3"
     }
   },
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.12.3",
+      "declared": "1.14.0",
       "published": null
     }
   },
