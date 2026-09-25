@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-09-24T08:30:48.657943+00:00`
+Generated: `2026-09-25T08:52:33.796982+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -16,17 +16,18 @@ Generated: `2026-09-24T08:30:48.657943+00:00`
 | redtidev1918/DeviantDrop | managed | 1.14.0 | v1.14.0 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/Graf | managed | 1.2.1 | v1.2.1 | 10 | success | policy+gate | — | HEALTHY |
+| redtidev1918/JMBridge | observe-only | — | — | 0 | — | — | — | UNMANAGED |
 | redtidev1918/ludum | managed | 3.0.3 | v3.0.3 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/NekoTime | managed | 2.3.4 | v2.3.4 | 7 | success | policy+gate | — | HEALTHY |
 | redtidev1918/ParaNote | managed | 0.2.0 | v0.2.0 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/pixiv-token-getter | managed | 2.6.1 | v2.6.1 | 1 | success | policy+gate | — | HEALTHY |
-| redtidev1918/PixivFlow | managed | 2.45.1 | v2.45.1 | 3 | success | policy+gate | — | HEALTHY |
+| redtidev1918/PixivFlow | managed | 2.46.0 | v2.46.0 | 3 | success | policy+gate | — | HEALTHY |
 | redtidev1918/pixivflow-telepost-deploy | managed | 1.13.0 | v1.13.0 | 8 | success | policy+gate | 2/2 | HEALTHY |
 | redtidev1918/pixivflow-webui | managed | 1.1.0 | v1.1.0 | 0 | success | policy+gate | — | DEGRADED |
 | redtidev1918/ponytail | fork | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.12 | 9 | — | — | — | HEALTHY |
 | redtidev1918/shengxiu_feedbot | fork | — | — | 0 | — | — | — | NO_RELEASE |
-| redtidev1918/TelePost | managed | 2.64.3 | v2.64.3 | 8 | success | policy+gate | — | HEALTHY |
+| redtidev1918/TelePost | managed | 2.67.0 | v2.67.0 | 8 | success | policy+gate | — | HEALTHY |
 | redtidev1918/TelePress | managed | 0.14.2 | v0.14.2 | 4 | startup_failure | policy+gate | — | DEGRADED |
 | redtidev1918/use-bash | observe-only | — | v2.0.1 | 0 | — | — | — | UNMANAGED |
