@@ -43,6 +43,11 @@ open an upgrade PR for a caller that under-grants**: adding the scope is the
 caller's own change (on 2026-09-26 four repositories ended in `startup_failure`
 after a pin upgrade, purely for the missing `actions: write`).
 
+The same plan also moves the canary from the one fixed repository to the one with
+the **oldest pin** (printing `canary choice:` with the reason): a new version is
+absorbed by the oldest caller first, so the largest engine delta lands on one
+repository instead of the whole fleet.
+
 ## Outputs
 
 | Output | Values | Use it for |

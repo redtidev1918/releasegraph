@@ -102,9 +102,14 @@ func rolloutCommand(w io.Writer, args []string) error {
 	// A plan with the declared canary lists every repository this rollout would
 	// move (ready + blocked, with capability and permission filtering applied),
 	// and that list is what the canary is chosen from.
-	canary, _ := manifest.Canary()
-	evidence := canaryEvidence(ctx, client, canary, version, targetCommit)
-	plan := rollout.BuildPlan(manifest, entries, version, canary, evidence, compat)
+	declared, _ := manifest.Canary()
+	preliminary := rollout.BuildPlan(manifest, entries, version, declared, rollout.CanaryEvidence{}, compat)
+	choice, evidence := chooseCanary(ctx, client, releaseRepo, targetCommit, version, declared, preliminary, entries)
+	for i := range entries {
+		entries[i].Canary = entries[i].Repository == choice.Repository
+	}
+	plan := rollout.BuildPlan(manifest, entries, version, choice.Repository, evidence, compat)
+	plan.CanarySelection = choice.Reason
 
 	if len(only) > 0 {
 		plan = limitPlan(plan, only)
@@ -185,6 +190,9 @@ func humanRolloutPlan(w io.Writer, plan rollout.Plan) {
 			fmt.Fprintf(w, " — %s", plan.CanaryReason)
 		}
 		fmt.Fprintln(w, ")")
+	}
+	if plan.CanarySelection != "" {
+		fmt.Fprintf(w, "canary choice: %s\n", plan.CanarySelection)
 	}
 	for _, entry := range plan.Entries {
 		marker := ""
@@ -336,6 +344,37 @@ func targetPermissions(ctx context.Context, client *github.Bound, repo, version,
 		return nil, "cannot read " + repo + " " + rollout.ReleaseWorkflowPath + " at " + ref + "; caller permissions were not checked"
 	}
 	return rollout.RequestedPermissions(raw), ""
+}
+
+// chooseCanary sends the target version to the movable repository whose pin is
+// furthest behind it, so the largest engine delta is proven by one repository
+// instead of the whole fleet. The repository declared in fleet.yaml is kept only
+// when no pin distance can be measured.
+func chooseCanary(ctx context.Context, client *github.Bound, releaseRepo, targetCommit, version, declared string, preliminary rollout.Plan, entries []rollout.Entry) (rollout.CanaryChoice, rollout.CanaryEvidence) {
+	movable := append(append([]string{}, preliminary.Ready...), preliminary.Blocked...)
+	wanted := map[string]bool{}
+	for _, name := range movable {
+		wanted[name] = true
+	}
+	distance := map[string]int{}
+	if targetCommit != "" {
+		for _, entry := range entries {
+			if !wanted[entry.Repository] || entry.Current.Ref == "" {
+				continue
+			}
+			compare, found, err := client.CompareCommits(ctx, releaseRepo, entry.Current.Ref, targetCommit)
+			if err != nil || !found {
+				continue
+			}
+			distance[entry.Repository] = compare.AheadBy
+		}
+	}
+	choice := rollout.SelectCanary(movable, distance, declared, version)
+	if choice.Repository == "" {
+		// Nothing needs to move, so there is no canary to prove and no run to read.
+		return choice, rollout.CanaryEvidence{Reason: choice.Reason}
+	}
+	return choice, canaryEvidence(ctx, client, choice.Repository, version, targetCommit)
 }
 
 func latestStableVersion(ctx context.Context, client *github.Bound, repo string) (string, error) {

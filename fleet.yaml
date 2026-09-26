@@ -9,8 +9,11 @@
 version: 1
 
 repositories:
-  # Infrastructure canary: receives a new ReleaseGraph version first, and the
-  # fleet rollout stays blocked until it completes a full release lifecycle.
+  # Declared canary: the fallback for plans that cannot measure how far each pin
+  # is behind the target. `rollout plan` normally sends a new version to the
+  # repository whose pin is oldest, so the largest engine delta is proven by one
+  # repository; either way the fleet rollout stays blocked until that repository
+  # completes a full release lifecycle.
   - name: redtidev1918/TelePost
     enabled: true
     canary: true
