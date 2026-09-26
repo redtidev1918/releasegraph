@@ -222,12 +222,24 @@ func providerRepair(w io.Writer, opts providerOptions) error {
 		Allowed    bool              `json:"allowed"`
 		Reason     string            `json:"reason"`
 		Inputs     map[string]string `json:"inputs,omitempty"`
-		Dispatched bool              `json:"dispatched"`
+		// Ref is the git ref the repair dispatches at; a same-version repair only
+		// passes the repository's publish gate when it runs at the release's own
+		// commit, so the plan states it before --apply.
+		Ref        string `json:"ref,omitempty"`
+		Dispatched bool   `json:"dispatched"`
 	}
 	outcomes := []outcome{}
 	for _, report := range scan.Reports {
 		allowed, reason, inputs := provider.RepairPlan(&report)
 		item := outcome{Repository: report.Context.Repository, Version: string(report.Context.Version), Drift: report.Verdict.Drift, Allowed: allowed, Reason: reason, Inputs: inputs}
+		if allowed {
+			ref, err := provider.RepairRef(ctx, client, &report)
+			if err != nil {
+				scan.Errors = append(scan.Errors, fmt.Sprintf("%s: %v", report.Context.Repository, err))
+			} else {
+				item.Ref = ref
+			}
+		}
 		if allowed && opts.apply {
 			applied, err := provider.Repair(ctx, client, &report, opts.workflow, false)
 			if err != nil {
@@ -253,7 +265,11 @@ func providerRepair(w io.Writer, opts providerOptions) error {
 		if !item.Allowed {
 			state = "skipped"
 		}
-		fmt.Fprintf(w, "%-10s %s %s (%s): %s\n", state, item.Repository, item.Version, item.Drift, item.Reason)
+		if item.Ref != "" {
+			fmt.Fprintf(w, "%-10s %s %s (%s): %s [ref %s]\n", state, item.Repository, item.Version, item.Drift, item.Reason, item.Ref)
+		} else {
+			fmt.Fprintf(w, "%-10s %s %s (%s): %s\n", state, item.Repository, item.Version, item.Drift, item.Reason)
+		}
 	}
 	for _, failure := range scan.Errors {
 		fmt.Fprintln(w, "ERROR", failure)
