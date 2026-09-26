@@ -56,9 +56,43 @@ structurally rather than trusting them.
 
 ## Secrets
 
-All optional: `RELEASE_PLEASE_TOKEN`, `NPM_TOKEN`, `ANDROID_KEYSTORE_B64`,
-`ANDROID_KEYSTORE_PROPERTIES`. A missing secret disables the corresponding
-publication rather than failing the run.
+`NPM_TOKEN`, `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PROPERTIES` are all
+optional: a missing secret disables the corresponding publication rather than
+failing the run.
+
+### `RELEASE_PLEASE_TOKEN`: who authors the version PR
+
+This secret does not change what is published; it decides the **author** of the
+release pull request. Leaving it out does not fail the run, but it leaves behind
+a permanent false failure:
+
+- without it, release-please opens the PR with the built-in `GITHUB_TOKEN`, so
+  the author is `github-actions[bot]`;
+- GitHub **holds** every run such a PR triggers (`action_required`, waiting for a
+  human approval). That decision happens before any job exists, so no job-level
+  `if:` can prevent it;
+- the version PR therefore carries a check that can never turn green, and when
+  the PR is merged that run is finalised as `failure` — one failure notification
+  per release, for a CI that never actually ran.
+
+A fine-grained personal access token is enough, with exactly three permissions:
+**Contents: Read and write** (branches and commits), **Pull requests: Read and
+write** (create and update the release PR) and **Issues: Read and write**
+(labels). Store it as an Actions secret in every caller repository, named
+exactly `RELEASE_PLEASE_TOKEN`.
+
+Passing it in: callers that use `secrets: inherit` need no change; **a caller
+that lists `secrets:` explicitly must add the line itself**
+(`RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}`), otherwise the
+secret never reaches this reusable workflow.
+
+A pull request's author is immutable, so the effect starts with the **next newly
+created** release PR; bot PRs that are already open keep the old path. If a PAT
+is not available, the caller-side fallback is "approve and skip": a workflow
+triggered by `workflow_run` / `push` / `schedule` approves the held runs while
+every job that can run on a pull request carries an author guard
+(`github.event_name != 'pull_request' || github.event.pull_request.user.login != 'github-actions[bot]'`),
+so an approved run resolves as `skipped` instead of a false failure.
 
 ## Caller-side registry publication and ACK ordering
 

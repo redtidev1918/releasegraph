@@ -46,7 +46,21 @@ jobs:
 
 ## Secrets
 
-全部可选：`RELEASE_PLEASE_TOKEN`、`NPM_TOKEN`、`ANDROID_KEYSTORE_B64`、`ANDROID_KEYSTORE_PROPERTIES`。缺某个 secret 只会关掉对应的发布，不会让整次运行失败。
+`NPM_TOKEN`、`ANDROID_KEYSTORE_B64`、`ANDROID_KEYSTORE_PROPERTIES` 全部可选：缺哪个只会关掉对应的发布，不会让整次运行失败。
+
+### `RELEASE_PLEASE_TOKEN`：决定谁创建 version PR
+
+这个 secret 不影响发布内容，只决定 release PR 的**作者**。缺了它不会让运行失败，但会留下一个长期的假失败：
+
+- 不配置时，release-please 用内置 `GITHUB_TOKEN` 建 PR，作者是 `github-actions[bot]`；
+- GitHub 会**扣住**这类 PR 触发的每一次运行（`action_required`，等人工批准）。这个判断发生在 job 存在之前，任何 job 级 `if:` 都拦不住；
+- 于是 version PR 上永远挂着一个不会变绿的检查；PR 合并时那次运行以 `failure` 收尾，每轮发布都产生失败通知，而 CI 其实从未跑过。
+
+配置一个细粒度（fine-grained）PAT 即可，只勾三项：**Contents: Read and write**（建分支与提交）、**Pull requests: Read and write**（建与更新 release PR）、**Issues: Read and write**（标签）。把它设为每个 caller 仓库的 Actions secret，名字必须是 `RELEASE_PLEASE_TOKEN`。
+
+传进来的方式：用 `secrets: inherit` 的 caller 不用改动；**显式列出 `secrets:` 的 caller 必须自己补一行** `RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}`，否则它到不了这个 reusable workflow。
+
+PR 的作者不可更改，所以效果只从**下一个新创建的** release PR 开始；已打开的 bot PR 继续走旧路径。若暂时拿不到 PAT，caller 侧的兜底是「批准 + 跳过」：用一个 `workflow_run` / `push` / `schedule` 触发的工作流批准被扣住的运行，同时给所有可在 PR 上运行的 job 加作者判断的 `if:`（`github.event_name != 'pull_request' || github.event.pull_request.user.login != 'github-actions[bot]'`），让批准后的运行以 `skipped` 收尾，而不是记成失败。
 
 ## Caller 侧注册表发布与 ACK 时序
 
