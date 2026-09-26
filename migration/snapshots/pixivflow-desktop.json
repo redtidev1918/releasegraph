@@ -1,0 +1,51 @@
+{
+  "repo": "redtidev1918/pixivflow-desktop",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "observe-only",
+  "health": "UNMANAGED",
+  "health_reasons": [
+    {
+      "code": "unmanaged_repo"
+    }
+  ],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": null,
+  "release_infra_version": null,
+  "desired_version": null,
+  "latest_release": null,
+  "latest_release_at": null,
+  "latest_tag": null,
+  "draft_releases": [],
+  "actual_assets": [],
+  "release_workflows": [],
+  "latest_release_run": null,
+  "signals": [
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "workflow_paths": [
+    ".github/workflows/notify-profile.yml"
+  ],
+  "release_history": [],
+  "tags": [],
+  "release_config": {},
+  "registries": {
+    "npm": {
+      "package": "pixivflow-desktop",
+      "declared": "0.2.0",
+      "published": null
+    }
+  },
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
+}
