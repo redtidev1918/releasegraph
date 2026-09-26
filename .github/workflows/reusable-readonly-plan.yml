@@ -14,6 +14,16 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      # Fleet-scope discovery is a control-plane read: the engine refuses to
+      # substitute the repository token (`FLEET_CREDENTIAL_REQUIRED`), so a
+      # caller that passes `owner` must also provide this secret — normally with
+      # `secrets: inherit`. Without it the discovery step fails exactly as it
+      # did before this secret existed; a caller that omits `owner` is
+      # unaffected.
+      RELEASEGRAPH_FLEET_TOKEN:
+        required: false
+        description: Control-plane token used only by the `owner` discovery step.
 permissions:
   contents: read
 jobs:
@@ -39,6 +49,9 @@ jobs:
         run: ./releasegraph fleet --owner "${{ inputs.owner }}" --public-only --output json > fleet.json
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          # Only the fleet token satisfies `fleet discover`'s control-plane check;
+          # absent (the default), the step behaves exactly as before.
+          RELEASEGRAPH_FLEET_TOKEN: ${{ secrets.RELEASEGRAPH_FLEET_TOKEN }}
       - name: Compute graph plan
         env:
           GITHUB_TOKEN: ${{ github.token }}

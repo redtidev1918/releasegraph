@@ -4,6 +4,15 @@
 
 只授予 repository contents 和 metadata 读取权限。公开仓库可以匿名读取，但 API 限额较低。
 
+`reusable-readonly-plan.yml` 的 `owner` 输入会调用 `fleet discover`，它属于 control-plane 读取：引擎拒绝用仓库 `GITHUB_TOKEN` 代替 fleet 凭据，缺少时直接以 `FLEET_CREDENTIAL_REQUIRED` 失败。调用方要么不传 `owner`（以 `fleet.yaml` 为唯一权威），要么同时传入 `RELEASEGRAPH_FLEET_TOKEN`：
+
+```yaml
+uses: redtidev1918/releasegraph/.github/workflows/reusable-readonly-plan.yml@v1
+with:
+  owner: redtidev1918
+secrets: inherit   # 或显式写出 RELEASEGRAPH_FLEET_TOKEN: ${{ secrets.RELEASEGRAPH_FLEET_TOKEN }}
+```
+
 ## Level 2：单仓库发布
 
 managed repository 使用该次 GitHub Actions job 的短期 `GITHUB_TOKEN`，按项目需要授予 `contents: write` 与 registry trusted publishing 权限。

@@ -14,6 +14,15 @@ ReleaseGraph uses progressively broader permissions. A reusable workflow cannot 
 
 Public repositories need no write credential. Set `GITHUB_TOKEN` only for private repositories or higher API limits; grant repository contents and metadata read access.
 
+Passing `owner` to `reusable-readonly-plan.yml` runs `fleet discover`, a control-plane read: the engine refuses to substitute the repository `GITHUB_TOKEN` and fails with `FLEET_CREDENTIAL_REQUIRED` when no fleet credential is present. A caller either omits `owner` (leaving `fleet.yaml` as the sole authority) or passes `RELEASEGRAPH_FLEET_TOKEN` alongside it:
+
+```yaml
+uses: redtidev1918/releasegraph/.github/workflows/reusable-readonly-plan.yml@v1
+with:
+  owner: redtidev1918
+secrets: inherit   # or list RELEASEGRAPH_FLEET_TOKEN: ${{ secrets.RELEASEGRAPH_FLEET_TOKEN }}
+```
+
 ## Level 2: Release management
 
 Each managed repository uses its ephemeral Actions `GITHUB_TOKEN`. The caller grants only the permissions required by that repository, normally `contents: write` plus registry-specific trusted-publishing permissions.
