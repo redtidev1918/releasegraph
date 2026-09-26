@@ -146,6 +146,9 @@ type Plan struct {
 	// PermissionRequired repositories call the release workflow without granting
 	// what the target requests; repinning one would break its runs at startup.
 	PermissionRequired []string `json:"permissionRequired"`
+	// CanarySelection explains how the canary was chosen, separately from
+	// CanaryReason, which reports the evidence the chosen canary must produce.
+	CanarySelection string `json:"canarySelection,omitempty"`
 }
 
 // CanaryEvidence is what a canary repository proves before a fleet rollout.
@@ -233,7 +236,7 @@ func BuildPlan(manifest *fleet.Manifest, entries []Entry, target, canary string,
 			entry.Reason = "canary upgrade is always allowed first"
 		case !plan.CanaryPassed:
 			entry.Status = StatusBlocked
-			entry.Reason = "canary " + canary + " has not passed on " + entry.Target
+			entry.Reason = blockingReason(canary, entry.Target)
 			plan.Blocked = append(plan.Blocked, entry.Repository)
 		default:
 			entry.Status = StatusReady
@@ -245,6 +248,14 @@ func BuildPlan(manifest *fleet.Manifest, entries []Entry, target, canary string,
 		plan.Entries = append(plan.Entries, *entry)
 	}
 	return plan
+}
+
+// blockingReason names the gate that keeps a repository out of this rollout.
+func blockingReason(canary, target string) string {
+	if canary == "" {
+		return "no canary has passed on " + target
+	}
+	return "canary " + canary + " has not passed on " + target
 }
 
 // InspectPins reads every managed repository's release workflow pin and checks

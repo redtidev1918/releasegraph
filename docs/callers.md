@@ -27,6 +27,8 @@ permissions:
 
 job 级 `permissions:` 会**替换**（不是叠加）workflow 级的授权，所以只给调用 job 单独写块、而把 rest 留在顶层是不成立的写法。当前 reusable workflow 的申请集合可以从它的四个 job 块读出来 —— 不用猜：`releasegraph rollout plan` 会在改 pin 之前替你对一遍，读目标 ref 的 `reusable-release.yml` 与每个 caller 在默认分支上的 `release.yml`，缺项报 `PERMISSION_REQUIRED` 并打印 `[caller must grant …]`。**它不会为缺权限的 caller 开升级 PR**：补权限是 callers 自己的改动（2026-09-26 的四个仓库正因少了 `actions: write`，在一次 pin 升级后全部 `startup_failure`）。
 
+同一份计划还把 canary 从固定的那一个仓库改成**引脚最旧**的仓库（打印 `canary choice:` 说明选择理由）：新版本先由最旧的调用方吃下，最大的引擎差异只砸在一个仓库上，而不是整个舰队。
+
 ## 输出
 
 | 输出 | 取值 | 用途 |
