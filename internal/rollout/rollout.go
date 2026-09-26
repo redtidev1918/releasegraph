@@ -21,6 +21,11 @@ import (
 // WorkflowPath is the release workflow businesses call and the file rollout edits.
 const WorkflowPath = ".github/workflows/release.yml"
 
+// ReleaseWorkflowPath is the reusable workflow every caller points at. Its
+// permissions are what a caller must grant: GitHub validates them when the run
+// is created, before any job exists.
+const ReleaseWorkflowPath = ".github/workflows/reusable-release.yml"
+
 // MutableChannel matches channel aliases such as v1 or v2. These are convenient
 // but give no blast-radius control, so they are reported, never silently kept.
 var MutableChannel = regexp.MustCompile(`^v\d+$`)
@@ -44,6 +49,12 @@ type Pin struct {
 
 var usesPattern = regexp.MustCompile(`uses:\s*([^\s#]+)`)
 
+// isReleaseCall reports whether a uses: value — or a whole line — points at the
+// ReleaseGraph release workflow.
+func isReleaseCall(text string) bool {
+	return strings.Contains(text, "releasegraph/") && strings.Contains(text, "reusable-release.yml")
+}
+
 // ParsePin extracts the ReleaseGraph pin from a release workflow definition.
 func ParsePin(workflow []byte) Pin {
 	for _, line := range strings.Split(string(workflow), "\n") {
@@ -52,7 +63,7 @@ func ParsePin(workflow []byte) Pin {
 			continue
 		}
 		uses := match[1]
-		if !strings.Contains(uses, "releasegraph/") || !strings.Contains(uses, "reusable-release.yml") {
+		if !isReleaseCall(uses) {
 			continue
 		}
 		ref := ""
@@ -87,6 +98,9 @@ const (
 	StatusUnaffected   = "UNAFFECTED"      // release does not touch this repository's capabilities
 	StatusMigration    = "MIGRATION_REQUIRED"
 	StatusIncompatible = "INCOMPATIBLE"
+	// StatusPermission means the caller does not grant what the target requests.
+	// Such a run fails at startup with zero jobs, so the repository must not move.
+	StatusPermission = "PERMISSION_REQUIRED"
 )
 
 // Entry is one repository's rollout state.
@@ -106,6 +120,10 @@ type Entry struct {
 	Capabilities []string `json:"capabilities,omitempty"`
 	PolicySchema int      `json:"policySchema,omitempty"`
 	Compat       string   `json:"compatibility,omitempty"`
+	// MissingPermissions are the scopes the target workflow requests that this
+	// repository's caller does not grant. Empty means the caller is compatible;
+	// it is only ever computed for a repository that calls the release workflow.
+	MissingPermissions []string `json:"missingPermissions,omitempty"`
 }
 
 // Plan is the full rollout decision for one target version.
@@ -125,6 +143,9 @@ type Plan struct {
 	// Migration and Incompatible repositories cannot simply take the new pin.
 	Migration    []string `json:"migrationRequired"`
 	Incompatible []string `json:"incompatible"`
+	// PermissionRequired repositories call the release workflow without granting
+	// what the target requests; repinning one would break its runs at startup.
+	PermissionRequired []string `json:"permissionRequired"`
 }
 
 // CanaryEvidence is what a canary repository proves before a fleet rollout.
@@ -140,7 +161,7 @@ type CanaryEvidence struct {
 // version and its latest release lifecycle succeeded. Rollout never assumes that
 // a published version is a verified version.
 func BuildPlan(manifest *fleet.Manifest, entries []Entry, target, canary string, evidence CanaryEvidence, compat Compatibility) Plan {
-	plan := Plan{Target: target, Canary: canary, CanaryPassed: evidence.Pinned && evidence.Lifecycle, CanaryReason: evidence.Reason, Compatibility: &compat, Entries: []Entry{}, Ready: []string{}, Blocked: []string{}, Unaffected: []string{}, Migration: []string{}, Incompatible: []string{}}
+	plan := Plan{Target: target, Canary: canary, CanaryPassed: evidence.Pinned && evidence.Lifecycle, CanaryReason: evidence.Reason, Compatibility: &compat, Entries: []Entry{}, Ready: []string{}, Blocked: []string{}, Unaffected: []string{}, Migration: []string{}, Incompatible: []string{}, PermissionRequired: []string{}}
 
 	for i := range entries {
 		entry := &entries[i]
@@ -186,6 +207,20 @@ func BuildPlan(manifest *fleet.Manifest, entries []Entry, target, canary string,
 			}
 		}
 
+		// A caller that does not grant what the target workflow requests fails the
+		// whole run at startup with zero jobs: GitHub validates the called
+		// workflow's permissions before any job exists, and a reusable workflow
+		// cannot elevate past its caller. The gap is reported whether the pin is
+		// already on the target or the rollout would move it, because either way
+		// the repository cannot run the workflow it calls.
+		if len(entry.MissingPermissions) > 0 {
+			entry.Status = StatusPermission
+			entry.Reason = "caller must grant " + strings.Join(entry.MissingPermissions, ", ") + " for " + entry.Target + "; the run fails at startup with zero jobs"
+			plan.PermissionRequired = append(plan.PermissionRequired, entry.Repository)
+			plan.Entries = append(plan.Entries, *entry)
+			continue
+		}
+
 		switch {
 		case entry.Current.Ref == "":
 			entry.Status = StatusNoPin
@@ -212,8 +247,11 @@ func BuildPlan(manifest *fleet.Manifest, entries []Entry, target, canary string,
 	return plan
 }
 
-// InspectPins reads every managed repository's release workflow pin.
-func InspectPins(ctx context.Context, client *github.Bound, manifest *fleet.Manifest, managed []fleet.Resolved, target string) []Entry {
+// InspectPins reads every managed repository's release workflow pin and checks
+// the permissions its caller grants against what the target workflow requests.
+// required comes from the target version's reusable workflow; an empty set
+// disables the permission check.
+func InspectPins(ctx context.Context, client *github.Bound, manifest *fleet.Manifest, managed []fleet.Resolved, target string, required PermissionGrant) []Entry {
 	entries := make([]Entry, 0, len(managed))
 	for _, repo := range managed {
 		entry := Entry{Repository: repo.Name, Classification: repo.Classification, Canary: repo.Canary, Target: target}
@@ -234,6 +272,11 @@ func InspectPins(ctx context.Context, client *github.Bound, manifest *fleet.Mani
 			entry.Reason = WorkflowPath + " is missing"
 		default:
 			entry.Current = ParsePin(raw)
+			// Only a repository that calls the release workflow can mismatch the
+			// permissions that workflow requests.
+			if entry.Current.Ref != "" && len(required) > 0 {
+				entry.MissingPermissions = PermissionGaps(raw, required)
+			}
 		}
 		entries = append(entries, entry)
 	}

@@ -85,16 +85,25 @@ func rolloutCommand(w io.Writer, args []string) error {
 	if commitErr != nil {
 		targetCommit = ""
 	}
-	entries := rollout.InspectPins(ctx, client, manifest, managed, version)
+	// A caller that grants less than the target workflow requests fails the whole
+	// run at startup, so the requirement is read from the target itself.
+	required, permissionNote := targetPermissions(ctx, client, releaseRepo, version, targetCommit)
+	if permissionNote != "" && format != "json" {
+		fmt.Fprintf(w, "note: %s\n", permissionNote)
+	}
+	entries := rollout.InspectPins(ctx, client, manifest, managed, version, required)
 	for i := range entries {
 		entries[i].TargetCommit = targetCommit
 	}
-	canary, _ := manifest.Canary()
-	evidence := canaryEvidence(ctx, client, canary, version, targetCommit)
 	compat, compatNote := fetchCompatibility(ctx, client, releaseRepo, version)
 	if compatNote != "" && format != "json" {
 		fmt.Fprintf(w, "note: %s\n", compatNote)
 	}
+	// A plan with the declared canary lists every repository this rollout would
+	// move (ready + blocked, with capability and permission filtering applied),
+	// and that list is what the canary is chosen from.
+	canary, _ := manifest.Canary()
+	evidence := canaryEvidence(ctx, client, canary, version, targetCommit)
 	plan := rollout.BuildPlan(manifest, entries, version, canary, evidence, compat)
 
 	if len(only) > 0 {
@@ -186,6 +195,10 @@ func humanRolloutPlan(w io.Writer, plan rollout.Plan) {
 		if entry.Compat != "" && entry.Status != rollout.StatusCurrent {
 			compat = " [" + entry.Compat + "]"
 		}
+		permission := ""
+		if len(entry.MissingPermissions) > 0 {
+			permission = " [caller must grant " + strings.Join(entry.MissingPermissions, ", ") + "]"
+		}
 		mutable := ""
 		if entry.Current.Mutable {
 			mutable = " (mutable channel alias)"
@@ -194,10 +207,10 @@ func humanRolloutPlan(w io.Writer, plan rollout.Plan) {
 		if current == "" {
 			current = "none"
 		}
-		fmt.Fprintf(w, "  %-42s %-17s %s -> %s%s%s%s\n", entry.Repository, entry.Status, current, entry.Target, marker, mutable, compat)
+		fmt.Fprintf(w, "  %-42s %-19s %s -> %s%s%s%s%s\n", entry.Repository, entry.Status, current, entry.Target, marker, mutable, compat, permission)
 	}
-	fmt.Fprintf(w, "\nready: %d  blocked: %d  unaffected: %d  migration: %d  incompatible: %d\n",
-		len(plan.Ready), len(plan.Blocked), len(plan.Unaffected), len(plan.Migration), len(plan.Incompatible))
+	fmt.Fprintf(w, "\nready: %d  blocked: %d  permission: %d  unaffected: %d  migration: %d  incompatible: %d\n",
+		len(plan.Ready), len(plan.Blocked), len(plan.PermissionRequired), len(plan.Unaffected), len(plan.Migration), len(plan.Incompatible))
 }
 
 // resolveRefCommit resolves the version tag to the commit it points at, so the
@@ -307,6 +320,24 @@ func canaryEvidence(ctx context.Context, client *github.Bound, canary, version, 
 	return rollout.CanaryEvidence{Pinned: true, Lifecycle: true, Reason: "canary run succeeded on " + version + ": " + run.HTMLURL}
 }
 
+// targetPermissions reads the permissions the target version's release workflow
+// requests from its callers. GitHub validates them when the run is created, so a
+// caller that grants less fails at startup with zero jobs.
+func targetPermissions(ctx context.Context, client *github.Bound, repo, version, commit string) (rollout.PermissionGrant, string) {
+	ref := commit
+	if ref == "" {
+		ref = version
+	}
+	raw, found, err := client.ReadFile(ctx, repo, rollout.ReleaseWorkflowPath, ref)
+	switch {
+	case err != nil:
+		return nil, "cannot read " + repo + " " + rollout.ReleaseWorkflowPath + " at " + ref + ": " + err.Error() + "; caller permissions were not checked"
+	case !found:
+		return nil, "cannot read " + repo + " " + rollout.ReleaseWorkflowPath + " at " + ref + "; caller permissions were not checked"
+	}
+	return rollout.RequestedPermissions(raw), ""
+}
+
 func latestStableVersion(ctx context.Context, client *github.Bound, repo string) (string, error) {
 	var release struct {
 		TagName    string `json:"tag_name"`
@@ -329,7 +360,11 @@ func limitPlan(plan rollout.Plan, only []string) rollout.Plan {
 	for _, name := range only {
 		wanted[name] = true
 	}
-	limited := rollout.Plan{Target: plan.Target, Canary: plan.Canary, CanaryPassed: plan.CanaryPassed, CanaryReason: plan.CanaryReason, Entries: []rollout.Entry{}, Ready: []string{}, Blocked: []string{}}
+	limited := plan
+	limited.Entries = []rollout.Entry{}
+	limited.Ready, limited.Blocked = []string{}, []string{}
+	limited.Unaffected, limited.Migration = []string{}, []string{}
+	limited.Incompatible, limited.PermissionRequired = []string{}, []string{}
 	for _, entry := range plan.Entries {
 		if !wanted[entry.Repository] {
 			continue
@@ -340,6 +375,14 @@ func limitPlan(plan rollout.Plan, only []string) rollout.Plan {
 			limited.Ready = append(limited.Ready, entry.Repository)
 		case rollout.StatusBlocked:
 			limited.Blocked = append(limited.Blocked, entry.Repository)
+		case rollout.StatusUnaffected:
+			limited.Unaffected = append(limited.Unaffected, entry.Repository)
+		case rollout.StatusMigration:
+			limited.Migration = append(limited.Migration, entry.Repository)
+		case rollout.StatusIncompatible:
+			limited.Incompatible = append(limited.Incompatible, entry.Repository)
+		case rollout.StatusPermission:
+			limited.PermissionRequired = append(limited.PermissionRequired, entry.Repository)
 		}
 	}
 	return limited

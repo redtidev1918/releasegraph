@@ -6,11 +6,26 @@
 jobs:
   release:
     uses: redtidev1918/releasegraph/.github/workflows/reusable-release.yml@v1
-    permissions: {contents: write, packages: write, pull-requests: write, id-token: write}
+    permissions: {contents: write, packages: write, pull-requests: write, actions: write, id-token: write}
     secrets: inherit
 ```
 
 请固定 tag：`@v1` 是已发布的大版本，写 commit SHA 则精确固定。
+
+## 调用方权限：少一项就整次运行不启动
+
+`permissions:` 必须**覆盖被调 workflow 申请的每一项**。GitHub 在**创建运行之前**就校验这个契约：调用方少给一项，整次运行以 `startup_failure` 收场，**一个 job 都不会创建**，也不会有日志（`gh run view --log-failed` 只会说 `log not found`）。这个判断发生在任何 job 级 `if:` 之前，所以没有任何 job 能报告原因，界面上只剩一句"这次运行可能因工作流文件问题而失败"。
+
+```yaml
+permissions:
+  contents: write      # release_please / build / finalize
+  pull-requests: write # release_please 建 release PR
+  packages: write      # finalize 推注册表
+  actions: write       # finalize 的 post-release workflow_dispatch
+  id-token: write      # finalize 的 Sigstore provenance
+```
+
+job 级 `permissions:` 会**替换**（不是叠加）workflow 级的授权，所以只给调用 job 单独写块、而把 rest 留在顶层是不成立的写法。当前 reusable workflow 的申请集合可以从它的四个 job 块读出来 —— 不用猜：`releasegraph rollout plan` 会在改 pin 之前替你对一遍，读目标 ref 的 `reusable-release.yml` 与每个 caller 在默认分支上的 `release.yml`，缺项报 `PERMISSION_REQUIRED` 并打印 `[caller must grant …]`。**它不会为缺权限的 caller 开升级 PR**：补权限是 callers 自己的改动（2026-09-26 的四个仓库正因少了 `actions: write`，在一次 pin 升级后全部 `startup_failure`）。
 
 ## 输出
 
