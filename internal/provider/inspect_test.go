@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -46,6 +47,12 @@ type fakeGitHub struct {
 	packageManifest   string
 	mutations         []string
 	dispatches        []string
+	// dispatchRefs records the git ref of every workflow_dispatch, so a test can
+	// assert WHERE a repair runs, not only that it ran.
+	dispatchRefs []string
+	// noTag makes the version's tag look absent, the state a release that never
+	// happened is in.
+	noTag bool
 }
 
 func (f *fakeGitHub) handler() http.Handler {
@@ -150,6 +157,10 @@ func (f *fakeGitHub) handler() http.Handler {
 	})
 
 	mux.HandleFunc("/repos/"+acme+"/git/ref/tags/v2.16.0", func(w http.ResponseWriter, r *http.Request) {
+		if f.noTag {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		// lightweight-style ref pointing straight at the commit (tests peeling path separately).
 		fmt.Fprint(w, `{"object":{"type":"commit","sha":"b6c2"}}`)
 	})
@@ -190,6 +201,11 @@ func (f *fakeGitHub) handler() http.Handler {
 
 	mux.HandleFunc("/repos/"+acme+"/actions/workflows/release.yml/dispatches", func(w http.ResponseWriter, r *http.Request) {
 		f.dispatches = append(f.dispatches, r.URL.Path)
+		var payload struct {
+			Ref string `json:"ref"`
+		}
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		f.dispatchRefs = append(f.dispatchRefs, payload.Ref)
 		w.WriteHeader(http.StatusNoContent)
 	})
 
@@ -462,7 +478,9 @@ func TestRepairDispatchesSameVersionThroughRepoPipeline(t *testing.T) {
 		t.Fatalf("dry run dispatched: %v", f.dispatches)
 	}
 
-	// Applying dispatches the repository's own release workflow on its default branch.
+	// Applying dispatches the repository's own release workflow at the release's
+	// own tag: the pipeline refuses a run whose HEAD is not that commit, so the
+	// tag — not the branch head — is where an existing release can be repaired.
 	applied, err := Repair(context.Background(), client, report, "", false)
 	if err != nil {
 		t.Fatalf("Repair: %v", err)
@@ -472,6 +490,45 @@ func TestRepairDispatchesSameVersionThroughRepoPipeline(t *testing.T) {
 	}
 	if len(f.dispatches) != 1 || !strings.Contains(f.dispatches[0], "actions/workflows/release.yml/dispatches") {
 		t.Fatalf("dispatches = %v", f.dispatches)
+	}
+	if len(f.dispatchRefs) != 1 || f.dispatchRefs[0] != "v2.16.0" {
+		t.Fatalf("repair must run at the release tag, got refs %v", f.dispatchRefs)
+	}
+}
+
+func TestRepairFallsBackToDefaultBranchWhenTheTagDoesNotExist(t *testing.T) {
+	f := &fakeGitHub{prLabels: []string{labelPending}, release: false, noTag: true}
+	server := httptest.NewServer(f.handler())
+	defer server.Close()
+	client := github.NewForTest(server.URL).Bind(domain.ExecutionContext{Scope: domain.ScopeFleet})
+	report, err := Inspect(context.Background(), client, registry.New(), testPolicy(), acme, "2.16.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ref, err := RepairRef(context.Background(), client, report)
+	if err != nil {
+		t.Fatalf("RepairRef: %v", err)
+	}
+	if ref != "main" {
+		t.Fatalf("a version with no tag must repair from the default branch, got %q", ref)
+	}
+}
+
+func TestRepairRefPrefersTheTagOfAnExistingRelease(t *testing.T) {
+	f := &fakeGitHub{prLabels: []string{labelPending}, release: true}
+	server := httptest.NewServer(f.handler())
+	defer server.Close()
+	client := github.NewForTest(server.URL).Bind(domain.ExecutionContext{Scope: domain.ScopeFleet})
+	report, err := Inspect(context.Background(), client, registry.New(), testPolicy(), acme, "2.16.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ref, err := RepairRef(context.Background(), client, report)
+	if err != nil {
+		t.Fatalf("RepairRef: %v", err)
+	}
+	if ref != "v2.16.0" {
+		t.Fatalf("an existing release repairs from its tag, got %q", ref)
 	}
 }
 

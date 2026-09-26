@@ -92,15 +92,43 @@ func applyPlanCommand(w io.Writer, args []string) error {
 		return err
 	}
 	if !apply {
+		// State where the repair would run: a same-version repair must execute at
+		// the release's own commit, which is the tag ref whenever the default
+		// branch has moved on. A dry run that hides the ref hides the decision.
+		ref := ""
+		if planAllows(doc, "same_version_repair") {
+			resolved, err := provider.RepairRef(ctx, reportClient(execution), report)
+			if err != nil {
+				return err
+			}
+			ref = resolved
+		}
 		if format == "json" {
-			return write(w, "json", map[string]any{"validated": true, "plan": doc, "mode": "dry-run"}, nil)
+			out := map[string]any{"validated": true, "plan": doc, "mode": "dry-run"}
+			if ref != "" {
+				out["dispatchRef"] = ref
+			}
+			return write(w, "json", out, nil)
 		}
 		fmt.Fprintf(w, "plan validated against the current observation (%s)\n", doc.ObservedRevision)
 		humanPlan(w, doc)
+		if ref != "" {
+			fmt.Fprintf(w, "dispatch ref       %s\n", ref)
+		}
 		fmt.Fprintln(w, "\ndry-run only; pass --apply to execute")
 		return nil
 	}
 	return applyPlanDoc(ctx, w, doc, report, execution, false)
+}
+
+// planAllows reports whether a plan lists the given action.
+func planAllows(doc provider.PlanDoc, action string) bool {
+	for _, a := range doc.Actions {
+		if a.Type == action {
+			return true
+		}
+	}
+	return false
 }
 
 // applyPlanDoc executes a plan's actions through primitives and never does
@@ -120,11 +148,15 @@ func applyPlanDoc(ctx context.Context, w io.Writer, doc provider.PlanDoc, report
 		}
 	}
 	if allowed["same_version_repair"] {
+		ref, err := provider.RepairRef(ctx, reportClient(execution), report)
+		if err != nil {
+			return err
+		}
 		inputs, err := provider.Repair(ctx, reportClient(execution), report, "release.yml", dryRun)
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(w, "dispatched same-version repair for %s %s (%v)\n", doc.Repository, doc.Version, inputs)
+		fmt.Fprintf(w, "dispatched same-version repair for %s %s at %s (%v)\n", doc.Repository, doc.Version, ref, inputs)
 	}
 	if !allowed["provider_ack"] && !allowed["same_version_repair"] {
 		fmt.Fprintf(w, "no applicable action for %s %s\n", doc.Repository, doc.Version)

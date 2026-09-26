@@ -730,7 +730,7 @@ func Repair(ctx context.Context, client *github.Bound, r *Report, workflowFile s
 	if dryRun {
 		return inputs, nil
 	}
-	ref, err := client.DefaultBranch(ctx, r.Context.Repository)
+	ref, err := RepairRef(ctx, client, r)
 	if err != nil {
 		return nil, err
 	}
@@ -738,6 +738,28 @@ func Repair(ctx context.Context, client *github.Bound, r *Report, workflowFile s
 		return nil, err
 	}
 	return inputs, nil
+}
+
+// RepairRef picks the git ref a same-version repair has to run at. A repair
+// rebuilds the artifacts of an EXISTING release, and the releasing repository's
+// publish gate refuses a run whose HEAD is not that release's commit
+// ("tag vX points to <release commit>, expected <run HEAD>"). A release
+// discovered after the default branch moved on therefore cannot be repaired
+// from the branch head at all: the repair must run at the tag, where the
+// release's own commit is HEAD. The default branch is the right ref only when
+// the version's tag does not exist yet — a release that never happened.
+func RepairRef(ctx context.Context, client *github.Bound, r *Report) (string, error) {
+	tag := r.Context.Tag
+	if tag != "" {
+		commit, err := client.TagCommit(ctx, r.Context.Repository, tag)
+		if err != nil {
+			return "", err
+		}
+		if commit != "" {
+			return tag, nil
+		}
+	}
+	return client.DefaultBranch(ctx, r.Context.Repository)
 }
 
 // draftRelease finds a draft release for a tag through the releases list, the
