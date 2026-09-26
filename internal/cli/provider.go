@@ -165,7 +165,7 @@ func providerReconcile(w io.Writer, opts providerOptions) error {
 	}
 	applied := []provider.Report{}
 	for _, report := range scan.Reports {
-		if !report.Verdict.ACKAllowed {
+		if !acknowledgeTargets(report.Verdict) {
 			continue
 		}
 		mutations, err := provider.Acknowledge(ctx, client, &report, !opts.apply)
@@ -292,6 +292,18 @@ func providerWaive(w io.Writer, opts providerOptions) error {
 	}
 	fmt.Fprintf(w, "waived %s %s (release PR #%d) — record why in the PR conversation\n", opts.repo, opts.version, number)
 	return nil
+}
+
+// acknowledgeTargets reports whether a scanned report should be acknowledged.
+//
+// ACKAllowed covers the healthy and missed-ACK states. Waived covers the
+// explicit human waiver of an unrecoverable historical version: the outstanding
+// release-please `autorelease: pending` label on its merged release PR IS what
+// blocks every newer version — release-please refuses to prepare a new release
+// while any merged release PR is still labelled pending — so a waived version
+// must still be acknowledged, exactly as provider.Acknowledge accepts it.
+func acknowledgeTargets(v provider.Verdict) bool {
+	return v.ACKAllowed || v.Waived
 }
 
 func mode(apply bool) string {
