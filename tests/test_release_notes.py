@@ -295,9 +295,27 @@ class BinaryDownloadsTest(unittest.TestCase, NoNoiseMixin):
         zero = [{"name": "app-linux-amd64", "size": 0}]
         self.assertIn("app-linux-amd64", release.missing_required_assets(self.document, zero))
 
-    def test_a_service_repository_has_nothing_to_gate(self):
-        self.assertEqual(release.required_asset_patterns(policy(assets={"required": []})), [])
-        self.assertEqual(release.missing_required_assets(policy(assets={"required": []}), []), [])
+    def test_a_service_repository_gates_only_the_release_record(self):
+        # No declared binaries means no download artifacts to gate — but the
+        # release record itself is fleet-wide mandatory, so the gate is never
+        # empty. Otherwise stage() sees a metadata-less container release as
+        # "already public and complete" and refuses the repair the planner asked
+        # for (the v1.1.0 dead-lock).
+        self.assertEqual(
+            release.required_asset_patterns(policy(assets={"required": []})),
+            ["RELEASE-METADATA.json"],
+        )
+        self.assertEqual(
+            release.missing_required_assets(policy(assets={"required": []}), []),
+            ["RELEASE-METADATA.json"],
+        )
+        self.assertEqual(
+            release.missing_required_assets(
+                policy(assets={"required": []}),
+                [{"name": "RELEASE-METADATA.json", "size": 10}],
+            ),
+            [],
+        )
 
 
 class ServiceOnlyRepositoryTest(unittest.TestCase, NoNoiseMixin):
@@ -350,7 +368,7 @@ class PrereleaseTest(unittest.TestCase, NoNoiseMixin):
             path.write_text(json.dumps(document))
             with mock.patch.object(release, "_is_newest", return_value=newest), \
                     mock.patch.object(release, "_release",
-                                      return_value={"isDraft": True, "assets": [], "tagName": "v" + version}), \
+                                      return_value={"isDraft": True, "assets": [{"name": "RELEASE-METADATA.json", "size": 10}], "tagName": "v" + version}), \
                     mock.patch.object(release, "_upload_idempotent"), \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"), \

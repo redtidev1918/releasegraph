@@ -65,16 +65,20 @@ def _pypi_package(policy: dict) -> str | None:
 
 
 def required_asset_patterns(policy: dict) -> list[str]:
-    """Every asset a *public* release must carry, or an empty list.
+    """Every asset a *public* release must carry. Never empty.
 
-    A repository with no declared binary patterns has nothing to gate: its
-    Release legitimately contains only metadata, and the body says so instead of
-    showing an empty download area.
+    A repository with no declared binary patterns has nothing to gate beyond the
+    release record itself: its Release legitimately contains only metadata, and
+    the body says so instead of showing an empty download area. The metadata is
+    still mandatory — every managed release carries `RELEASE-METADATA.json`
+    regardless of policy (the health contract and `plan()` both require it), so a
+    release without it is incomplete even for a policy that declares no binary
+    assets. Returning an empty list here made `stage()` treat such a release as
+    "already public and complete" and refuse the same-version repair that the
+    planner had just asked for.
     """
     patterns = list(policy.get("assets", {}).get("required", []))
-    if not patterns:
-        return []
-    if policy.get("checksums", True):
+    if patterns and policy.get("checksums", True):
         patterns.append("SHA256SUMS")
     patterns.append("RELEASE-METADATA.json")
     return patterns

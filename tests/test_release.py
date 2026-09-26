@@ -219,7 +219,7 @@ class ReleaseTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "collect_assets", return_value=[]), \
                     mock.patch.object(release, "_upload_idempotent"), \
-                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": [{"name": "RELEASE-METADATA.json", "size": 10}]}), \
                     mock.patch.object(release, "_run", return_value="") as run, \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"):
@@ -412,7 +412,7 @@ class LatestGuardTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "_is_newest", return_value=False), \
                     mock.patch.object(release, "_upload_idempotent"), \
-                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": [{"name": "RELEASE-METADATA.json", "size": 10}]}), \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"), \
                     mock.patch.object(release, "_run", return_value="head-commit") as run, \
@@ -433,7 +433,7 @@ class LatestGuardTest(unittest.TestCase):
             path.write_text(json.dumps(policy))
             with mock.patch.object(release, "_is_newest", return_value=True), \
                     mock.patch.object(release, "_upload_idempotent"), \
-                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": []}), \
+                    mock.patch.object(release, "_release", return_value={"isDraft": True, "assets": [{"name": "RELEASE-METADATA.json", "size": 10}]}), \
                     mock.patch.object(release, "audit"), \
                     mock.patch.object(release, "prune"), \
                     mock.patch.object(release, "_run", return_value="head-commit") as run, \
