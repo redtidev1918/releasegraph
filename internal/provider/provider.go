@@ -159,18 +159,25 @@ func Classify(o Observed) Verdict {
 			Reason: fmt.Sprintf("tag points at %s, expected %s", a.TagCommit, a.ExpectedCommit)}
 	}
 
-	// 1a. A draft release means the transaction is in flight. Never ACK, never
+	// 1a. A human waiver is explicit and auditable: it stops the version from
+	// blocking newer ones, but it is never reported as HEALTHY. It is checked
+	// before the draft state because a waiver is a statement that no transaction
+	// will ever complete this version: the attempt died leaving a draft behind
+	// (pixivflow-webui v1.1.0 — the release commit cannot build its own image),
+	// and that leftover draft would otherwise pin the version in
+	// RELEASE_IN_PROGRESS forever, which keeps release-please's pending label on
+	// the merged release PR and blocks every newer release. Without this order
+	// the documented waiver has no exit at all.
+	if a.Waived {
+		return Verdict{Drift: DriftHistoricalWaived, Health: domain.HealthWaived, Waived: true,
+			Reason: "waived by an explicit releasegraph: historical-waived label"}
+	}
+
+	// 1b. A draft release means the transaction is in flight. Never ACK, never
 	// repair, never start a new version: observe again later.
 	if a.ReleaseDraft {
 		return Verdict{Drift: DriftReleaseInProgress, Health: domain.HealthRunning,
 			Reason: "a draft release exists; the release transaction is in flight"}
-	}
-
-	// 1b. A human waiver is explicit and auditable: it stops the version from
-	// blocking newer ones, but it is never reported as HEALTHY.
-	if a.Waived {
-		return Verdict{Drift: DriftHistoricalWaived, Health: domain.HealthWaived, Waived: true,
-			Reason: "waived by an explicit releasegraph: historical-waived label"}
 	}
 
 	// 2. Providers without acknowledgement state are in sync iff actual is healthy.

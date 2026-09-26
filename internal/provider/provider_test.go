@@ -297,3 +297,34 @@ func TestWaiverAllowsProgressionWithoutFabricatingRelease(t *testing.T) {
 		t.Fatalf("waived version blocked progression: %s", why)
 	}
 }
+
+// An unrecoverable version does not merely pause: its transaction dies and can
+// leave a draft release behind. The waiver must win over that leftover draft, or
+// the version is pinned in RELEASE_IN_PROGRESS forever, its merged release PR
+// keeps release-please's `autorelease: pending` label, and release-please aborts
+// every newer release PR for the repository — which is exactly pixivflow-webui
+// v1.1.0, whose release commit cannot build its own image.
+func TestWaiverOutranksALeftoverDraft(t *testing.T) {
+	o := obs(StatePending)
+	o.Actual.ReleaseExists = false
+	o.Actual.ReleaseDraft = true
+	o.Actual.Waived = true
+
+	verdict := Classify(o)
+	if verdict.Drift != DriftHistoricalWaived || !verdict.Waived {
+		t.Fatalf("drift = %s waived = %v, want HISTORICAL_WAIVED", verdict.Drift, verdict.Waived)
+	}
+	if verdict.Health == domain.HealthHealthy {
+		t.Fatal("a waived version must never be reported HEALTHY")
+	}
+	if ok, why := CanProgressToNextVersion([]Verdict{verdict}); !ok {
+		t.Fatalf("waived draft blocked progression: %s", why)
+	}
+
+	// The same leftover draft without a waiver is still an in-flight transaction.
+	unwaived := o
+	unwaived.Actual.Waived = false
+	if got := Classify(unwaived); got.Drift != DriftReleaseInProgress || got.Health != domain.HealthRunning {
+		t.Fatalf("unwaived draft = %s/%s, want RELEASE_IN_PROGRESS/RUNNING", got.Drift, got.Health)
+	}
+}
