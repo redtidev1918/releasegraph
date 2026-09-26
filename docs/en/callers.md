@@ -8,11 +8,40 @@ repository never implements versioning, asset gating, or publication itself.
 jobs:
   release:
     uses: redtidev1918/releasegraph/.github/workflows/reusable-release.yml@v1
-    permissions: {contents: write, packages: write, pull-requests: write, id-token: write}
+    permissions: {contents: write, packages: write, pull-requests: write, actions: write, id-token: write}
     secrets: inherit
 ```
 
 Pin the tag. `@v1` is the published major; a commit SHA pins exactly.
+
+## Caller permissions: one missing scope and no run starts
+
+`permissions:` must **cover every scope the called workflow requests**. GitHub
+validates that contract *before the run is created*: when the caller grants less,
+the whole run ends as `startup_failure`, **no job is created**, and no log exists
+(`gh run view --log-failed` only says `log not found`). The decision happens
+before any job-level `if:`, so no job can report the cause and the UI shows only
+"this run likely failed because of a workflow file issue".
+
+```yaml
+permissions:
+  contents: write      # release_please / build / finalize
+  pull-requests: write # release_please opens the release PR
+  packages: write      # finalize publishes to the registry
+  actions: write       # finalize's post-release workflow_dispatch
+  id-token: write      # finalize's Sigstore provenance
+```
+
+A job-level `permissions:` block **replaces** (it does not add to) the
+workflow-level one, so granting a subset on the calling job while leaving the rest
+at the top level does not work. Read the current request set out of the reusable
+workflow's four job blocks rather than guessing: `releasegraph rollout plan`
+checks the contract for you before it repins anything — it reads the target ref's
+`reusable-release.yml` and each caller's `release.yml` on the default branch,
+reports `PERMISSION_REQUIRED` and prints `[caller must grant …]`. **It does not
+open an upgrade PR for a caller that under-grants**: adding the scope is the
+caller's own change (on 2026-09-26 four repositories ended in `startup_failure`
+after a pin upgrade, purely for the missing `actions: write`).
 
 ## Outputs
 
