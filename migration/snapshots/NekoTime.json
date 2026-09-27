@@ -104,8 +104,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/36224136457",
-    "updated_at": "2026-09-26T06:34:11Z"
+    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/36306412123",
+    "updated_at": "2026-09-27T08:30:46Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -115,6 +115,7 @@
     "release-please-config.json"
   ],
   "workflow_paths": [
+    ".github/workflows/approve-release-please-runs.yml",
     ".github/workflows/branch-contract.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",

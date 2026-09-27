@@ -5,35 +5,212 @@
   "archived": false,
   "fork": false,
   "template": false,
-  "classification": "observe-only",
-  "health": "UNMANAGED",
-  "health_reasons": [
-    {
-      "code": "unmanaged_repo"
-    }
-  ],
+  "classification": "managed",
+  "health": "HEALTHY",
+  "health_reasons": [],
   "missing_assets": [],
   "empty_assets": [],
-  "release_policy": null,
+  "release_policy": {
+    "kind": "binary",
+    "versioning": {
+      "mode": "release-please"
+    },
+    "build": {
+      "test": "npm ci && npm run test:frontend && npm run test:version",
+      "matrix": [
+        {
+          "runner": "macos-latest",
+          "command": "scripts/build-release",
+          "version_check": "ls dist/release/PixivFlow-Desktop-v${RELEASE_VERSION}-macos-*.dmg >/dev/null"
+        },
+        {
+          "runner": "windows-2022",
+          "command": "scripts/build-release",
+          "version_check": "ls dist/release/PixivFlow-Desktop-v${RELEASE_VERSION}-windows-*-setup.exe >/dev/null"
+        },
+        {
+          "runner": "ubuntu-latest",
+          "command": "scripts/build-release",
+          "version_check": "ls dist/release/PixivFlow-Desktop-v${RELEASE_VERSION}-linux-*.deb >/dev/null"
+        }
+      ]
+    },
+    "assets": {
+      "required": [
+        "PixivFlow-Desktop-v*-macos-*.dmg",
+        "PixivFlow-Desktop-v*-windows-*-setup.exe",
+        "PixivFlow-Desktop-v*-linux-*.deb"
+      ],
+      "optional": [
+        "PixivFlow-Desktop-v*-linux-*.AppImage"
+      ]
+    },
+    "registries": {
+      "github": {
+        "required": true
+      }
+    },
+    "release": {
+      "notes": {
+        "language": "zh"
+      },
+      "postRelease": [
+        {
+          "id": "refresh-download-page",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "update-download-page.yml",
+          "inputs": {
+            "tag": "{{tag}}",
+            "deploy-docs": "false"
+          }
+        },
+        {
+          "id": "deploy-docs",
+          "type": "github-workflow",
+          "required": true,
+          "workflow": "docs.yml",
+          "ref": "default"
+        }
+      ]
+    },
+    "retention": {
+      "stable": 1,
+      "prerelease": 1,
+      "failed_draft": 2,
+      "pruneStable": true
+    },
+    "checksums": true,
+    "sbom": false,
+    "repository": {
+      "git": {
+        "productionOperations": {
+          "base": "default",
+          "branches": [
+            "chore/cutover-*",
+            "ops/*",
+            "release/*",
+            "hotfix/*"
+          ],
+          "requireLatestBase": true
+        }
+      }
+    }
+  },
   "release_infra_version": null,
-  "desired_version": null,
-  "latest_release": null,
-  "latest_release_at": null,
-  "latest_tag": null,
+  "desired_version": "0.2.0",
+  "latest_release": "v0.2.0",
+  "latest_release_at": "2026-09-26T20:11:50Z",
+  "latest_tag": "v0.2.0",
   "draft_releases": [],
-  "actual_assets": [],
-  "release_workflows": [],
-  "latest_release_run": null,
+  "actual_assets": [
+    "PixivFlow-Desktop-v0.2.0-linux-amd64.deb",
+    "PixivFlow-Desktop-v0.2.0-macos-arm64.dmg",
+    "PixivFlow-Desktop-v0.2.0-windows-x64-setup.exe",
+    "RELEASE-METADATA.json",
+    "SHA256SUMS"
+  ],
+  "release_workflows": [
+    {
+      "name": "Release",
+      "path": ".github/workflows/release.yml"
+    }
+  ],
+  "latest_release_run": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/36302075058",
+    "updated_at": "2026-09-27T07:07:06Z"
+  },
   "signals": [
+    ".release-please-manifest.json",
+    ".release-policy.yml",
     "CHANGELOG.md",
-    "package.json"
+    "package.json",
+    "release-please-config.json"
   ],
   "workflow_paths": [
-    ".github/workflows/notify-profile.yml"
+    ".github/workflows/ci.yml",
+    ".github/workflows/docs.yml",
+    ".github/workflows/notify-profile.yml",
+    ".github/workflows/release.yml",
+    ".github/workflows/update-download-page.yml"
   ],
-  "release_history": [],
-  "tags": [],
-  "release_config": {},
+  "release_history": [
+    {
+      "tag": "v0.2.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-26T20:11:50Z",
+      "assets": [
+        {
+          "name": "PixivFlow-Desktop-v0.2.0-linux-amd64.deb",
+          "size": 63524244,
+          "sha256": "sha256:0190b9318a9621f71aa37dff198c2f196507959d7b033e6b581f45d9f5961ffe"
+        },
+        {
+          "name": "PixivFlow-Desktop-v0.2.0-macos-arm64.dmg",
+          "size": 54469039,
+          "sha256": "sha256:37ca519225180e2df0b1b7d0d45231ed83934c64e86c001572b81ff11cc16b1d"
+        },
+        {
+          "name": "PixivFlow-Desktop-v0.2.0-windows-x64-setup.exe",
+          "size": 32278341,
+          "sha256": "sha256:4a548f148a7089c03f5e066b29b8092537843973734d6d7734a636129768e8c1"
+        },
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 1883,
+          "sha256": "sha256:119b7ec91bd7d3fc8df65bba24b3ca838038b0589e4f63bb2a23cf20c22f54ce"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 327,
+          "sha256": "sha256:5e62bb969170fd8d1beef8c066fe8eea3a18e7593df9e679e0d00444fb37e86f"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "v0.2.0",
+      "commit": "c4b8f2fd31fd09e9dece0de10be64757bbdaf0a7"
+    },
+    {
+      "name": "v0.1.0",
+      "commit": "b4848e2d2009965a564d7a58ce657d4ae5b1feb7"
+    }
+  ],
+  "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.2.0"
+    },
+    "release-please-config.json": {
+      "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+      "skip-github-release": true,
+      "packages": {
+        ".": {
+          "release-type": "node",
+          "package-name": "pixivflow-desktop",
+          "include-v-in-tag": true,
+          "include-component-in-tag": false,
+          "skip-github-release": true,
+          "extra-files": [
+            {
+              "type": "json",
+              "path": "src-tauri/tauri.conf.json",
+              "jsonpath": "$.version"
+            },
+            {
+              "type": "toml",
+              "path": "src-tauri/Cargo.toml",
+              "jsonpath": "$.package.version"
+            }
+          ]
+        }
+      }
+    }
+  },
   "registries": {
     "npm": {
       "package": "pixivflow-desktop",
@@ -42,10 +219,10 @@
     }
   },
   "branchContract": {
-    "configured": false,
+    "configured": true,
     "gateInstalled": false,
     "gatePinned": false,
-    "policyValid": null
+    "policyValid": true
   },
   "prLifecycle": null
 }

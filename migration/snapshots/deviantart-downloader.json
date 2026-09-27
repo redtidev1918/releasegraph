@@ -95,8 +95,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/36227166420",
-    "updated_at": "2026-09-26T07:34:10Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/36304923367",
+    "updated_at": "2026-09-27T08:02:12Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -107,6 +107,7 @@
     "setup.py"
   ],
   "workflow_paths": [
+    ".github/workflows/approve-release-please-runs.yml",
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/notify-profile.yml",
@@ -248,8 +249,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }

@@ -68,9 +68,9 @@
   },
   "release_infra_version": null,
   "desired_version": null,
-  "latest_release": "v1.5.12",
-  "latest_release_at": "2026-09-21T12:18:45Z",
-  "latest_tag": "v1.5.12",
+  "latest_release": "v1.5.14",
+  "latest_release_at": "2026-09-26T21:32:56Z",
+  "latest_tag": "v1.5.14",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
@@ -110,6 +110,112 @@
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
+    {
+      "tag": "v1.5.14",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-26T21:32:56Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 2398,
+          "sha256": "sha256:40e09a6bc3d0997b50062e3371906d4d8831e449a7bfaea426c8e8a7ae234f6b"
+        },
+        {
+          "name": "releasegraph-darwin-amd64",
+          "size": 7520368,
+          "sha256": "sha256:8c19e0149253e0711b781a5943f6268b4f943bc7305348b16ca938b9809cc72b"
+        },
+        {
+          "name": "releasegraph-darwin-arm64",
+          "size": 6996930,
+          "sha256": "sha256:9216f9abb381679b405f53bcafcc29b7a7280e24c0171fb19f1a259b41110675"
+        },
+        {
+          "name": "releasegraph-linux-amd64",
+          "size": 7393464,
+          "sha256": "sha256:f4e93ca44e3974deb99eaf9b58d95d11f3652258579cef8b473566772016ab22"
+        },
+        {
+          "name": "releasegraph-linux-arm64",
+          "size": 6881464,
+          "sha256": "sha256:6d1f6aedf2092a4c6863f325007efd18ad7eb16c6a52f1a2e704cc8a8e3fdb64"
+        },
+        {
+          "name": "RELEASEGRAPH-METADATA.json",
+          "size": 189,
+          "sha256": "sha256:e21aa747eb08bb9356a8d39e153a5dcc28fe64862eeceb1b2857d0247a530599"
+        },
+        {
+          "name": "releasegraph-windows-amd64.exe",
+          "size": 7588864,
+          "sha256": "sha256:6a60dee760728d7ac2808866132a4abd8e55c52794f892750599520b1689d0d0"
+        },
+        {
+          "name": "releasegraph-windows-arm64.exe",
+          "size": 6911488,
+          "sha256": "sha256:83d2f4389287a5eb561dd40f9dccd2888f4f35856cfd72e7ad5974808fbb3143"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 653,
+          "sha256": "sha256:0b832fbc2f7807ff451c8dc1a18befbfad23b819febe5744eea4cad0a6545cfb"
+        }
+      ]
+    },
+    {
+      "tag": "v1.5.13",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-09-26T21:15:08Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 2398,
+          "sha256": "sha256:c0dda2255a70318d1194d6b54ca482ba9914f85c621cfd20016f08564560603a"
+        },
+        {
+          "name": "releasegraph-darwin-amd64",
+          "size": 7520368,
+          "sha256": "sha256:563ac0e1d6a95c38581f629019e958b16fec35f3afa89896d9da681bbe93a99e"
+        },
+        {
+          "name": "releasegraph-darwin-arm64",
+          "size": 6996930,
+          "sha256": "sha256:d2033fb98b7e98e7057700df85653133fe669824cc24f29b36888640f398a4a8"
+        },
+        {
+          "name": "releasegraph-linux-amd64",
+          "size": 7393464,
+          "sha256": "sha256:fbcfd9aaa1d4776bda8b20c3f0b4c995a30f2832e3a5f3ea06c29240793eee5d"
+        },
+        {
+          "name": "releasegraph-linux-arm64",
+          "size": 6881464,
+          "sha256": "sha256:fb4e3e3cf459903b68d1af445f5f3984b97708633fee9bf91b0125080e5b4197"
+        },
+        {
+          "name": "RELEASEGRAPH-METADATA.json",
+          "size": 211,
+          "sha256": "sha256:d6fad71ce4fb415474c2fb9f029901ea8715517c58b985b1dfbb5ffedb0857b6"
+        },
+        {
+          "name": "releasegraph-windows-amd64.exe",
+          "size": 7588864,
+          "sha256": "sha256:8d04fa449a547b2520ef5dc36ac0ef6f68caafc9c975168fdb3fa8856f030af7"
+        },
+        {
+          "name": "releasegraph-windows-arm64.exe",
+          "size": 6910976,
+          "sha256": "sha256:bcecbc86fa1d580fa4da7d95359a89b4b572de8bdf86164b146f223a7c0a33af"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 653,
+          "sha256": "sha256:11c37d597e4f353a9190b53f73604a40c78c3cbe71869f2a54d3bc69f6c040e3"
+        }
+      ]
+    },
     {
       "tag": "v1.5.12",
       "draft": false,
@@ -749,6 +855,14 @@
   ],
   "tags": [
     {
+      "name": "v1.5.14",
+      "commit": "6d6f4a4a0a7631b55ccc20b4b1f0e89969484b61"
+    },
+    {
+      "name": "v1.5.13",
+      "commit": "6d8431ff4a692e2074689b8f217576a9ec5255d9"
+    },
+    {
       "name": "v1.5.12",
       "commit": "9983af36dd0e6fb029ff5f9363036134e41b8512"
     },
@@ -1010,7 +1124,7 @@
     },
     {
       "name": "v1",
-      "commit": "9983af36dd0e6fb029ff5f9363036134e41b8512"
+      "commit": "6d6f4a4a0a7631b55ccc20b4b1f0e89969484b61"
     }
   ],
   "release_config": {},
