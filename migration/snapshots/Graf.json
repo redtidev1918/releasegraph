@@ -91,8 +91,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/Graf/actions/runs/36390755915",
-    "updated_at": "2026-09-28T07:16:30Z"
+    "url": "https://github.com/redtidev1918/Graf/actions/runs/36545206332",
+    "updated_at": "2026-09-29T08:50:01Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -235,6 +235,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.2.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -247,9 +250,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.2.1"
     }
   },
   "registries": {
