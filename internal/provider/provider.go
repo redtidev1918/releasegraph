@@ -153,24 +153,27 @@ type Verdict struct {
 func Classify(o Observed) Verdict {
 	a := o.Actual
 
-	// 1. Tag conflicts are permanent: never move/force an existing tag.
-	if a.TagExists && a.ExpectedCommit != "" && a.TagCommit != a.ExpectedCommit {
-		return Verdict{Drift: DriftTagConflict, Health: domain.HealthBroken, HardFail: true,
-			Reason: fmt.Sprintf("tag points at %s, expected %s", a.TagCommit, a.ExpectedCommit)}
-	}
-
-	// 1a. A human waiver is explicit and auditable: it stops the version from
+	// 1. A human waiver is explicit and auditable: it stops the version from
 	// blocking newer ones, but it is never reported as HEALTHY. It is checked
-	// before the draft state because a waiver is a statement that no transaction
-	// will ever complete this version: the attempt died leaving a draft behind
-	// (pixivflow-webui v1.1.0 — the release commit cannot build its own image),
-	// and that leftover draft would otherwise pin the version in
-	// RELEASE_IN_PROGRESS forever, which keeps release-please's pending label on
-	// the merged release PR and blocks every newer release. Without this order
-	// the documented waiver has no exit at all.
+	// first because it is a statement that no transaction will ever complete
+	// this version correctly — the immutable failure is accepted as-is. That
+	// covers a leftover draft (pixivflow-webui v1.1.0 — the release commit
+	// cannot build its own image) and, critically, a permanent tag conflict
+	// (TelePost #240): a moved/forced tag is forbidden, so when the tag points
+	// at a different commit than the release PR's merge, the tag can never be
+	// corrected. Without this order the documented waiver
+	// (docs/POST-RELEASE.md) has no exit for either state, the merged release
+	// PR keeps release-please's `autorelease: pending` label, and release-please
+	// refuses to prepare every newer release PR.
 	if a.Waived {
 		return Verdict{Drift: DriftHistoricalWaived, Health: domain.HealthWaived, Waived: true,
 			Reason: "waived by an explicit releasegraph: historical-waived label"}
+	}
+
+	// 1a. Tag conflicts are permanent: never move/force an existing tag.
+	if a.TagExists && a.ExpectedCommit != "" && a.TagCommit != a.ExpectedCommit {
+		return Verdict{Drift: DriftTagConflict, Health: domain.HealthBroken, HardFail: true,
+			Reason: fmt.Sprintf("tag points at %s, expected %s", a.TagCommit, a.ExpectedCommit)}
 	}
 
 	// 1b. A draft release means the transaction is in flight. Never ACK, never
