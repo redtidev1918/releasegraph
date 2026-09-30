@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/36544134786",
-    "updated_at": "2026-09-29T08:39:59Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/36680233247",
+    "updated_at": "2026-09-30T06:49:18Z"
   },
   "signals": [
     ".release-please-manifest.json",

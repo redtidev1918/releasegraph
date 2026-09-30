@@ -6,8 +6,13 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "HEALTHY",
-  "health_reasons": [],
+  "health": "DEGRADED",
+  "health_reasons": [
+    {
+      "code": "version_drift",
+      "detail": "v3.1.1"
+    }
+  ],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -29,7 +34,7 @@
       },
       "npm": {
         "required": true,
-        "publish": "npm view ludum@$RELEASE_VERSION version | grep -Fx $RELEASE_VERSION || npm publish --access public",
+        "publish": "(npm view ludum@$RELEASE_VERSION version | grep -Fx -q $RELEASE_VERSION) || (npm ci && npm run build:lib && npm publish --access public)",
         "verify": "npm view ludum@$RELEASE_VERSION version | grep -Fx $RELEASE_VERSION"
       }
     },
@@ -58,9 +63,9 @@
   },
   "release_infra_version": null,
   "desired_version": "3.0.3",
-  "latest_release": "v3.0.3",
-  "latest_release_at": "2026-09-09T13:37:00Z",
-  "latest_tag": "v3.0.3",
+  "latest_release": "v3.1.1",
+  "latest_release_at": "2026-09-30T03:42:58Z",
+  "latest_tag": "v3.1.1",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -74,8 +79,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/36543810357",
-    "updated_at": "2026-09-29T08:36:53Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/36680027605",
+    "updated_at": "2026-09-30T06:47:04Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +100,28 @@
   ],
   "release_history": [
     {
-      "tag": "v3.0.3",
+      "tag": "v3.1.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-09T13:37:00Z",
+      "published_at": "2026-09-30T03:42:58Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1302,
-          "sha256": "sha256:13c40b74cb3e773de4c39c80b556c71f1d9181f90cf35c3f608b2c9ffe663c98"
+          "size": 1527,
+          "sha256": "sha256:49f0d242c6f4c05bb5b042c9ac6b644262720be193d65289c09ec015f0dbf865"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v3.1.1",
+      "commit": "a4edfccb4e9df056ebc48590a13330de22df265c"
+    },
+    {
+      "name": "v3.1.0",
+      "commit": "3a9a8e2d287a0ecec4d58faeea411972552bdda8"
+    },
     {
       "name": "v3.0.3",
       "commit": "72268b31c1866bf48a645af5851093ea86f4e8a4"
@@ -159,8 +172,8 @@
   "registries": {
     "npm": {
       "package": "ludum",
-      "declared": "3.0.3",
-      "published": "3.0.3"
+      "declared": "3.1.1",
+      "published": "3.1.1"
     }
   },
   "branchContract": {
@@ -172,8 +185,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }
