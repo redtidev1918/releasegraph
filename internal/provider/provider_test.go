@@ -298,6 +298,36 @@ func TestWaiverAllowsProgressionWithoutFabricatingRelease(t *testing.T) {
 	}
 }
 
+// A tag conflict is the most permanent irrecoverable state: moving/forcing a
+// tag is forbidden, so when the tag points at a different commit than the
+// release PR's merge, it can never be corrected and blocks every newer
+// release. A human waiver (releasegraph: historical-waived) must outrank it —
+// exactly as it outranks a leftover draft — otherwise the documented
+// waive-then-reconcile recovery has no exit. Regression: TelePost #240.
+func TestWaiverOutranksTagConflict(t *testing.T) {
+	conflicted := obs(StatePending)
+	conflicted.Actual.ReleaseExists = false
+	conflicted.Actual.TagCommit = "dead"
+	conflicted.Actual.Waived = true
+
+	verdict := Classify(conflicted)
+	if verdict.Drift != DriftHistoricalWaived || !verdict.Waived {
+		t.Fatalf("drift = %s waived = %v, want HISTORICAL_WAIVED (tag conflict must not outrank the waiver)", verdict.Drift, verdict.Waived)
+	}
+	if verdict.Health == domain.HealthHealthy {
+		t.Fatal("a waived version must never be reported HEALTHY")
+	}
+	if verdict.HardFail {
+		t.Fatal("a waived version must not hard fail")
+	}
+	if verdict.ACKAllowed {
+		t.Fatal("a waived incomplete version must never be ACKed via ACKAllowed")
+	}
+	if ok, why := CanProgressToNextVersion([]Verdict{verdict}); !ok {
+		t.Fatalf("waived version blocked progression: %s", why)
+	}
+}
+
 // An unrecoverable version does not merely pause: its transaction dies and can
 // leave a draft release behind. The waiver must win over that leftover draft, or
 // the version is pinned in RELEASE_IN_PROGRESS forever, its merged release PR
