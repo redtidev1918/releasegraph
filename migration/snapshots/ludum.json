@@ -79,8 +79,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/36680027605",
-    "updated_at": "2026-09-30T06:47:04Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/36822675453",
+    "updated_at": "2026-10-01T06:02:18Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -185,8 +185,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 4,
+    "inQueue": 4,
     "shouldLeave": 0
   }
 }

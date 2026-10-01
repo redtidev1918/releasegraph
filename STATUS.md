@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-09-30T09:46:00.848049+00:00`
+Generated: `2026-10-01T10:12:01.116690+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -13,7 +13,7 @@ Generated: `2026-09-30T09:46:00.848049+00:00`
 | redtidev1918/DAKit | managed | 0.4.1 | dakit_cli-v0.4.1 | 7 | success | policy+gate | — | HEALTHY |
 | redtidev1918/DAViewer | managed | 0.5.7 | v0.5.7 | 5 | success | policy+gate | — | HEALTHY |
 | redtidev1918/deviantart-downloader | managed | 4.4.0 | v4.4.0 | 4 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DeviantDrop | managed | 1.15.0 | v1.15.0 | 1 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DeviantDrop | managed | 1.15.1 | v1.15.1 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/Graf | managed | 1.2.1 | v1.2.1 | 10 | success | policy+gate | — | HEALTHY |
 | redtidev1918/ludum | managed | 3.0.3 | v3.1.1 | 1 | success | policy+gate | — | DEGRADED |
@@ -28,5 +28,5 @@ Generated: `2026-09-30T09:46:00.848049+00:00`
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.15 | 9 | — | — | — | HEALTHY |
 | redtidev1918/shengxiu_feedbot | fork | — | — | 0 | — | — | — | NO_RELEASE |
-| redtidev1918/TelePost | managed | 2.72.0 | v2.72.0 | 8 | success | policy+gate | — | HEALTHY |
-| redtidev1918/TelePress | managed | 0.16.1 | v0.16.1 | 4 | success | policy+gate | — | HEALTHY |
+| redtidev1918/TelePost | managed | 2.73.8 | v2.73.8 | 8 | success | policy+gate | — | HEALTHY |
+| redtidev1918/TelePress | managed | 0.16.2 | v0.16.2 | 4 | success | policy+gate | — | HEALTHY |

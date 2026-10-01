@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.15.0",
-  "latest_release": "v1.15.0",
-  "latest_release_at": "2026-09-26T00:00:46Z",
-  "latest_tag": "v1.15.0",
+  "desired_version": "1.15.1",
+  "latest_release": "v1.15.1",
+  "latest_release_at": "2026-09-30T16:17:46Z",
+  "latest_tag": "v1.15.1",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/36680233247",
-    "updated_at": "2026-09-30T06:49:18Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/36823057592",
+    "updated_at": "2026-10-01T06:06:49Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +95,24 @@
   ],
   "release_history": [
     {
-      "tag": "v1.15.0",
+      "tag": "v1.15.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-26T00:00:46Z",
+      "published_at": "2026-09-30T16:17:46Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1224,
-          "sha256": "sha256:17e324b40184554141a6a857cb94ad75fc438e73e2a4bfb8621a631b69ed6c0e"
+          "sha256": "sha256:14a063a64dbc20f311a8ff5c8670dac2680010f207ffac99dbfa307cfae5790a"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.15.1",
+      "commit": "864fe92a7cb893072ea49b531a12ab3dfbbadf8a"
+    },
     {
       "name": "v1.15.0",
       "commit": "ceaab2f17bb0380b5391bbccb453033745700a68"
@@ -220,7 +224,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.15.0"
+      ".": "1.15.1"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -239,7 +243,7 @@
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.15.0",
+      "declared": "1.15.1",
       "published": null
     }
   },
@@ -252,8 +256,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 3,
+    "inQueue": 3,
     "shouldLeave": 0
   }
 }

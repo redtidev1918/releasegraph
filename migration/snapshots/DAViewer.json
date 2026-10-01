@@ -97,8 +97,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/36681585071",
-    "updated_at": "2026-09-30T07:04:06Z"
+    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/36824142640",
+    "updated_at": "2026-10-01T06:19:29Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -711,8 +711,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 3,
+    "inQueue": 3,
     "shouldLeave": 0
   }
 }
