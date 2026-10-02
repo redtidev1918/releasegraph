@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAKit/actions/runs/36832285316",
-    "updated_at": "2026-10-01T07:46:52Z"
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/36972229949",
+    "updated_at": "2026-10-02T06:10:06Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -553,8 +553,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 2,
+    "inQueue": 2,
     "shouldLeave": 0
   }
 }
