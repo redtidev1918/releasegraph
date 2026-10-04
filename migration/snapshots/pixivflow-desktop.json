@@ -119,8 +119,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/37105198653",
-    "updated_at": "2026-10-03T07:05:53Z"
+    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/37190037344",
+    "updated_at": "2026-10-04T08:47:18Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -186,9 +186,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "0.3.0"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -213,6 +210,9 @@
           ]
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "0.3.0"
     }
   },
   "registries": {
