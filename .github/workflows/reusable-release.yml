@@ -73,7 +73,8 @@ jobs:
       - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
         with:
           go-version-file: .releasegraph/go.mod
-          cache: false
+          cache: true
+          cache-dependency-path: .releasegraph/go.sum
       # Version provider pre-reconciliation: release-please aborts every future
       # version while a merged release PR still carries "autorelease: pending".
       # Since this infrastructure sets skip-github-release: true, release-please
@@ -332,6 +333,11 @@ jobs:
           repository: redtidev1918/releasegraph
           ref: main
           path: .releasegraph
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: .releasegraph/go.mod
+          cache: true
+          cache-dependency-path: .releasegraph/go.sum
       - name: Configure Git identity for release tags
         run: |
           git config user.name "github-actions[bot]"
