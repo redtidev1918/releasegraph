@@ -77,6 +77,31 @@ class WorkflowTest(unittest.TestCase):
                 self.assertIn("cache-dependency-path: .releasegraph/go.sum", workflow)
                 self.assertNotIn("cache: false", workflow)
 
+    def test_retention_only_skips_build_and_uses_pinned_engine(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        inputs = workflow.split("    inputs:", 1)[1].split("    secrets:", 1)[0]
+        self.assertIn("retention_only:", inputs)
+
+        retention = workflow.split("\n  retention:\n", 1)[1].split("\n  release_please:\n", 1)[0]
+        self.assertIn("github.event_name != 'pull_request'", retention)
+        self.assertIn("release_infra.cli retention", retention)
+        self.assertIn("job.workflow_repository", retention)
+        self.assertIn("job.workflow_sha", retention)
+        self.assertNotIn("ref: main", retention)
+        self.assertNotIn("actions/setup-python", retention)
+        self.assertNotIn("actions/setup-node", retention)
+        self.assertNotIn("build-release", retention)
+        self.assertIn("args+=(--dry-run)", retention)
+
+        for job in ("release_please", "build-plan"):
+            with self.subTest(job=job):
+                header = workflow.split(f"\n  {job}:\n", 1)[1].split("\n    runs-on:", 1)[0]
+                self.assertIn("!inputs.retention_only", header)
+        # build/finalize remain transitively skipped because their required
+        # build-plan predecessor does not run in retention-only mode.
+        self.assertIn("needs: build-plan", workflow)
+        self.assertIn("needs: [build-plan, build]", workflow)
+
     def test_artifact_transfer_has_bounded_retries(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         self.assertEqual(workflow.count("actions/upload-artifact@"), 4)

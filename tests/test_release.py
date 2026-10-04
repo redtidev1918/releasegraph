@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from release_infra import release
+from release_infra import cli, release
 
 
 class ReleaseTest(unittest.TestCase):
@@ -203,6 +203,26 @@ class ReleaseTest(unittest.TestCase):
         commands = [call.args[0] for call in run.call_args_list]
         self.assertIn(["gh", "release", "delete", "v1", "--yes"], commands)
         self.assertNotIn("--cleanup-tag", " ".join(sum(commands, [])))
+
+    def test_retention_dry_run_reports_without_deleting(self):
+        policy = {"kind": "binary", "versioning": {"mode": "manual", "version": "2.0.0"}, "assets": {"required": []}, "registries": {"github": {"required": True}}, "retention": {"stable": 1, "prerelease": 0, "pruneStable": True}}
+        rows = [{"tagName": "v2", "isDraft": False, "isPrerelease": False}, {"tagName": "v1", "isDraft": False, "isPrerelease": False}]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / ".release-policy.yml"
+            path.write_text(json.dumps(policy))
+            with mock.patch.object(release, "_run", return_value=json.dumps(rows)) as run:
+                release.prune(str(path), dry_run=True)
+
+        self.assertEqual(run.call_count, 1)
+        commands = [" ".join(call.args[0]) for call in run.call_args_list]
+        self.assertNotIn("release delete", " ".join(commands))
+
+    def test_retention_cli_forwards_dry_run(self):
+        with mock.patch.object(cli, "prune") as prune:
+            result = cli.main(["retention", "--path", "policy.json", "--dry-run"])
+
+        self.assertEqual(result, 0)
+        prune.assert_called_once_with("policy.json", dry_run=True)
 
     def test_publish_leaves_label_acknowledgement_to_the_provider(self):
         """publish() must not be a second writer of provider-derived label state."""

@@ -87,6 +87,7 @@ structurally rather than trusting them.
 | `force` | `false` | Re-run diagnostics for an already-healthy version. |
 | `repair` | `false` | Repair an incomplete release of the **same** version. |
 | `stage` | `all` | Which stages to run. |
+| `retention_only` | `false` | Skip plan/test/build/publish and apply retention only; no artifacts are rebuilt. |
 
 ## Secrets
 
