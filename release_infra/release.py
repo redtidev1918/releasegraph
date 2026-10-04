@@ -489,7 +489,7 @@ def _remote_text(tag: str, asset: str) -> str:
         return (Path(directory) / asset).read_text()
 
 
-def prune(policy_path: str = ".release-policy.yml") -> None:
+def prune(policy_path: str = ".release-policy.yml", dry_run: bool = False) -> None:
     """Retire drafts and pre-releases past their limits.
 
     Published *stable* releases are history, not cache: GitHub derives its
@@ -525,6 +525,9 @@ def prune(policy_path: str = ".release-policy.yml") -> None:
     for release in expired:
         if release.get("isLatest"):
             print(f"note: {release['tagName']} is Latest and is kept regardless of retention")
+            continue
+        if dry_run:
+            print(f"would delete release {release['tagName']}")
             continue
         _run(["gh", "release", "delete", release["tagName"], "--yes"])
 

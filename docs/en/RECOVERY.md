@@ -9,6 +9,8 @@ Run the repository's **Release** workflow manually with:
 - `repair`: allow an incomplete public Release to enter explicit repair.
 - `force`: rerun a healthy version for audit/build diagnostics.
 - `stage`: reserved recovery label recorded in the Job Summary.
+- `retention_only`: skip the build transaction and apply only the policy's
+  retention rules to existing Release objects. Git tags are never deleted.
 
 ## Manual dispatch semantics
 
@@ -23,6 +25,7 @@ The reusable workflow distinguishes PR validation, safe rehearsals, and real tra
 | schedule (recovery) | false | false | false | missing/incomplete → resume same transaction; healthy → no-op | yes, only when work exists |
 | push (release PR merge) | false | false | false | full release transaction | yes |
 | manual `repair=true` | false | false | true | completes an incomplete release at the **same** version | yes, idempotent |
+| manual `retention_only=true` | any | — | — | retention only; no plan/test/build/publish | yes, deletes policy-expired Release objects only |
 
 A dry run never performs a remote publish/audit/retention operation. In particular it does not audit the remote tag commit: a PR or manual dispatch is never the released commit, so auditing immutable state there could only hard-fail with `tag commit mismatch` without proving anything. Use `force=true` *without* `dry_run` if you explicitly want to re-audit a healthy release against live state.
 

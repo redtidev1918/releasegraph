@@ -60,6 +60,7 @@ job 级 `permissions:` 会**替换**（不是叠加）workflow 级的授权，�
 | `force` | `false` | 对已健康的版本重跑诊断 |
 | `repair` | `false` | 修复**同一个**版本的不完整发布 |
 | `stage` | `all` | 运行哪些阶段 |
+| `retention_only` | `false` | 跳过 plan/test/build/publish，只执行 retention；不会重建产物 |
 
 ## Secrets
 

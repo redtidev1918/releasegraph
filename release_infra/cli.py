@@ -8,7 +8,7 @@ from . import notes
 from .assets import AssetError, collect_assets, write_checksums
 from .inventory import scan, write_outputs
 from .policy import desired_version, load_policy
-from .release import assert_no_cleanup_tag, audit, plan, publish, stage
+from .release import assert_no_cleanup_tag, audit, plan, prune, publish, stage
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -23,6 +23,9 @@ def main(argv: list[str] | None = None) -> int:
     assets_parser = sub.add_parser("asset-gate")
     assets_parser.add_argument("--path", default=".release-policy.yml")
     assets_parser.add_argument("--root", default="dist/release")
+    retention_parser = sub.add_parser("retention")
+    retention_parser.add_argument("--path", default=".release-policy.yml")
+    retention_parser.add_argument("--dry-run", action="store_true")
     fleet_parser = sub.add_parser("fleet-audit")
     fleet_parser.add_argument("--owner", required=True)
     fleet_parser.add_argument("--output", default=".")
@@ -68,6 +71,8 @@ def main(argv: list[str] | None = None) -> int:
         if assets and policy.get("checksums", True):
             write_checksums(assets, Path(args.root) / "SHA256SUMS")
         print("\n".join(str(path) for path in assets))
+    elif args.command == "retention":
+        prune(args.path, dry_run=args.dry_run)
     elif args.command == "fleet-audit":
         inventory = scan(args.owner, include_private=not args.public_only)
         write_outputs(inventory, args.output)

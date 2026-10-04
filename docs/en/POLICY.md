@@ -38,3 +38,6 @@ Release Please configs must set `skip-github-release: true`; it manages conventi
 - `release.notes.language` is `auto` (default), `en` or `zh`. `auto` follows the repository's primary README; see [Release notes](release-notes.md).
 - `release.prerelease: true` forces a pre-release. A version carrying a SemVer pre-release component (`1.5.0-rc.1`) is published as a pre-release regardless, and a pre-release never takes the `Latest` badge.
 - `retention.pruneStable` defaults to **false**. Published stable releases are history: they are only recycled beyond `retention.stable` when this is set to `true`, and the release currently marked `Latest` is never recycled. `retention.prerelease` and `retention.failed_draft` are unaffected.
+- Callers can apply retention without rebuilding by dispatching the reusable
+  release workflow with `retention_only: true`; `dry_run: true` reports the
+  releases that would be removed without deleting them.
