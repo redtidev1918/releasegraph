@@ -26,9 +26,9 @@ concurrency:
   group: release-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  promote:
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: {fetch-depth: 0}
@@ -37,21 +37,66 @@ jobs:
       - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with: {go-version-file: go.mod}
       - run: python -m unittest discover -v
-      - run: go test ./...
       - run: go vet ./...
-      - name: Build standalone binaries
+      - run: go test ./...
+
+  build-binaries:
+    name: build (${{ matrix.goos }}/${{ matrix.goarch }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {goos: linux, goarch: amd64}
+          - {goos: linux, goarch: arm64}
+          - {goos: darwin, goarch: amd64}
+          - {goos: darwin, goarch: arm64}
+          - {goos: windows, goarch: amd64}
+          - {goos: windows, goarch: arm64}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {fetch-depth: 0}
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with: {go-version-file: go.mod}
+      - name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
         run: |
+          set -euo pipefail
           version="${GITHUB_REF_NAME#v}"
+          extension=""
+          test "${{ matrix.goos }}" != windows || extension=.exe
           mkdir -p dist/release
-          echo "RELEASEGRAPH_VERSION=$version" >> "$GITHUB_ENV"
+          CGO_ENABLED=0 GOOS="${{ matrix.goos }}" GOARCH="${{ matrix.goarch }}" \
+            go build -trimpath \
+            -ldflags "-s -w -X github.com/redtidev1918/releasegraph/internal/cli.version=$version" \
+            -o "dist/release/releasegraph-${{ matrix.goos }}-${{ matrix.goarch }}${extension}" \
+            ./cmd/releasegraph
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: releasegraph-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/release/releasegraph-${{ matrix.goos }}-${{ matrix.goarch }}*
+          if-no-files-found: error
+          retention-days: 1
+
+  promote:
+    needs: [test, build-binaries]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: releasegraph-*
+          path: dist/release
+          merge-multiple: true
+      - name: Resolve release identity
+        run: |
+          set -euo pipefail
+          echo "RELEASEGRAPH_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           echo "RELEASE_BUILD_STARTED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
-          for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64; do
-            goos="${target%/*}"
-            goarch="${target#*/}"
-            extension=""
-            test "$goos" != windows || extension=.exe
-            CGO_ENABLED=0 GOOS="$goos" GOARCH="$goarch" go build -trimpath -ldflags "-s -w -X github.com/redtidev1918/releasegraph/internal/cli.version=$version" -o "dist/release/releasegraph-$goos-$goarch$extension" ./cmd/releasegraph
-          done
       - name: Write ReleaseGraph compatibility metadata
         # The affected scope travels with the immutable tag: a tag push has no
         # inputs, and the annotation is the reviewable, immutable declaration.
