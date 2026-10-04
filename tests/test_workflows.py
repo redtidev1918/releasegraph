@@ -77,12 +77,29 @@ class WorkflowTest(unittest.TestCase):
                 self.assertIn("cache-dependency-path: .releasegraph/go.sum", workflow)
                 self.assertNotIn("cache: false", workflow)
 
+    def test_releasegraph_engine_is_built_once_and_reused(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        self.assertEqual(workflow.count("go build -o"), 1)
+
+        engine = workflow.split("\n  engine:\n", 1)[1].split("\n  release_please:\n", 1)[0]
+        self.assertIn("actions/upload-artifact@", engine)
+        self.assertIn("name: releasegraph-engine", engine)
+        self.assertIn("job.workflow_sha", engine)
+
+        release_please = workflow.split("\n  release_please:\n", 1)[1].split("\n  build-plan:\n", 1)[0]
+        finalize = workflow.split("\n  finalize:\n", 1)[1]
+        for section in (release_please, finalize):
+            with self.subTest(section=section[:20]):
+                self.assertIn("actions/download-artifact@", section)
+                self.assertIn("name: releasegraph-engine", section)
+                self.assertNotIn("go build", section)
+
     def test_retention_only_skips_build_and_uses_pinned_engine(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         inputs = workflow.split("    inputs:", 1)[1].split("    secrets:", 1)[0]
         self.assertIn("retention_only:", inputs)
 
-        retention = workflow.split("\n  retention:\n", 1)[1].split("\n  release_please:\n", 1)[0]
+        retention = workflow.split("\n  retention:\n", 1)[1].split("\n  engine:\n", 1)[0]
         self.assertIn("github.event_name != 'pull_request'", retention)
         self.assertIn("release_infra.cli retention", retention)
         self.assertIn("job.workflow_repository", retention)
@@ -100,12 +117,12 @@ class WorkflowTest(unittest.TestCase):
         # build/finalize remain transitively skipped because their required
         # build-plan predecessor does not run in retention-only mode.
         self.assertIn("needs: build-plan", workflow)
-        self.assertIn("needs: [build-plan, build]", workflow)
+        self.assertIn("needs: [engine, build-plan, build]", workflow)
 
     def test_artifact_transfer_has_bounded_retries(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
-        self.assertEqual(workflow.count("actions/upload-artifact@"), 4)
-        self.assertEqual(workflow.count("actions/download-artifact@"), 4)
+        self.assertEqual(workflow.count("actions/upload-artifact@"), 5)
+        self.assertEqual(workflow.count("actions/download-artifact@"), 6)
         self.assertIn("sleep 60", workflow)
 
     def test_finalize_configures_git_identity_for_annotated_release_tags(self):

@@ -74,8 +74,45 @@ jobs:
           [[ '${{ inputs.dry_run }}' == true ]] && args+=(--dry-run)
           PYTHONPATH=.releasegraph python3 -m release_infra.cli retention "${args[@]}"
 
+  engine:
+    name: build-releasegraph-engine
+    if: ${{ !inputs.retention_only }}
+    runs-on: ubuntu-latest
+    permissions: {contents: read}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: .releasegraph
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version-file: .releasegraph/go.mod
+          cache: true
+          cache-dependency-path: .releasegraph/go.sum
+      - name: Build releasegraph engine
+        run: (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
+      - name: Assert engine provenance
+        env:
+          WORKFLOW_SHA: ${{ job.workflow_sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "$WORKFLOW_SHA" ]; then
+            echo "job.workflow_sha is empty; cannot prove engine provenance" >&2
+            exit 1
+          fi
+          engine_sha="$(git -C .releasegraph rev-parse HEAD)"
+          test "$engine_sha" = "$WORKFLOW_SHA"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: releasegraph-engine
+          path: ${{ runner.temp }}/releasegraph
+          if-no-files-found: error
+          retention-days: 1
+
   release_please:
     name: release-please
+    needs: engine
     if: ${{ !inputs.retention_only && github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
     runs-on: ubuntu-latest
     permissions:
@@ -88,16 +125,10 @@ jobs:
     outputs:
       paths_released: ${{ steps.rp.outputs.paths_released }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          repository: redtidev1918/releasegraph
-          ref: main
-          path: .releasegraph
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
-        with:
-          go-version-file: .releasegraph/go.mod
-          cache: true
-          cache-dependency-path: .releasegraph/go.sum
+          name: releasegraph-engine
+          path: ${{ runner.temp }}/engine
       # Version provider pre-reconciliation: release-please aborts every future
       # version while a merged release PR still carries "autorelease: pending".
       # Since this infrastructure sets skip-github-release: true, release-please
@@ -109,10 +140,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
         run: |
           set -euo pipefail
-          (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
+          engine="$RUNNER_TEMP/engine/releasegraph"
           # Dry-run first so an unexpected plan is visible in the log, then apply.
-          "$RUNNER_TEMP/releasegraph" provider reconcile --repo "$GITHUB_REPOSITORY" || true
-          "$RUNNER_TEMP/releasegraph" provider reconcile --repo "$GITHUB_REPOSITORY" --apply
+          "$engine" provider reconcile --repo "$GITHUB_REPOSITORY" || true
+          "$engine" provider reconcile --repo "$GITHUB_REPOSITORY" --apply
       - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: "24"
@@ -179,8 +210,8 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: redtidev1918/releasegraph
-          ref: main
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
           path: .releasegraph
       - name: Policy and release plan
         id: plan
@@ -333,7 +364,7 @@ jobs:
           overwrite: true
 
   finalize:
-    needs: [build-plan, build]
+    needs: [engine, build-plan, build]
     if: always() && needs.build.result == 'success' && needs.build-plan.result == 'success'
     runs-on: ubuntu-latest
     permissions:
@@ -353,14 +384,13 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: redtidev1918/releasegraph
-          ref: main
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
           path: .releasegraph
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          go-version-file: .releasegraph/go.mod
-          cache: true
-          cache-dependency-path: .releasegraph/go.sum
+          name: releasegraph-engine
+          path: ${{ runner.temp }}/engine
       - name: Configure Git identity for release tags
         run: |
           git config user.name "github-actions[bot]"
@@ -582,8 +612,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
         run: |
           set -euo pipefail
-          (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
-          "$RUNNER_TEMP/releasegraph" provider reconcile \
+          "$RUNNER_TEMP/engine/releasegraph" provider reconcile \
             --repo "$GITHUB_REPOSITORY" \
             --version '${{ steps.plan.outputs.version }}' --apply
 
