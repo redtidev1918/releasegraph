@@ -144,7 +144,7 @@ jobs:
           # Dry-run first so an unexpected plan is visible in the log, then apply.
           "$engine" provider reconcile --repo "$GITHUB_REPOSITORY" || true
           "$engine" provider reconcile --repo "$GITHUB_REPOSITORY" --apply
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "24"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -228,7 +228,7 @@ jobs:
           [[ "$INPUT_REPAIR" == true ]] && args+=(--repair)
           PYTHONPATH=.releasegraph python3 -m release_infra.cli static-check
           PYTHONPATH=.releasegraph python3 -m release_infra.cli workflow-plan "${args[@]}"
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.plan.outputs.run_release == '1' && hashFiles('package.json') != ''
         with:
           node-version: 22
@@ -272,7 +272,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: hashFiles('package.json') != ''
         with:
           node-version: 22
@@ -479,7 +479,7 @@ jobs:
           [[ "$DRY_RUN" == true ]] && args+=(--dry-run)
           PYTHONPATH=.releasegraph python3 -m release_infra.cli asset-gate
           PYTHONPATH=.releasegraph python3 -m release_infra.cli stage "${args[@]}"
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && steps.plan.outputs.npm_publish_enabled == '1'
         with:
           node-version: 24
