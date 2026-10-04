@@ -129,6 +129,8 @@ jobs:
         with:
           name: releasegraph-engine
           path: ${{ runner.temp }}/engine
+      - name: Make releasegraph engine executable
+        run: chmod +x "$RUNNER_TEMP/engine/releasegraph"
       # Version provider pre-reconciliation: release-please aborts every future
       # version while a merged release PR still carries "autorelease: pending".
       # Since this infrastructure sets skip-github-release: true, release-please
@@ -391,6 +393,8 @@ jobs:
         with:
           name: releasegraph-engine
           path: ${{ runner.temp }}/engine
+      - name: Make releasegraph engine executable
+        run: chmod +x "$RUNNER_TEMP/engine/releasegraph"
       - name: Configure Git identity for release tags
         run: |
           git config user.name "github-actions[bot]"

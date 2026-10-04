@@ -92,6 +92,7 @@ class WorkflowTest(unittest.TestCase):
             with self.subTest(section=section[:20]):
                 self.assertIn("actions/download-artifact@", section)
                 self.assertIn("name: releasegraph-engine", section)
+                self.assertIn('chmod +x "$RUNNER_TEMP/engine/releasegraph"', section)
                 self.assertNotIn("go build", section)
 
     def test_retention_only_skips_build_and_uses_pinned_engine(self):
