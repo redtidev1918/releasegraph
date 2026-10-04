@@ -47,6 +47,16 @@ class WorkflowTest(unittest.TestCase):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         self.assertIn("skip-github-release: true", workflow)
 
+    def test_releasegraph_engine_builds_reuse_go_cache(self):
+        for path in (
+            ".github/workflows/reusable-release.yml",
+            ".github/workflows/reusable-acknowledge.yml",
+        ):
+            with self.subTest(path=path):
+                workflow = Path(path).read_text()
+                self.assertIn("cache-dependency-path: .releasegraph/go.sum", workflow)
+                self.assertNotIn("cache: false", workflow)
+
     def test_artifact_transfer_has_bounded_retries(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         self.assertEqual(workflow.count("actions/upload-artifact@"), 4)

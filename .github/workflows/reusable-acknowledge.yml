@@ -57,7 +57,8 @@ jobs:
       - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
         with:
           go-version-file: .releasegraph/go.mod
-          cache: false
+          cache: true
+          cache-dependency-path: .releasegraph/go.sum
       - name: Build releasegraph
         run: (cd .releasegraph && go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph)
       - name: Assert engine provenance
