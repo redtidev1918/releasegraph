@@ -24,8 +24,28 @@ class WorkflowTest(unittest.TestCase):
         workflow = Path(".github/workflows/infra-release.yml").read_text()
         self.assertIn("release_infra.cli publish", workflow)
         self.assertLess(workflow.index("release_infra.cli audit"), workflow.index("git tag -f v1"))
-        for target in ("linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "windows/amd64", "windows/arm64"):
-            self.assertIn(target, workflow)
+        build = workflow.split("  build-binaries:", 1)[1].split("  promote:", 1)[0]
+        for goos, goarch in (
+            ("linux", "amd64"), ("linux", "arm64"),
+            ("darwin", "amd64"), ("darwin", "arm64"),
+            ("windows", "amd64"), ("windows", "arm64"),
+        ):
+            self.assertIn(f"{{goos: {goos}, goarch: {goarch}}}", build)
+
+    def test_platform_binaries_build_in_parallel_matrix(self):
+        workflow = Path(".github/workflows/infra-release.yml").read_text()
+        build = workflow.split("  build-binaries:", 1)[1].split("  promote:", 1)[0]
+        self.assertIn("strategy:", build)
+        self.assertIn("fail-fast: false", build)
+        self.assertIn("actions/upload-artifact@", build)
+        self.assertNotIn("for target in linux/amd64", build)
+
+        promote = workflow.split("  promote:", 1)[1]
+        header = promote.split("    runs-on:", 1)[0]
+        self.assertIn("needs: [test, build-binaries]", header)
+        self.assertIn("actions/download-artifact@", promote)
+        self.assertNotIn("python -m unittest", promote)
+        self.assertNotIn("go test ./...", promote)
 
     def test_readonly_plan_workflow_cannot_dispatch(self):
         workflow = Path(".github/workflows/reusable-readonly-plan.yml").read_text()
