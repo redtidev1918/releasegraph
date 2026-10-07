@@ -4,6 +4,13 @@ from pathlib import Path
 
 
 class WorkflowTest(unittest.TestCase):
+    def test_recovery_uses_original_source_in_every_business_checkout(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        self.assertIn('source_ref: {type: string, default: ""}', workflow)
+        self.assertEqual(workflow.count('ref: "${{ inputs.source_ref || github.sha }}"'), 4)
+        self.assertNotIn('with: {fetch-depth: 0}', workflow)
+        self.assertGreaterEqual(workflow.count('ref: ${{ job.workflow_sha }}'), 3)
+
     def test_fleet_audit_cannot_trigger_its_own_dashboard_commit(self):
         workflow = Path(".github/workflows/fleet-audit.yml").read_text()
         event_block = workflow.split("permissions:", 1)[0]

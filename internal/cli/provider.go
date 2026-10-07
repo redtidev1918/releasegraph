@@ -45,6 +45,7 @@ type providerOptions struct {
 	all          bool
 	apply        bool
 	workflow     string
+	resumeDraft  bool
 	pr           int
 	supersededBy string
 }
@@ -68,10 +69,14 @@ func providerCommand(w io.Writer, args []string) error {
 	fs.BoolVar(&opts.all, "all", false, "scan every managed repository of the fleet manifest")
 	fs.BoolVar(&opts.apply, "apply", false, "apply mutations (default is a side-effect-free plan)")
 	fs.StringVar(&opts.workflow, "workflow", "release.yml", "release workflow file to dispatch for repair")
+	fs.BoolVar(&opts.resumeDraft, "resume-draft", false, "resume an interrupted draft with the latest workflow and original tagged source")
 	fs.IntVar(&opts.pr, "pr", 0, "explicit inspected merged release PR for a historical waiver")
 	fs.StringVar(&opts.supersededBy, "superseded-by", "", "published version superseding an obsolete release PR")
 	if err := fs.Parse(args[1:]); err != nil {
 		return err
+	}
+	if opts.resumeDraft && (sub != "repair" || opts.repo == "" || opts.version == "" || opts.all || len(opts.repos) != 0) {
+		return fmt.Errorf("--resume-draft requires provider repair with one explicit --repo and --version")
 	}
 
 	switch sub {
@@ -238,7 +243,17 @@ func providerRepair(w io.Writer, opts providerOptions) error {
 	for _, report := range scan.Reports {
 		allowed, reason, inputs := provider.RepairPlan(&report)
 		item := outcome{Repository: report.Context.Repository, Version: string(report.Context.Version), Drift: report.Verdict.Drift, Allowed: allowed, Reason: reason, Inputs: inputs}
-		if allowed {
+		if opts.resumeDraft {
+			ref, planned, err := provider.ResumeDraftPlan(ctx, client, &report, opts.workflow)
+			allowed = err == nil
+			item.Allowed = allowed
+			if err != nil {
+				item.Reason = err.Error()
+			} else {
+				item.Reason = "resume the interrupted draft using the current workflow and immutable original source"
+				item.Ref, item.Inputs = ref, planned
+			}
+		} else if allowed {
 			ref, err := provider.RepairRef(ctx, client, &report)
 			if err != nil {
 				scan.Errors = append(scan.Errors, fmt.Sprintf("%s: %v", report.Context.Repository, err))
@@ -247,7 +262,13 @@ func providerRepair(w io.Writer, opts providerOptions) error {
 			}
 		}
 		if allowed && opts.apply {
-			applied, err := provider.Repair(ctx, client, &report, opts.workflow, false)
+			var applied map[string]string
+			var err error
+			if opts.resumeDraft {
+				applied, err = provider.ResumeDraft(ctx, client, &report, opts.workflow, false)
+			} else {
+				applied, err = provider.Repair(ctx, client, &report, opts.workflow, false)
+			}
 			if err != nil {
 				scan.Errors = append(scan.Errors, fmt.Sprintf("%s: %v", report.Context.Repository, err))
 			} else {

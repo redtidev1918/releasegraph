@@ -18,6 +18,7 @@ type WorkflowRun struct {
 	Conclusion string `json:"conclusion"`
 	Event      string `json:"event"`
 	HeadBranch string `json:"head_branch"`
+	HeadSHA    string `json:"head_sha"`
 	HTMLURL    string `json:"html_url"`
 	CreatedAt  string `json:"created_at"`
 }
