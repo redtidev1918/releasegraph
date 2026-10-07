@@ -10,6 +10,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(workflow.count('ref: "${{ inputs.source_ref || github.sha }}"'), 4)
         self.assertNotIn('with: {fetch-depth: 0}', workflow)
         self.assertGreaterEqual(workflow.count('ref: ${{ job.workflow_sha }}'), 3)
+        self.assertIn('RELEASE_SOURCE_SHA: ${{ inputs.source_ref || github.sha }}', workflow)
 
     def test_fleet_audit_cannot_trigger_its_own_dashboard_commit(self):
         workflow = Path(".github/workflows/fleet-audit.yml").read_text()

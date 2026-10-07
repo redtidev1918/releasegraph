@@ -367,7 +367,7 @@ def capabilities(policy: dict) -> dict:
 
 def _metadata(policy: dict, version: str, tag: str, assets: list[Path]) -> dict:
     started = os.environ.get("RELEASE_BUILD_STARTED_AT") or dt.datetime.now(dt.UTC).isoformat()
-    sha = os.environ.get("GITHUB_SHA") or _run(["git", "rev-parse", "HEAD"], capture=True)
+    sha = os.environ.get("RELEASE_SOURCE_SHA") or os.environ.get("GITHUB_SHA") or _run(["git", "rev-parse", "HEAD"], capture=True)
     workflow_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{os.environ.get('GITHUB_REPOSITORY')}/actions/runs/{os.environ.get('GITHUB_RUN_ID')}"
     return {
         "repository": os.environ.get("GITHUB_REPOSITORY"), "version": version, "tag": tag, "commit_sha": sha,
@@ -450,7 +450,7 @@ def audit(policy_path: str = ".release-policy.yml", version: str | None = None) 
     policy = load_policy(policy_path)
     desired = desired_version(policy, version)
     tag = policy.get("tag", {}).get("template", "v{version}").format(version=desired)
-    expected_commit = os.environ.get("GITHUB_SHA") or _run(["git", "rev-parse", "HEAD"], capture=True)
+    expected_commit = os.environ.get("RELEASE_SOURCE_SHA") or os.environ.get("GITHUB_SHA") or _run(["git", "rev-parse", "HEAD"], capture=True)
     if _remote_tag_commit(tag) != expected_commit:
         raise ReleaseError(f"tag commit mismatch for {tag}")
     release = _release(tag)
