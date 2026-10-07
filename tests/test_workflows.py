@@ -4,6 +4,11 @@ from pathlib import Path
 
 
 class WorkflowTest(unittest.TestCase):
+    def test_npm_publication_and_verification_revalidate_cached_metadata(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        finalize = workflow.split("  finalize:", 1)[1]
+        self.assertIn('NPM_CONFIG_PREFER_ONLINE: "true"', finalize)
+
     def test_recovery_uses_original_source_in_every_business_checkout(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         self.assertIn('source_ref: {type: string, default: ""}', workflow)

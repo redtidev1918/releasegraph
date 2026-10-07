@@ -373,6 +373,10 @@ jobs:
     needs: [engine, build-plan, build]
     if: always() && needs.build.result == 'success' && needs.build-plan.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      # npm's local metadata cache can retain a pre-publication 404 across
+      # retries. Publication and verification must revalidate with the registry.
+      NPM_CONFIG_PREFER_ONLINE: "true"
     permissions:
       # Caller-compatible subset only (see release_please above). The finalize
       # job runs release.postRelease `github-workflow` actions, which dispatch a
