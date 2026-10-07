@@ -34,17 +34,19 @@ import (
 //	fleet scope      — the control plane. Requires RELEASEGRAPH_FLEET_TOKEN and
 //	                   targets must be declared in fleet.yaml.
 type providerOptions struct {
-	format   string
-	repo     string
-	version  string
-	path     string
-	owner    string
-	manifest string
-	scope    string
-	repos    []string
-	all      bool
-	apply    bool
-	workflow string
+	format       string
+	repo         string
+	version      string
+	path         string
+	owner        string
+	manifest     string
+	scope        string
+	repos        []string
+	all          bool
+	apply        bool
+	workflow     string
+	pr           int
+	supersededBy string
 }
 
 func providerCommand(w io.Writer, args []string) error {
@@ -66,6 +68,8 @@ func providerCommand(w io.Writer, args []string) error {
 	fs.BoolVar(&opts.all, "all", false, "scan every managed repository of the fleet manifest")
 	fs.BoolVar(&opts.apply, "apply", false, "apply mutations (default is a side-effect-free plan)")
 	fs.StringVar(&opts.workflow, "workflow", "release.yml", "release workflow file to dispatch for repair")
+	fs.IntVar(&opts.pr, "pr", 0, "explicit inspected merged release PR for a historical waiver")
+	fs.StringVar(&opts.supersededBy, "superseded-by", "", "published version superseding an obsolete release PR")
 	if err := fs.Parse(args[1:]); err != nil {
 		return err
 	}
@@ -79,6 +83,8 @@ func providerCommand(w io.Writer, args []string) error {
 		return providerRepair(w, opts)
 	case "waive":
 		return providerWaive(w, opts)
+	case "retire":
+		return providerRetire(w, opts)
 	default:
 		return fmt.Errorf("unknown provider subcommand %q", sub)
 	}
@@ -285,6 +291,20 @@ func providerWaive(w io.Writer, opts providerOptions) error {
 	scan, err := scanClientOnly(opts)
 	if err != nil {
 		return err
+	}
+	if opts.pr != 0 {
+		result, err := scanTargets(ctx, opts, scan)
+		if err != nil {
+			return err
+		}
+		if len(result.Reports) != 1 {
+			return fmt.Errorf("waiver requires exactly one inspected release report: %v", result.Errors)
+		}
+		if err := provider.WaiveResolved(ctx, scan, &result.Reports[0], opts.pr, !opts.apply); err != nil {
+			return err
+		}
+		fmt.Fprintf(w, "%s waiver %s %s (release PR #%d)\n", mode(opts.apply), opts.repo, opts.version, opts.pr)
+		return nil
 	}
 	number, err := provider.Waive(ctx, scan, opts.repo, opts.version)
 	if err != nil {

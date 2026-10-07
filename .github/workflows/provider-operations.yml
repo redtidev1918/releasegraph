@@ -1,0 +1,68 @@
+name: Provider operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        type: choice
+        options: [waive, retire, reconcile]
+        required: true
+      repository:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+      pr:
+        type: string
+        default: "0"
+      superseded_by:
+        type: string
+        default: ""
+      apply:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: provider-operations-${{ inputs.repository }}
+  cancel-in-progress: false
+
+jobs:
+  operate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - run: go vet ./... && go test ./...
+      - run: go build -o "$RUNNER_TEMP/releasegraph" ./cmd/releasegraph
+      - name: Inspect and plan before applying
+        env:
+          RELEASEGRAPH_FLEET_TOKEN: ${{ secrets.RELEASEGRAPH_FLEET_TOKEN }}
+          OPERATION: ${{ inputs.operation }}
+          REPOSITORY: ${{ inputs.repository }}
+          VERSION: ${{ inputs.version }}
+          PR: ${{ inputs.pr }}
+          SUPERSEDED_BY: ${{ inputs.superseded_by }}
+          APPLY: ${{ inputs.apply }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$RELEASEGRAPH_FLEET_TOKEN"
+          args=(provider "$OPERATION" --repo "$REPOSITORY" --version "$VERSION" --scope fleet)
+          case "$OPERATION" in
+            waive) test "$PR" -gt 0; args+=(--pr "$PR");;
+            retire) test "$PR" -gt 0; args+=(--pr "$PR" --superseded-by "$SUPERSEDED_BY");;
+            reconcile) ;;
+            *) exit 1;;
+          esac
+          "$RUNNER_TEMP/releasegraph" provider inspect --repo "$REPOSITORY" --version "$VERSION" --scope fleet
+          "$RUNNER_TEMP/releasegraph" "${args[@]}"
+          if [ "$APPLY" = true ]; then
+            "$RUNNER_TEMP/releasegraph" "${args[@]}" --apply
+          fi
