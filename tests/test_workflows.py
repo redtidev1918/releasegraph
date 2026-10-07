@@ -4,6 +4,14 @@ from pathlib import Path
 
 
 class WorkflowTest(unittest.TestCase):
+    def test_recovery_uses_original_source_in_every_business_checkout(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        self.assertIn('source_ref: {type: string, default: ""}', workflow)
+        self.assertEqual(workflow.count('ref: "${{ inputs.source_ref || github.sha }}"'), 4)
+        self.assertNotIn('with: {fetch-depth: 0}', workflow)
+        self.assertGreaterEqual(workflow.count('ref: ${{ job.workflow_sha }}'), 3)
+        self.assertIn('RELEASE_SOURCE_SHA: ${{ inputs.source_ref || github.sha }}', workflow)
+
     def test_fleet_audit_cannot_trigger_its_own_dashboard_commit(self):
         workflow = Path(".github/workflows/fleet-audit.yml").read_text()
         event_block = workflow.split("permissions:", 1)[0]
@@ -374,7 +382,7 @@ class ProviderReconciliationWorkflowTest(unittest.TestCase):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         ghcr = workflow.split("Publish GHCR image", 1)[1].split("Required registry verification", 1)[0]
         for arg in ("APP_VERSION=${{ steps.plan.outputs.version }}",
-                    "GIT_SHA=${{ github.sha }}",
+                    "GIT_SHA=${{ inputs.source_ref || github.sha }}",
                     "BUILD_DATE=${{ steps.identity.outputs.build_date }}"):
             self.assertIn(arg, ghcr, f"GHCR build-arg missing: {arg}")
         self.assertIn("org.opencontainers.image.created=", ghcr)

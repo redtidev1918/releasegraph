@@ -8,6 +8,12 @@ from release_infra import cli, release
 
 
 class ReleaseTest(unittest.TestCase):
+    def test_recovery_metadata_records_source_instead_of_dispatch_commit(self):
+        policy = {"_hash": "policy", "kind": "binary", "assets": {"required": []}}
+        with mock.patch.dict("os.environ", {"RELEASE_SOURCE_SHA": "original", "GITHUB_SHA": "workflow-fix"}):
+            metadata = release._metadata(policy, "1.0.0", "v1.0.0", [])
+        self.assertEqual(metadata["commit_sha"], "original")
+
     def setUp(self):
         # plan() probes git for tag drift; keep tests hermetic unless a test
         # overrides these itself (nested patches win).

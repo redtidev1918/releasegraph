@@ -39,6 +39,7 @@ on:
       dry_run: {type: boolean, default: false}
       force: {type: boolean, default: false}
       repair: {type: boolean, default: false}
+      source_ref: {type: string, default: ""}
       stage: {type: string, default: all}
       retention_only: {type: boolean, default: false}
     secrets:
@@ -51,6 +52,9 @@ concurrency:
   group: release-${{ github.repository }}-${{ inputs.version || github.ref }}
   cancel-in-progress: false
 
+env:
+  RELEASE_SOURCE_SHA: ${{ inputs.source_ref || github.sha }}
+
 jobs:
   retention:
     name: retention
@@ -59,7 +63,7 @@ jobs:
     permissions: {contents: write}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: {fetch-depth: 0}
+        with: {fetch-depth: 0, ref: "${{ inputs.source_ref || github.sha }}"}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ${{ job.workflow_repository }}
@@ -209,7 +213,7 @@ jobs:
       ghcr_enabled: ${{ steps.plan.outputs.ghcr_enabled }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: {fetch-depth: 0}
+        with: {fetch-depth: 0, ref: "${{ inputs.source_ref || github.sha }}"}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ${{ job.workflow_repository }}
@@ -268,7 +272,7 @@ jobs:
     permissions: {contents: read}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: {fetch-depth: 0}
+        with: {fetch-depth: 0, ref: "${{ inputs.source_ref || github.sha }}"}
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         if: hashFiles('pyproject.toml', 'setup.py', 'requirements*.txt') != ''
         with:
@@ -383,7 +387,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: {fetch-depth: 0}
+        with: {fetch-depth: 0, ref: "${{ inputs.source_ref || github.sha }}"}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ${{ job.workflow_repository }}
@@ -533,11 +537,11 @@ jobs:
           # them ignore the values (a warning, not a failure).
           build-args: |
             APP_VERSION=${{ steps.plan.outputs.version }}
-            GIT_SHA=${{ github.sha }}
+            GIT_SHA=${{ inputs.source_ref || github.sha }}
             BUILD_DATE=${{ steps.identity.outputs.build_date }}
           labels: |
             org.opencontainers.image.version=${{ steps.plan.outputs.version }}
-            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.revision=${{ inputs.source_ref || github.sha }}
             org.opencontainers.image.created=${{ steps.identity.outputs.build_date }}
           provenance: mode=max
           sbom: true
@@ -644,7 +648,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SHA: ${{ inputs.source_ref || github.sha }}
         run: |
           set -euo pipefail
           PYTHONPATH=.releasegraph python3 -m release_infra.cli post-release run             --path .release-policy.yml             --version '${{ steps.plan.outputs.version }}'
