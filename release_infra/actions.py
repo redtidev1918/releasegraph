@@ -229,7 +229,7 @@ def post_release_status(policy: dict, version: str | None) -> tuple[str, dict, d
     release = _release_payload(repo, tag)
     if release.get("draft"):
         return tag, {"draft": True}, {}, {}, {}
-    head_sha = os.environ.get("GITHUB_SHA", "")
+    head_sha = os.environ.get("RELEASE_SOURCE_SHA") or os.environ.get("GITHUB_SHA", "")
     default_branch = _gh(["api", f"repos/{repo}", "--jq", ".default_branch"])
     ctx = {
         "repo": repo,

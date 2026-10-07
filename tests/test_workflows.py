@@ -382,7 +382,7 @@ class ProviderReconciliationWorkflowTest(unittest.TestCase):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         ghcr = workflow.split("Publish GHCR image", 1)[1].split("Required registry verification", 1)[0]
         for arg in ("APP_VERSION=${{ steps.plan.outputs.version }}",
-                    "GIT_SHA=${{ github.sha }}",
+                    "GIT_SHA=${{ inputs.source_ref || github.sha }}",
                     "BUILD_DATE=${{ steps.identity.outputs.build_date }}"):
             self.assertIn(arg, ghcr, f"GHCR build-arg missing: {arg}")
         self.assertIn("org.opencontainers.image.created=", ghcr)
