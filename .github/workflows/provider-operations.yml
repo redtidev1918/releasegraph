@@ -61,7 +61,11 @@ jobs:
             reconcile) ;;
             *) exit 1;;
           esac
-          "$RUNNER_TEMP/releasegraph" provider inspect --repo "$REPOSITORY" --version "$VERSION" --scope fleet
+          if ! "$RUNNER_TEMP/releasegraph" provider inspect --repo "$REPOSITORY" --version "$VERSION" --scope fleet; then
+            # Accepted historical conflicts can make inspection fail. Waive
+            # independently validates a fresh report, PR and merge commit.
+            test "$OPERATION" = waive
+          fi
           "$RUNNER_TEMP/releasegraph" "${args[@]}"
           if [ "$APPLY" = true ]; then
             "$RUNNER_TEMP/releasegraph" "${args[@]}" --apply
