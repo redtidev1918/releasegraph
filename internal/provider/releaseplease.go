@@ -677,6 +677,32 @@ type ScanResult struct {
 // Waive records an explicit, auditable human decision that a historical version
 // must not be repaired retroactively and must not block newer versions. It only
 // adds a label; it never fabricates a release or moves a tag.
+// WaiveResolved handles component release PRs whose titles omit a version.
+// An explicit PR must match the inspected version and still be merged at the
+// same immutable commit before either planning or applying its waiver.
+func WaiveResolved(ctx context.Context, client *github.Bound, report *Report, number int, dryRun bool) error {
+	if report == nil || report.Context.Provider != KindReleasePlease || report.Context.Version == "" || number <= 0 || report.Context.ReleasePR != number || report.Context.PRMergeSHA == "" {
+		return fmt.Errorf("explicit waiver PR does not match the inspected release")
+	}
+	prs, err := client.MergedPullRequests(ctx, report.Context.Repository)
+	if err != nil {
+		return err
+	}
+	for _, pr := range prs {
+		if pr.Number != number {
+			continue
+		}
+		if pr.MergeCommitSHA != report.Context.PRMergeSHA {
+			return fmt.Errorf("release PR merge commit changed since inspection")
+		}
+		if dryRun {
+			return nil
+		}
+		return client.AddIssueLabels(ctx, report.Context.Repository, number, []string{labelWaived})
+	}
+	return fmt.Errorf("inspected release PR #%d is not merged", number)
+}
+
 func Waive(ctx context.Context, client *github.Bound, repo string, version string) (int, error) {
 	prs, err := client.MergedPullRequests(ctx, repo)
 	if err != nil {
