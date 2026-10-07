@@ -211,6 +211,23 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn("for attempt in 1 2 3 4 5 6", verification)
         self.assertIn("sleep $((attempt * 10))", verification)
 
+    def test_npm_finalizer_prepares_package_before_importing_release_assets(self):
+        workflow = Path(".github/workflows/reusable-release.yml").read_text()
+        finalize = workflow.split("  finalize:", 1)[1]
+        prepare = finalize.index("Prepare npm package in the fresh publication checkout")
+        imported_assets = finalize.index("id: download_0")
+        stage = finalize.index("Asset gate and draft transaction")
+        publication = finalize.index("Required registry publication")
+        self.assertLess(prepare, imported_assets)
+        self.assertLess(imported_assets, stage)
+        self.assertLess(stage, publication)
+        # A clean finalizer needs dev tools for prepublishOnly and the policy's
+        # compiled package output; imports happen later so a build cannot erase
+        # matrix assets already staged for the release transaction.
+        preparation = finalize[prepare:imported_assets]
+        self.assertIn("npm ci --include=dev", preparation)
+        self.assertIn("steps.plan.outputs.build_command", preparation)
+
     def test_npm_publish_receives_configured_token(self):
         workflow = Path(".github/workflows/reusable-release.yml").read_text()
         finalize = workflow.split("  finalize:", 1)[1]
