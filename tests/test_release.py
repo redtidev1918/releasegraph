@@ -1,4 +1,6 @@
 import json
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,6 +10,18 @@ from release_infra import cli, release
 
 
 class ReleaseTest(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "release commands run in Bash on Linux")
+    def test_npm_recovery_skips_published_version_and_propagates_publish_failure(self):
+        for verify, publish, expected in (("true", "exit 9", 0), ("false", "true", 0), ("false", "exit 9", 9)):
+            with self.subTest(verify=verify, publish=publish):
+                command = release._registry_publish_command("npm", {"verify": verify, "publish": publish})
+                result = subprocess.run(["bash", "-euo", "pipefail", "-c", command], capture_output=True)
+                self.assertEqual(result.returncode, expected)
+
+    def test_registry_without_verification_retains_existing_publish_behavior(self):
+        self.assertEqual(release._registry_publish_command("npm", {"publish": "npm publish"}), "npm publish")
+        self.assertEqual(release._registry_publish_command("other", {"publish": "publish", "verify": "true"}), "publish")
+
     def test_recovery_metadata_records_source_instead_of_dispatch_commit(self):
         policy = {"_hash": "policy", "kind": "binary", "assets": {"required": []}}
         with mock.patch.dict("os.environ", {"RELEASE_SOURCE_SHA": "original", "GITHUB_SHA": "workflow-fix"}):

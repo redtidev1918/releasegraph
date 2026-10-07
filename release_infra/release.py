@@ -247,6 +247,15 @@ def stage(policy_path: str = ".release-policy.yml", version: str | None = None, 
     return tag
 
 
+def _registry_publish_command(name: str, config: dict) -> str:
+    command = config["publish"]
+    # npm versions are immutable. A resumed transaction must verify an already
+    # published version instead of attempting to overwrite it.
+    if name == "npm" and config.get("verify"):
+        return f"(if ({config['verify']}); then echo 'npm version already verified; skipping publication'; else ({command}); fi)"
+    return command
+
+
 def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *, force: bool = False, repair: bool = False) -> dict[str, str]:
     policy = load_policy(policy_path)
     desired = desired_version(policy, version)
@@ -326,7 +335,7 @@ def plan(policy_path: str = ".release-policy.yml", version: str | None = None, *
         "ghcr_context": ghcr.get("context", "."), "ghcr_file": ghcr.get("file", "Dockerfile"),
         "ghcr_image": ghcr.get("image", ""), "ghcr_platforms": ghcr.get("platforms", "linux/amd64"),
         "npm_publish_enabled": "1" if registries.get("npm", {}).get("required", True) and registries.get("npm", {}).get("publish") else "0",
-        "required_publish": " && ".join(config.get("publish", ":") for name, config in registries.items() if name != "ghcr" and config.get("required", True) and config.get("publish")),
+        "required_publish": " && ".join(_registry_publish_command(name, config) for name, config in registries.items() if name != "ghcr" and config.get("required", True) and config.get("publish")),
         "required_verify": " && ".join(config.get("verify", ":") for config in registries.values() if config.get("required", True) and config.get("verify")),
         "optional_publish": "; ".join(f"({config['publish']}) || true" for name, config in registries.items() if name != "ghcr" and not config.get("required", True) and config.get("publish")),
         "optional_verify": "; ".join(f"({config['verify']}) || true" for config in registries.values() if not config.get("required", True) and config.get("verify")),
