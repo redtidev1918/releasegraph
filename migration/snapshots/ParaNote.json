@@ -57,10 +57,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.2.0",
-  "latest_release": "v0.2.0",
-  "latest_release_at": "2026-08-27T15:54:26Z",
-  "latest_tag": "v0.2.0",
+  "desired_version": "0.2.1",
+  "latest_release": "v0.2.1",
+  "latest_release_at": "2026-10-07T19:35:19Z",
+  "latest_tag": "v0.2.1",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/37595169109",
-    "updated_at": "2026-10-07T08:39:19Z"
+    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/37753356550",
+    "updated_at": "2026-10-08T08:58:22Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -96,20 +96,24 @@
   ],
   "release_history": [
     {
-      "tag": "v0.2.0",
+      "tag": "v0.2.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-08-27T15:54:26Z",
+      "published_at": "2026-10-07T19:35:19Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1097,
-          "sha256": "sha256:405e76790dd0370599bb14662b7c105ce5a1637fa25a29199cea01b5c7afb77e"
+          "size": 1443,
+          "sha256": "sha256:21cb8d17c641f4a7a4aa7eb37f417153e3d49b9f12e6a8758f44f7be2f2c6724"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v0.2.1",
+      "commit": "ee48465cbc89e7e6fcbffc1fa94c0546fa980825"
+    },
     {
       "name": "v0.2.0",
       "commit": "fe3db141d7013a5a9a5a23cbc7fa2e05e3e3cfa9"
@@ -124,6 +128,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.2.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -136,16 +143,13 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.2.0"
     }
   },
   "registries": {
     "npm": {
       "package": "paranote",
-      "declared": "0.2.0",
-      "published": "0.2.0"
+      "declared": "0.2.1",
+      "published": "0.2.1"
     }
   },
   "branchContract": {
@@ -157,8 +161,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 4,
-    "inQueue": 4,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

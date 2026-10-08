@@ -102,6 +102,7 @@
     ".github/workflows/pr-lifecycle.yml",
     ".github/workflows/probe-p6.yml",
     ".github/workflows/probe-runs-audit.yml",
+    ".github/workflows/provider-operations.yml",
     ".github/workflows/provider-watchdog.yml",
     ".github/workflows/reusable-acknowledge.yml",
     ".github/workflows/reusable-branch-contract.yml",
@@ -1372,8 +1373,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 5,
-    "inQueue": 5,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

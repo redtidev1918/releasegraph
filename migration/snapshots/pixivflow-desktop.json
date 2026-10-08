@@ -98,15 +98,15 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.3.0",
-  "latest_release": "v0.3.0",
-  "latest_release_at": "2026-09-28T13:22:35Z",
-  "latest_tag": "v0.3.0",
+  "desired_version": "0.4.0",
+  "latest_release": "v0.4.0",
+  "latest_release_at": "2026-10-07T14:21:02Z",
+  "latest_tag": "v0.4.0",
   "draft_releases": [],
   "actual_assets": [
-    "PixivFlow-Desktop-v0.3.0-linux-amd64.deb",
-    "PixivFlow-Desktop-v0.3.0-macos-arm64.dmg",
-    "PixivFlow-Desktop-v0.3.0-windows-x64-setup.exe",
+    "PixivFlow-Desktop-v0.4.0-linux-amd64.deb",
+    "PixivFlow-Desktop-v0.4.0-macos-arm64.dmg",
+    "PixivFlow-Desktop-v0.4.0-windows-x64-setup.exe",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -119,8 +119,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/37599389813",
-    "updated_at": "2026-10-07T09:16:00Z"
+    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/37756790149",
+    "updated_at": "2026-10-08T09:27:53Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -138,40 +138,44 @@
   ],
   "release_history": [
     {
-      "tag": "v0.3.0",
+      "tag": "v0.4.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-28T13:22:35Z",
+      "published_at": "2026-10-07T14:21:02Z",
       "assets": [
         {
-          "name": "PixivFlow-Desktop-v0.3.0-linux-amd64.deb",
-          "size": 63613378,
-          "sha256": "sha256:f4de504d8b8c002f64af1b6f4a7f80a500fc18e1cdfbca29dfaf97215ecd3039"
+          "name": "PixivFlow-Desktop-v0.4.0-linux-amd64.deb",
+          "size": 63614994,
+          "sha256": "sha256:170063644a7ba29b6d68dbd3c693ca3b75839c7c42bdfba81d59ae71253b9283"
         },
         {
-          "name": "PixivFlow-Desktop-v0.3.0-macos-arm64.dmg",
-          "size": 54557417,
-          "sha256": "sha256:d0c683588f7dd6e000b6f728cbdbc5e5935f1f4c0626dfcea1732101b3fd9f21"
+          "name": "PixivFlow-Desktop-v0.4.0-macos-arm64.dmg",
+          "size": 54559512,
+          "sha256": "sha256:cd15ad465b9356a142f0648bb7790d0a8d5d8882740e061e91e10149c94d1206"
         },
         {
-          "name": "PixivFlow-Desktop-v0.3.0-windows-x64-setup.exe",
-          "size": 32345169,
-          "sha256": "sha256:b8c33a9ea4ca4d41a8b3fdec5cfaabcbe9eb31c956e9ade8376b606400262eea"
+          "name": "PixivFlow-Desktop-v0.4.0-windows-x64-setup.exe",
+          "size": 32328311,
+          "sha256": "sha256:d1e89c32f82319d78d0251f971c8cf5f29126b0edb9d60bb77aa9b59cc3e5bf1"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 1883,
-          "sha256": "sha256:400178c571e5b916bb9004e53ea29055c218b6cd42ff12fb1a6e8430a4ff8872"
+          "sha256": "sha256:692c546652df64bc27864d777dc61b645a16ef2be2a781433ca17cdf826fe9b7"
         },
         {
           "name": "SHA256SUMS",
           "size": 327,
-          "sha256": "sha256:f5674d527fb36164c6b0b76a470d03451dc5ae9d8b7709cbb90fd0536e020a93"
+          "sha256": "sha256:9723ed1f6972ff22a01ff2c3bb898c3e09bf59c82b6effe429f1724c0cd56bbf"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v0.4.0",
+      "commit": "3c4ee7ec68a598914b7e608c5fb2b7431f5efa8e"
+    },
     {
       "name": "v0.3.0",
       "commit": "fc6d2f979bef5d150d450c17d94feb195f3f06c1"
@@ -186,6 +190,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.4.0"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -210,15 +217,12 @@
           ]
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.3.0"
     }
   },
   "registries": {
     "npm": {
       "package": "pixivflow-desktop",
-      "declared": "0.3.0",
+      "declared": "0.4.0",
       "published": null
     }
   },

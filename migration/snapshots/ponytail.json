@@ -99,7 +99,7 @@
     "npm": {
       "package": "@dietrichgebert/ponytail",
       "declared": "4.9.0",
-      "published": "4.13.0"
+      "published": "5.0.0"
     }
   },
   "branchContract": {

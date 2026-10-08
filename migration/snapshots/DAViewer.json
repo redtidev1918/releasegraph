@@ -76,15 +76,15 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.5.7",
-  "latest_release": "v0.5.7",
-  "latest_release_at": "2026-09-23T21:27:18Z",
-  "latest_tag": "v0.5.7",
+  "desired_version": "0.5.8",
+  "latest_release": "v0.5.8",
+  "latest_release_at": "2026-10-07T13:59:23Z",
+  "latest_tag": "v0.5.8",
   "draft_releases": [],
   "actual_assets": [
-    "DAViewer-v0.5.7-macos-unsigned-preview.zip",
-    "DAViewer-v0.5.7-windows.zip",
-    "DAViewer-v0.5.7.apk",
+    "DAViewer-v0.5.8-macos-unsigned-preview.zip",
+    "DAViewer-v0.5.8-windows.zip",
+    "DAViewer-v0.5.8.apk",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -97,8 +97,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/37597827261",
-    "updated_at": "2026-10-07T09:02:32Z"
+    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/37755687314",
+    "updated_at": "2026-10-08T09:18:17Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -118,40 +118,44 @@
   ],
   "release_history": [
     {
-      "tag": "v0.5.7",
+      "tag": "v0.5.8",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-23T21:27:18Z",
+      "published_at": "2026-10-07T13:59:23Z",
       "assets": [
         {
-          "name": "DAViewer-v0.5.7-macos-unsigned-preview.zip",
-          "size": 24983776,
-          "sha256": "sha256:5dc2a0ca24f19e2ff62b28a0d6cabe1fbe7d39f1f020cf28fc91e1bdcf49db97"
+          "name": "DAViewer-v0.5.8-macos-unsigned-preview.zip",
+          "size": 25038499,
+          "sha256": "sha256:d08dc577fdf993a357d851b38ed957650ef2238164d4c5f5006ae799b2162709"
         },
         {
-          "name": "DAViewer-v0.5.7-windows.zip",
-          "size": 14431460,
-          "sha256": "sha256:78725ee6151f2f0e98626052f9381838e298a4054740520fcdd9ef1f83d709f2"
+          "name": "DAViewer-v0.5.8-windows.zip",
+          "size": 14440392,
+          "sha256": "sha256:cc517adca84f0820f92b55b7188b899883e755f0cdb526409449dfbbd160d070"
         },
         {
-          "name": "DAViewer-v0.5.7.apk",
-          "size": 66002750,
-          "sha256": "sha256:ee094d65956b899f5ad52c1a647f0001d2f3ce84943bd29e743e763062972ab9"
+          "name": "DAViewer-v0.5.8.apk",
+          "size": 66347422,
+          "sha256": "sha256:8d1c6868ba5e50a25f7eab1ef9e3f0fb7783196fe4a9df06db9473bd796354df"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 1750,
-          "sha256": "sha256:d805ee97c2a5eafdd692d318c9b9bd3901c21482e0f942e375fda06096182057"
+          "sha256": "sha256:8246d99d556618f0e1a1ef17dc8651b9b62cc9e99390ff675501a289c7826b72"
         },
         {
           "name": "SHA256SUMS",
           "size": 289,
-          "sha256": "sha256:728be372cb5189802eae149e104e7ecfbe42e117d3cbfd00e6b3aaa50c0a6bf1"
+          "sha256": "sha256:827527dbed2512a615711e4c35950eef70f3ca476a5c3abec3809636e2e7baf5"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v0.5.8",
+      "commit": "e11c07bc6981ce2c98ee62f8f3bf17eaa3c02c95"
+    },
     {
       "name": "v0.5.7",
       "commit": "3b4d3af459c1dbd2f21ba686804027b9cbceda6e"
@@ -678,6 +682,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.5.8"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -690,15 +697,12 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.5.7"
     }
   },
   "registries": {
     "pub": {
       "package": "daviewer",
-      "declared": "0.5.7",
+      "declared": "0.5.8",
       "published": null
     }
   },
@@ -711,8 +715,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 3,
-    "inQueue": 3,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }
