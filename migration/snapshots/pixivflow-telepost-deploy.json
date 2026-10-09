@@ -104,10 +104,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.14.0",
-  "latest_release": "v1.14.0",
-  "latest_release_at": "2026-10-07T13:21:19Z",
-  "latest_tag": "v1.14.0",
+  "desired_version": "1.14.2",
+  "latest_release": "v1.14.2",
+  "latest_release_at": "2026-10-09T01:05:30Z",
+  "latest_tag": "v1.14.2",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/37754148043",
-    "updated_at": "2026-10-08T09:04:59Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/37909666444",
+    "updated_at": "2026-10-09T09:11:40Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -152,55 +152,63 @@
   ],
   "release_history": [
     {
-      "tag": "v1.14.0",
+      "tag": "v1.14.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-07T13:21:19Z",
+      "published_at": "2026-10-09T01:05:30Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2516375,
-          "sha256": "sha256:0067f638b432f0b96655eb6e0011382395f28ae1ab83319f37603dca2538449c"
+          "size": 2516443,
+          "sha256": "sha256:d552dc19e9ebad1000d67dfeac31fcc6ec5c09fe87e02c020e7ae2fcc199ecb6"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2357040,
-          "sha256": "sha256:b1e286986769551595fcd5653403f9e47e59be9a0b1241c2fe9755d1f8e4bbe7"
+          "size": 2357233,
+          "sha256": "sha256:e3190754534f548ed106520a194474fc5a442cee61cf3c77a8082e2615964165"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2474335,
-          "sha256": "sha256:0c482f99f209bb79088ee1545789508def7f8b9b50d1fc937edffaeaa3a36827"
+          "size": 2473974,
+          "sha256": "sha256:74d8c112a42669235b4c3fe9b41a62ca588eac103304fd6ab3efe11f4b82ff07"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2270267,
-          "sha256": "sha256:ddb3d0fc0fda0ea19e0f2812d13042e8018aaf520e38c81b9437c0b56ace3ba8"
+          "size": 2270404,
+          "sha256": "sha256:aae1522d4b1cd5b86d246d6c605c3294a7d1098eb107bfd77af039707562c3d0"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2536560,
-          "sha256": "sha256:b2e7eea482dd28001d0a9dcf70070540f82742c209a10d7e65c9abd432ab3379"
+          "size": 2536492,
+          "sha256": "sha256:7f0bb3645a2a6638d59dc032c1a2420662f033232b8ad8402be9f6249272ff99"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2299311,
-          "sha256": "sha256:e1e281a28979dee1d3a8616206f8b85b3afbe8ad2addd686c526756170a26961"
+          "size": 2299370,
+          "sha256": "sha256:fa7f5712a9da5f4bc8da6f739b6942f43d20cfe3b6af5580af8e7bd2d2240ed1"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2735,
-          "sha256": "sha256:2e633a10eba027512bb17b9fe021d03c67fae926feb5344f5ec240670180f806"
+          "sha256": "sha256:769692c167a1d9bd80bd8be4f7f93899a23433ff91a02c41431abe209ddf9f17"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:6ef2910ff74ca2ff2a82fa69ac9c52a4618ced674d6cfd3153ea32c863f812c0"
+          "sha256": "sha256:347ee6a30ff2b10e7803f59c320d41970ceac0e44e5663630ab207eeee1246f6"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.14.2",
+      "commit": "5fae6ba90410e9e556d06898b8703ebca92b9d52"
+    },
+    {
+      "name": "v1.14.1",
+      "commit": "8409fd4f4dcb17159518296eda2014d96a8ace49"
+    },
     {
       "name": "v1.14.0",
       "commit": "2a1b88dafb965f80b78b6daf0bda72c679191694"
@@ -232,7 +240,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.14.0"
+      ".": "1.14.2"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",

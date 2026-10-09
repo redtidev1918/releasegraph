@@ -6,13 +6,8 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "DEGRADED",
-  "health_reasons": [
-    {
-      "code": "version_drift",
-      "detail": "v3.1.1"
-    }
-  ],
+  "health": "HEALTHY",
+  "health_reasons": [],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -62,7 +57,7 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "3.0.3",
+  "desired_version": "3.1.1",
   "latest_release": "v3.1.1",
   "latest_release_at": "2026-09-30T03:42:58Z",
   "latest_tag": "v3.1.1",
@@ -79,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/37753992345",
-    "updated_at": "2026-10-08T09:03:34Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/37909821594",
+    "updated_at": "2026-10-09T09:13:10Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -153,7 +148,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "3.0.3"
+      ".": "3.1.1"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -185,8 +180,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }
