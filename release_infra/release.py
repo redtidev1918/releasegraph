@@ -162,6 +162,38 @@ def _ensure_tag(tag: str, commit: str, *, dry_run: bool = False) -> None:
         _run(["git", "push", "origin", f"refs/tags/{tag}"])
 
 
+def prepare_tag(policy_path: str, version: str, *, apply: bool = False) -> dict:
+    """Plan a manual release tag; apply only at the production base HEAD.
+
+    Artifact staging/publishing stays in the existing tag-triggered workflow.
+    This primitive never moves a tag or creates a historical Release.
+    """
+    policy = load_policy(policy_path)
+    if policy["versioning"]["mode"] != "manual":
+        raise ReleaseError("prepare-tag requires a manual version provider")
+    desired = desired_version(policy, version)
+    if desired_version(policy) != desired:
+        raise ReleaseError("prepare-tag version must match the reviewed policy version")
+    if _run(["git", "status", "--porcelain", "--untracked-files=no"], capture=True):
+        raise ReleaseError("prepare-tag requires a clean tracked working tree; commit the reviewed policy first")
+    commit = _run(["git", "rev-parse", "HEAD"], capture=True)
+    operations = policy.get("repository", {}).get("git", {}).get("productionOperations", {})
+    base = operations.get("base", "default")
+    ref = "HEAD" if base == "default" else f"refs/heads/{base}"
+    remote_head = _run(["git", "ls-remote", "origin", ref], capture=True).split()
+    if not remote_head or remote_head[0] != commit:
+        raise ReleaseError("prepare-tag must run at the current production-base HEAD")
+    tag = policy.get("tag", {}).get("template", "v{version}").format(version=desired)
+    remote = _remote_tag_commit(tag)
+    if remote and remote != commit:
+        raise ReleaseError(f"tag {tag} points to {remote}, expected {commit}")
+    result = {"version": desired, "tag": tag, "commit": commit,
+              "action": "none" if remote else "create-tag", "apply": apply}
+    if apply and not remote:
+        _ensure_tag(tag, commit)
+    return result
+
+
 def _upload_idempotent(tag: str, paths: list[Path], *, dry_run: bool = False) -> None:
     current = _release(tag)
     remote = {asset["name"]: asset for asset in (current or {}).get("assets", [])}

@@ -8,7 +8,7 @@ from . import notes
 from .assets import AssetError, collect_assets, write_checksums
 from .inventory import scan, write_outputs
 from .policy import desired_version, load_policy
-from .release import assert_no_cleanup_tag, audit, plan, prune, publish, stage
+from .release import assert_no_cleanup_tag, audit, plan, prepare_tag, prune, publish, stage
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -30,6 +30,10 @@ def main(argv: list[str] | None = None) -> int:
     fleet_parser.add_argument("--owner", required=True)
     fleet_parser.add_argument("--output", default=".")
     fleet_parser.add_argument("--public-only", action="store_true")
+    tag_parser = sub.add_parser("prepare-tag")
+    tag_parser.add_argument("--path", default=".release-policy.yml")
+    tag_parser.add_argument("--version", required=True)
+    tag_parser.add_argument("--apply", action="store_true")
     for name in ("stage", "publish", "audit"):
         command_parser = sub.add_parser(name)
         command_parser.add_argument("--path", default=".release-policy.yml")
@@ -79,6 +83,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"audited {len(inventory)} repositories")
     elif args.command == "stage":
         print(stage(args.path, args.version, dry_run=args.dry_run))
+    elif args.command == "prepare-tag":
+        print(json.dumps(prepare_tag(args.path, args.version, apply=args.apply), indent=2))
     elif args.command == "publish":
         print(publish(args.path, args.version, dry_run=args.dry_run))
     elif args.command == "audit":
