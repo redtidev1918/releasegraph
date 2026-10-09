@@ -499,6 +499,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_BUILD_STARTED_AT: ${{ github.event.head_commit.timestamp }}
+          # The engine is checked out below at `job.workflow_sha` and the engine
+          # job proved that SHA, so this names exactly the ReleaseGraph revision
+          # that built the release. Without it, `stage` stamped the frozen
+          # `release_infra.__version__` bootstrap marker into the metadata of
+          # every consumer release.
+          RELEASEGRAPH_VERSION: ${{ job.workflow_sha }}
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set -euo pipefail
@@ -601,6 +607,7 @@ jobs:
           && !inputs.dry_run
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASEGRAPH_VERSION: ${{ job.workflow_sha }}
           DRY_RUN: ${{ inputs.dry_run }}
           CONTAINER_DIGEST: ${{ steps.ghcr.outputs.digest }}
           RELEASE_RETRY_COUNT: ${{ steps.plan.outputs.retry_count }}

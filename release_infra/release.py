@@ -13,7 +13,7 @@ import urllib.request
 from typing import Any
 from pathlib import Path
 
-from . import __version__, notes
+from . import notes
 from .assets import collect_assets, sha256, write_checksums
 from .github import GitHubError
 from .actions import health as post_release_health
@@ -374,18 +374,37 @@ def capabilities(policy: dict) -> dict:
     }
 
 
+def engine_version() -> str:
+    """The ReleaseGraph identity of the engine that is publishing this release.
+
+    `RELEASEGRAPH_VERSION` is exported by the workflows that run the engine, so
+    a called release records the revision it actually ran. It is deliberately
+    not allowed to fall back to `release_infra.__version__`: that constant is
+    the v1 bootstrap marker, it has never been maintained across tags, and
+    silently stamping it into published release metadata is what made every
+    ReleaseGraph-managed release claim it was built by ReleaseGraph 1.0.0.
+    """
+    declared = os.environ.get("RELEASEGRAPH_VERSION", "").strip()
+    if declared:
+        return declared
+    return "unknown"
+
+
 def _metadata(policy: dict, version: str, tag: str, assets: list[Path]) -> dict:
     started = os.environ.get("RELEASE_BUILD_STARTED_AT") or dt.datetime.now(dt.UTC).isoformat()
     sha = os.environ.get("RELEASE_SOURCE_SHA") or os.environ.get("GITHUB_SHA") or _run(["git", "rev-parse", "HEAD"], capture=True)
     workflow_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{os.environ.get('GITHUB_REPOSITORY')}/actions/runs/{os.environ.get('GITHUB_RUN_ID')}"
+    engine = engine_version()
     return {
         "repository": os.environ.get("GITHUB_REPOSITORY"), "version": version, "tag": tag, "commit_sha": sha,
         "build_run_id": os.environ.get("GITHUB_RUN_ID"), "build_run_url": workflow_url,
         "workflow_run_id": os.environ.get("GITHUB_RUN_ID"), "workflow_run_url": workflow_url,
-        "releasegraph_version": os.environ.get("RELEASEGRAPH_VERSION", __version__),
+        # Both keys are the same fact; they used to disagree, because this one
+        # read the environment and the other read the frozen bootstrap constant.
+        "releasegraph_version": engine,
         "policy_schema": 1,
         "capabilities": capabilities(policy),
-        "release_infra_version": __version__, "policy_hash": policy["_hash"], "release_policy_hash": policy["_hash"], "build_started_at": started,
+        "release_infra_version": engine, "policy_hash": policy["_hash"], "release_policy_hash": policy["_hash"], "build_started_at": started,
         "published_at": dt.datetime.now(dt.UTC).isoformat(), "assets": [path.name for path in assets],
         "asset_sha256": {path.name: sha256(path) for path in assets}, "registries": policy.get("registries", {}),
         "container_digest": os.environ.get("CONTAINER_DIGEST"), "package_versions": {name: version for name in policy.get("registries", {})},
