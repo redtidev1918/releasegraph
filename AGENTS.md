@@ -12,6 +12,7 @@ touch?*
 | inspect release infrastructure | this repository | `releasegraph provider inspect --all --manifest fleet.yaml` |
 | repair one repository's release | this repository | `releasegraph provider repair --repo owner/name --version X` (plan first, then `--apply`) |
 | audit open pull requests | this repository | `releasegraph pr-lifecycle audit` |
+| publish a new ReleaseGraph version | this repository, at production-base HEAD | update the reviewed policy version, then `python -m release_infra.cli prepare-tag --version X` (plan, then `--apply`). The tag workflow builds and publishes. |
 | roll out a new ReleaseGraph version | this repository | `releasegraph rollout plan --version vX.Y.Z` |
 
 You never need to run ReleaseGraph inside a business repository: a business
