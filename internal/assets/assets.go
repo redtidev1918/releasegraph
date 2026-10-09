@@ -82,8 +82,12 @@ func inspect(path string) (Asset, error) {
 		return Asset{}, rgerrors.New(rgerrors.Asset, "empty asset: "+path)
 	}
 	if strings.HasSuffix(path, ".zip") {
-		if _, err := zip.OpenReader(path); err != nil {
+		archive, err := zip.OpenReader(path)
+		if err != nil {
 			return Asset{}, rgerrors.Wrap(rgerrors.Asset, "invalid zip asset: "+path, err)
+		}
+		if err := archive.Close(); err != nil {
+			return Asset{}, rgerrors.Wrap(rgerrors.Asset, "close zip asset "+path, err)
 		}
 	}
 	if strings.HasSuffix(path, ".tar") || strings.HasSuffix(path, ".tar.gz") || strings.HasSuffix(path, ".tgz") || strings.HasSuffix(path, ".tar.xz") {

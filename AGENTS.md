@@ -30,8 +30,12 @@ and its own build/test configuration.
    plan → then `--apply`.
 4. **Dry-run before fleet mutation.** Fleet commands plan by default; `--apply`
    is an explicit act.
-5. **Never move an existing release tag.** A tag pointing at the wrong commit is
-   `TAG_CONFLICT` → stop and ask a human.
+5. **Never move an existing release tag.** On `TAG_CONFLICT`, stop writes to that
+   release and verify both the peeled tag commit and the evidence for the
+   expected commit. A manifest-alignment PR is not automatically a release PR.
+   If attribution is wrong, fix and test ReleaseGraph, then inspect again without
+   changing the tag. Ask a human only when a verified conflict requires a
+   historical acceptance decision; continue independent work meanwhile.
 6. **Never fabricate historical GitHub Releases** to satisfy a version provider.
    Use an explicit waiver (`releasegraph provider waive`) when a human decides a
    historical version is accepted as-is.
@@ -57,8 +61,13 @@ and its own build/test configuration.
     **Issue = backlog, branch = workspace, pull request = merge queue, release
     pull request = publish queue.** A pull request that is no longer a merge
     candidate leaves the queue, and its engineering context is archived into an
-    issue *before* it does. Never delete its branch, never rewrite its history,
-    and never merge on a human's behalf; `keep-open` is the only escape hatch and
+    issue *before* it does. Never delete its branch or rewrite its history.
+    Lifecycle automation never merges. An interactive agent may merge PRs within
+    the user's explicitly requested or delegated task after inspecting the diff,
+    verifying applicable CI, and checking the current head and branch contract.
+    Existing authorization persists; do not ask again for each routine merge.
+    General permission to continue does not authorize unrelated releases or
+    production deployments. `keep-open` is the only lifecycle escape hatch and
     it is permanent.
     AGENTS.md is guidance — the scheduled
     `.github/workflows/pr-lifecycle.yml` is the enforcement (see
@@ -72,9 +81,36 @@ fleet scope       control plane only, uses RELEASEGRAPH_FLEET_TOKEN
 ```
 
 A fleet operation without `RELEASEGRAPH_FLEET_TOKEN` fails immediately with
-`FLEET_CREDENTIAL_REQUIRED`; it never falls back to a repository token. See
-`docs/USAGE-MODEL.md` for the full model and `releasegraph doctor` for a
-readiness report.
+`FLEET_CREDENTIAL_REQUIRED`; it never falls back to a repository token.
+That error describes the current process, not necessarily the control plane:
+
+1. Check secret/variable names and workflow configuration without printing values.
+2. If the control repository already has the fleet secret or GitHub App, use its
+   existing workflows: `provider-watchdog.yml` for fleet inspection,
+   `provider-operations.yml` for a repository inspect/plan, and `fleet-rollout.yml`
+   for rollout planning. Dispatch with `apply=false` first and wait for results.
+3. Keep installation tokens inside the runner. Do not extract Actions secrets,
+   persist tokens in files, or relabel the ordinary `gh` login as a fleet token.
+4. Report credential readiness separately from release health: a successful
+   workflow can still report conflicts or missing releases. Apply only the
+   reviewed primitive within the user's authorized scope.
+
+See `docs/authentication.md`, `docs/historical-provider-operations.md`, and
+`releasegraph doctor` for configuration and readiness.
+
+## Continue until the authorized task is handled
+
+Inspect current state instead of repeating historical work. Choose routine
+implementation details, repair attributable engine bugs, run the required
+checks, and open reviewable PRs without another approval round. When the user
+delegates the next step, carry those task-scoped fixes through CI and merge.
+Ask only for missing information or a decision with materially different
+outcomes that existing authorization does not cover.
+
+Do not use a historical waiver to conceal an engine diagnostic bug. Do not
+invent a release to satisfy a stale version fallback. Preserve existing tags,
+published artifacts, branches, and history. Report source fixes, merges,
+published versions, and deployed versions as separate outcomes.
 
 ## Before you push
 

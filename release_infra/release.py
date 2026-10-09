@@ -26,7 +26,7 @@ class ReleaseError(RuntimeError):
 
 
 def _required_assets_present(required: set[str], remote: set[str]) -> bool:
-    return all(any(fnmatch.fnmatch(name, pattern) for name in remote) for pattern in required)
+    return all(any(fnmatch.fnmatchcase(name, pattern) for name in remote) for pattern in required)
 
 
 def _pypi_status(package: str | None, version: str) -> str:
@@ -93,7 +93,7 @@ def missing_required_assets(policy: dict, remote: list[dict]) -> list[str]:
     """
     present = {str(asset.get("name", "")) for asset in remote if int(asset.get("size", 0)) > 0}
     return [pattern for pattern in required_asset_patterns(policy)
-            if not any(fnmatch.fnmatch(name, pattern) for name in present)]
+            if not any(fnmatch.fnmatchcase(name, pattern) for name in present)]
 
 
 
@@ -490,7 +490,7 @@ def audit(policy_path: str = ".release-policy.yml", version: str | None = None) 
         required.add("SHA256SUMS")
     missing = [
         pattern for pattern in required
-        if not any(fnmatch.fnmatch(name, pattern) and int(asset.get("size", 0)) > 0 for name, asset in remote.items())
+        if not any(fnmatch.fnmatchcase(name, pattern) and int(asset.get("size", 0)) > 0 for name, asset in remote.items())
     ]
     if missing:
         raise ReleaseError(f"release assets missing or empty: {', '.join(sorted(missing))}")
@@ -503,7 +503,7 @@ def audit(policy_path: str = ".release-policy.yml", version: str | None = None) 
         }
         uncovered = [
             pattern for pattern in policy["assets"]["required"]
-            if not any(fnmatch.fnmatch(name, pattern) for name in listed)
+            if not any(fnmatch.fnmatchcase(name, pattern) for name in listed)
         ]
         if uncovered:
             raise ReleaseError(f"SHA256SUMS does not cover: {', '.join(sorted(uncovered))}")

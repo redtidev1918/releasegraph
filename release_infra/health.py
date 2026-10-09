@@ -238,7 +238,8 @@ def asset_gaps(
     `missing + empty` is exactly its missing set — one judgement, two different
     fixes: re-upload the asset, or fix an upload that produced nothing.
 
-    Matching is `fnmatch`, the same function the planner uses.
+    Matching is case-sensitive `fnmatchcase`, as in the planner and Go engine,
+    regardless of the host filesystem's case rules.
     """
     manifest = [asset for asset in assets if asset.get("name")]
     missing: list[str] = []
@@ -249,7 +250,7 @@ def asset_gaps(
         # different answer is worse than an error, and internal/health does the
         # same thing.
         validate_asset_pattern(pattern)
-        matched = [a for a in manifest if fnmatch.fnmatch(str(a["name"]), pattern)]
+        matched = [a for a in manifest if fnmatch.fnmatchcase(str(a["name"]), pattern)]
         if not matched:
             missing.append(pattern)
         elif not any(int(a.get("size") or 0) > 0 for a in matched):

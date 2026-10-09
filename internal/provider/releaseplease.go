@@ -210,8 +210,8 @@ const (
 // several independent signals because any single one can miss:
 //
 //   - the pull request title (release-please's default pattern),
-//   - the manifest-bump commit, which is the authoritative record that this
-//     merge released exactly this version,
+//   - the manifest-bump commit on a PR carrying a release-provider label,
+//     which links a nonstandard release title to this version,
 //   - any outstanding autorelease label, which is what actually blocks
 //     release-please and therefore the only thing an ACK must clear.
 //
@@ -235,14 +235,14 @@ func providerState(ctx context.Context, client *github.Bound, p *policy.Policy, 
 		return titleMatch, stateFromLabels(titleMatch), EvidenceTitle, nil
 	}
 
-	// The authoritative signal: find the merge that actually raised the release
-	// manifest to this version. Deriving it from commits that touched the
-	// manifest is precise and bounded, whereas guessing from pull request titles
-	// is not (release-please titles are configurable and may carry no version).
+	// A manifest bump identifies a version, but does not alone prove that the PR
+	// published it: a later bookkeeping PR can align a stale manifest with an
+	// already-published release. Nonstandard titles need independent provider
+	// evidence before their merge commit becomes the expected tag target.
 	manifestEvidence := ""
 	if mergeSHA := manifestBumpCommit(ctx, client, p, repo, version); mergeSHA != "" {
 		for i := range prs {
-			if prs[i].MergeCommitSHA == mergeSHA {
+			if prs[i].MergeCommitSHA == mergeSHA && hasReleaseProviderLabel(&prs[i]) {
 				return &prs[i], stateFromLabels(&prs[i]), EvidenceManifest, nil
 			}
 		}
@@ -265,6 +265,19 @@ func providerState(ctx context.Context, client *github.Bound, p *policy.Policy, 
 		return nil, StateTagged, EvidenceNoPending, nil
 	}
 	return nil, StateTagged, EvidenceNoPending, nil
+}
+
+// hasReleaseProviderLabel distinguishes provider transactions from unlabelled
+// manifest bookkeeping. Labels only establish attribution; actual tag, release,
+// metadata, artifact and registry checks still decide health and ACK eligibility.
+func hasReleaseProviderLabel(pr *github.PullRequest) bool {
+	for _, label := range pr.Labels {
+		switch label.Name {
+		case labelPending, labelTriggered, labelTagged, labelWaived:
+			return true
+		}
+	}
+	return false
 }
 
 // pendingLabelPR finds a merged pull request that still carries an autorelease

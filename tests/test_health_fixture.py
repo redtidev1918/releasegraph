@@ -14,6 +14,8 @@ import json
 import unittest
 from pathlib import Path
 
+from release_infra import release
+
 from release_infra import health
 from release_infra.policy import PolicyError, validate_asset_pattern, validate_policy
 
@@ -106,7 +108,10 @@ class SharedPatternsTest(unittest.TestCase):
             for name, want in row["matches"].items():
                 with self.subTest(pattern=row["pattern"], name=name):
                     self.assertNotIn("/", name, "GitHub asset names cannot contain /")
-                    self.assertEqual(fnmatch.fnmatch(name, row["pattern"]), want)
+                    self.assertEqual(fnmatch.fnmatchcase(name, row["pattern"]), want)
+                    self.assertEqual(
+                        release._required_assets_present({row["pattern"]}, {name}), want
+                    )
 
     def test_a_policy_with_an_unsupported_pattern_is_invalid(self):
         policy = {
