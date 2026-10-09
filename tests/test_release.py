@@ -535,3 +535,23 @@ class ReleaseContractTest(unittest.TestCase):
         self.assertFalse(metadata["capabilities"]["binaries"])
         self.assertEqual(metadata["capabilities"]["registries"], ["pypi"])
         self.assertEqual(metadata["policy_schema"], 1)
+
+    def test_metadata_records_the_engine_that_published_it(self):
+        policy = {"_hash": "policy", "kind": "binary", "assets": {"required": []}}
+        with mock.patch.dict("os.environ", {"RELEASEGRAPH_VERSION": "6d6f4a4a0a7631b55ccc20b4b1f0e89969484b61"}):
+            metadata = release._metadata(policy, "1.0.0", "v1.0.0", [])
+        self.assertEqual(metadata["releasegraph_version"], "6d6f4a4a0a7631b55ccc20b4b1f0e89969484b61")
+        self.assertEqual(metadata["release_infra_version"], metadata["releasegraph_version"])
+
+    def test_metadata_never_invents_the_frozen_bootstrap_version(self):
+        """`release_infra.__version__` is a v1 bootstrap marker, not a maintained
+        version. Publishing it as the engine identity is what made every managed
+        release claim ReleaseGraph 1.0.0 while pinning v1.5.x."""
+        policy = {"_hash": "policy", "kind": "binary", "assets": {"required": []}}
+        with mock.patch.dict("os.environ", {}, clear=False):
+            os.environ.pop("RELEASEGRAPH_VERSION", None)
+            metadata = release._metadata(policy, "1.0.0", "v1.0.0", [])
+        self.assertNotEqual(metadata["releasegraph_version"], "1.0.0")
+        self.assertNotEqual(metadata["release_infra_version"], "1.0.0")
+        self.assertEqual(metadata["releasegraph_version"], metadata["release_infra_version"])
+        self.assertEqual(release.engine_version(), "unknown")
