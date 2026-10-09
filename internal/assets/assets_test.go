@@ -38,6 +38,9 @@ func TestRequiredZipAssetGate(t *testing.T) {
 	if len(gate.Required) != 1 || gate.Required[0].SHA256 == "" || gate.Required[0].Size == 0 {
 		t.Fatalf("gate=%+v", gate)
 	}
+	if err := os.Remove(path); err != nil {
+		t.Fatalf("asset gate left the ZIP open: %v", err)
+	}
 }
 
 func TestMissingRequiredAssetFails(t *testing.T) {
