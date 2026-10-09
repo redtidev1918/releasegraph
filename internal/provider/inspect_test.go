@@ -53,6 +53,9 @@ type fakeGitHub struct {
 	// noTag makes the version's tag look absent, the state a release that never
 	// happened is in.
 	noTag bool
+	// tagCommit permits a later manifest-alignment merge to differ from the
+	// immutable commit of the already-published release.
+	tagCommit string
 }
 
 func (f *fakeGitHub) handler() http.Handler {
@@ -162,7 +165,11 @@ func (f *fakeGitHub) handler() http.Handler {
 			return
 		}
 		// lightweight-style ref pointing straight at the commit (tests peeling path separately).
-		fmt.Fprint(w, `{"object":{"type":"commit","sha":"b6c2"}}`)
+		sha := f.tagCommit
+		if sha == "" {
+			sha = "b6c2"
+		}
+		fmt.Fprintf(w, `{"object":{"type":"commit","sha":%q}}`, sha)
 	})
 
 	mux.HandleFunc("/repos/"+acme+"/releases/tags/v2.16.0", func(w http.ResponseWriter, r *http.Request) {
@@ -574,6 +581,52 @@ func TestReleasePRIdentifiedByManifestWhenTitleDiffers(t *testing.T) {
 	}
 	if report.Verdict.Drift != DriftACKMissing || !report.Verdict.ACKAllowed {
 		t.Fatalf("verdict = %+v, want ACK_MISSING", report.Verdict)
+	}
+}
+
+// A bookkeeping merge that catches up the manifest after a manual release must
+// not replace the immutable release commit and fabricate a TAG_CONFLICT. The
+// historical artifact's metadata remains authoritative when no release PR is
+// identified, and a genuine metadata/tag disagreement must still fail closed.
+func TestManifestAlignmentDoesNotBecomeReleasePR(t *testing.T) {
+	for _, tc := range []struct {
+		name           string
+		labels         []string
+		metadataCommit string
+		wantPR         int
+		wantConflict   bool
+	}{
+		{name: "unlabelled bookkeeping", metadataCommit: "published"},
+		{name: "unrelated label", labels: []string{"documentation"}, metadataCommit: "published"},
+		{name: "metadata conflict remains", metadataCommit: "different", wantConflict: true},
+		{name: "labelled release conflict remains", labels: []string{labelTagged}, metadataCommit: "published", wantPR: 30, wantConflict: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := &fakeGitHub{
+				prTitle:          "chore(release): reconcile manifest with published 2.16.0",
+				prLabels:         tc.labels,
+				manifestAtMerge:  `{".": "2.16.0"}`,
+				manifestAtParent: `{".": "2.15.0"}`,
+				tagCommit:        "published",
+				metadataCommit:   tc.metadataCommit,
+				release:          true,
+				sums:             "aaaa  app-linux\nbbbb  app-macos\n",
+			}
+			report, _ := runInspect(t, f)
+			if report.Context.ReleasePR != tc.wantPR {
+				t.Fatalf("release PR = %d, want %d", report.Context.ReleasePR, tc.wantPR)
+			}
+			if tc.wantConflict {
+				if report.Verdict.Drift != DriftTagConflict || !report.Verdict.HardFail || report.Verdict.ACKAllowed {
+					t.Fatalf("real conflict = %+v, want hard TAG_CONFLICT without ACK", report.Verdict)
+				}
+			} else if report.Verdict.Drift != DriftInSync || report.Verdict.Health != domain.HealthHealthy || report.Verdict.ACKAllowed {
+				t.Fatalf("bookkeeping verdict = %+v, want healthy without ACK", report.Verdict)
+			}
+			if len(f.mutations) != 0 {
+				t.Fatalf("inspection mutated GitHub: %v", f.mutations)
+			}
+		})
 	}
 }
 
