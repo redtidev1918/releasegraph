@@ -4,6 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "redtide-release-infra"
+# NOT release-managed. ReleaseGraph's version IS the annotated git tag vX.Y.Z
+# (infra-release.yml sets RELEASEGRAPH_VERSION from GITHUB_REF_NAME and passes
+# --version to every engine call). Nothing reads this field for a release:
+# release_infra/policy.py::desired_version resolves from --version, then the
+# policy/manifest, never pyproject; this package is never built into a wheel
+# and redtide-release-infra is deliberately absent from PyPI. Only the fleet
+# inventory report reads it (release_infra/inventory.py) and prints it next to
+# a null "published" value. Do not "align" it to the release tag: that would
+# turn a provably-ignored number into a believable one that rots at the next tag.
 version = "1.0.0"
 requires-python = ">=3.11"
 description = "Release Infrastructure v1 control plane"
