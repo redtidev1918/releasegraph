@@ -65,10 +65,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.2.1",
-  "latest_release": "v1.2.1",
-  "latest_release_at": "2026-09-09T04:09:07Z",
-  "latest_tag": "v1.2.1",
+  "desired_version": "1.2.2",
+  "latest_release": "v1.2.2",
+  "latest_release_at": "2026-10-09T12:44:41Z",
+  "latest_tag": "v1.2.2",
   "draft_releases": [],
   "actual_assets": [
     "checksums.txt",
@@ -91,8 +91,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/Graf/actions/runs/37911083612",
-    "updated_at": "2026-10-09T09:24:53Z"
+    "url": "https://github.com/redtidev1918/Graf/actions/runs/38034546161",
+    "updated_at": "2026-10-10T07:28:48Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -114,65 +114,69 @@
   ],
   "release_history": [
     {
-      "tag": "v1.2.1",
+      "tag": "v1.2.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-09-09T04:09:07Z",
+      "published_at": "2026-10-09T12:44:41Z",
       "assets": [
         {
           "name": "checksums.txt",
           "size": 635,
-          "sha256": "sha256:73f4584534d2fa7b3b2b57be30860a57524636dfa4efb32810540464fccb2c8c"
+          "sha256": "sha256:a4988519e3066dcda7df59f91ad91c781900ea6665d8dc4b0a792009f250d966"
         },
         {
           "name": "grafctl_darwin_amd64.tar.gz",
-          "size": 2545805,
-          "sha256": "sha256:a61b367469bc8fb003853b29dcbb5faff808ee2373fde1cfad622deb4a65752c"
+          "size": 2546113,
+          "sha256": "sha256:a45b3833cdf669c26119cd9f9e2c42902e3ec615c9373a06076d0e90216f45c9"
         },
         {
           "name": "grafctl_darwin_arm64.tar.gz",
-          "size": 2394291,
-          "sha256": "sha256:f1c9ff98cadecb0aafce25a4a016223271b89d55f7e4b05cea2c27b2318baaf1"
+          "size": 2394552,
+          "sha256": "sha256:cb4cf063a8cfaa47be43d691c38ac5c7a726dc1292604687cb8a675374184dfa"
         },
         {
           "name": "grafctl_linux_amd64.tar.gz",
-          "size": 2508894,
-          "sha256": "sha256:85ba680120932b960677ebd5670fe859f88ec855f84f79309dc13ccdafe31eab"
+          "size": 2509111,
+          "sha256": "sha256:b0b1173eea89603eb95d994252499249f63220aed800a25177d8e33eb9de5221"
         },
         {
           "name": "grafctl_linux_arm64.tar.gz",
-          "size": 2313267,
-          "sha256": "sha256:6fa189c236d1843fd6d97c6c5ad6a82cfeb19884837ab7a80046928afac78bcf"
+          "size": 2312258,
+          "sha256": "sha256:b72a568c90c032cfc7a0d5eac64e1dc2292f8043cc0a8b9d4c00bd2e5aeb80c2"
         },
         {
           "name": "grafctl_windows_amd64.zip",
-          "size": 2531069,
-          "sha256": "sha256:fa1226b56e9ff1ac5461707b11d2eeb416a8596d422805e21b468e0019b46254"
+          "size": 2531193,
+          "sha256": "sha256:5c8ec18918eb939abca098d902b2c8b004809b5d6ef23a96fb12b502ae030874"
         },
         {
           "name": "grafctl_windows_arm64.zip",
-          "size": 2302293,
-          "sha256": "sha256:66aaba04def25dcecc49209646132dad9f9862c880dbd95a9d29ad46603593ad"
+          "size": 2302797,
+          "sha256": "sha256:a800ebc02167bfba6be46055de2e9eb828b6515c2be881705a25e245800fdaa0"
         },
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1821,
-          "sha256": "sha256:38b4fe4e808796191d73a7534daf0d405420e8d3027ae9d652634ccd744653ef"
+          "size": 2499,
+          "sha256": "sha256:b4146eaec35691998e1565ce4a2df570cb886c4f17325f6a7ee3fdbb51329a6b"
         },
         {
           "name": "SHA256SUMS",
           "size": 715,
-          "sha256": "sha256:59910464179ac74d7e9eb56e95a61163b9130791c47e1523479ea9caaac5d81a"
+          "sha256": "sha256:34822cbb897c9d6857a23460d9321af3220fbf5be902b22c5880587df607e5c1"
         },
         {
           "name": "worker.mjs",
-          "size": 440374,
-          "sha256": "sha256:8d42026530aedf3c4ce3fdd0374e9981047582fc5c920013f6a97b8e39fe4879"
+          "size": 440486,
+          "sha256": "sha256:c45f82eb9818f475de796b2f69d347480741b78e03d0366a7b91158bb6051e6c"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.2.2",
+      "commit": "cda2f71e5baf52c0a6fd7df5a00d7f3cbf7c3f6d"
+    },
     {
       "name": "v1.2.1",
       "commit": "434df0de80c19e507613d9b8d8b7e890d2231884"
@@ -236,7 +240,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.2.1"
+      ".": "1.2.2"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -255,7 +259,7 @@
   "registries": {
     "npm": {
       "package": "graf",
-      "declared": "1.2.1",
+      "declared": "1.2.2",
       "published": "0.0.2"
     }
   },
@@ -268,8 +272,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

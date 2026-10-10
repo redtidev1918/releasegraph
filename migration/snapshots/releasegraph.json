@@ -15,7 +15,7 @@
     "kind": "hybrid",
     "versioning": {
       "mode": "manual",
-      "version": "1.4.8"
+      "version": "1.5.19"
     },
     "assets": {
       "required": [
@@ -68,9 +68,9 @@
   },
   "release_infra_version": null,
   "desired_version": null,
-  "latest_release": "v1.5.18",
-  "latest_release_at": "2026-10-04T06:24:05Z",
-  "latest_tag": "v1.5.18",
+  "latest_release": "v1.5.19",
+  "latest_release_at": "2026-10-09T12:52:06Z",
+  "latest_tag": "v1.5.19",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
@@ -111,6 +111,59 @@
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
+    {
+      "tag": "v1.5.19",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-10-09T12:52:06Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 2399,
+          "sha256": "sha256:c4c9ebf960a8ed814d3b36ea76e2999d1852122dcccc589e4caeaa08aab94a5a"
+        },
+        {
+          "name": "releasegraph-darwin-amd64",
+          "size": 7561696,
+          "sha256": "sha256:f30f89d7f713a04e62b5369451d7fcc1441e4e0d169940c263e137a24dfb2fd2"
+        },
+        {
+          "name": "releasegraph-darwin-arm64",
+          "size": 7030354,
+          "sha256": "sha256:0642ca7704c6e9918c7d1b496acac9fc3cd7b7c6ad50ccec618922b9d371619e"
+        },
+        {
+          "name": "releasegraph-linux-amd64",
+          "size": 7434424,
+          "sha256": "sha256:cd64d8dd70c6b79ee38f2b6dee27f07a3deaf7edaa14361ceb5afa4da56fad90"
+        },
+        {
+          "name": "releasegraph-linux-arm64",
+          "size": 6881464,
+          "sha256": "sha256:2d4ae67155fb41641bc0f1af4fa2eca920c169e639abbdaf8c3b90c7f2286edc"
+        },
+        {
+          "name": "RELEASEGRAPH-METADATA.json",
+          "size": 151,
+          "sha256": "sha256:3f915aa149680b6e4a809b12855f1b3ad6a9612478f72399c6396fd81e5a14f1"
+        },
+        {
+          "name": "releasegraph-windows-amd64.exe",
+          "size": 7628800,
+          "sha256": "sha256:d29069df475ab15d39e88b69099564157994c223c920c21118bfc23dd512210a"
+        },
+        {
+          "name": "releasegraph-windows-arm64.exe",
+          "size": 6946304,
+          "sha256": "sha256:38ee80d1e1c7da3b4ed8cca5c75d002fad34ee22e1b6e9bb8007fbc45680689a"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 653,
+          "sha256": "sha256:90d7c56a343f6139e9f8e58d28a805e62f51e144716cfa8f01de0bd596c568be"
+        }
+      ]
+    },
     {
       "tag": "v1.5.18",
       "draft": false,
@@ -1068,6 +1121,10 @@
   ],
   "tags": [
     {
+      "name": "v1.5.19",
+      "commit": "5936e83b80044e4ce8d644b68b0388e201a99e39"
+    },
+    {
       "name": "v1.5.18",
       "commit": "a3c070f1b2ea89784027fd09e71c845fb0329923"
     },
@@ -1353,7 +1410,7 @@
     },
     {
       "name": "v1",
-      "commit": "a3c070f1b2ea89784027fd09e71c845fb0329923"
+      "commit": "5936e83b80044e4ce8d644b68b0388e201a99e39"
     }
   ],
   "release_config": {},

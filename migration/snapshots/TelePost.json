@@ -165,12 +165,7 @@
       "path": ".github/workflows/release.yml"
     }
   ],
-  "latest_release_run": {
-    "status": "completed",
-    "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/37911116805",
-    "updated_at": "2026-10-09T09:25:26Z"
-  },
+  "latest_release_run": null,
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
@@ -855,8 +850,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 1,
-    "inQueue": 1,
+    "open": 2,
+    "inQueue": 2,
     "shouldLeave": 0
   }
 }
