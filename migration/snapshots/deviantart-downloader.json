@@ -95,8 +95,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/38032804044",
-    "updated_at": "2026-10-10T06:59:02Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/38125721772",
+    "updated_at": "2026-10-11T08:42:11Z"
   },
   "signals": [
     ".release-please-manifest.json",

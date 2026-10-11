@@ -60,10 +60,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.0.1",
-  "latest_release": "v2.0.1",
-  "latest_release_at": "2026-10-07T13:50:52Z",
-  "latest_tag": "v2.0.1",
+  "desired_version": "2.0.2",
+  "latest_release": "v2.0.2",
+  "latest_release_at": "2026-10-11T06:35:15Z",
+  "latest_tag": "v2.0.2",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -77,8 +77,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/38033377954",
-    "updated_at": "2026-10-10T07:08:26Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/38126337468",
+    "updated_at": "2026-10-11T08:52:30Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -93,25 +93,30 @@
     ".github/workflows/branch-contract.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
+    ".github/workflows/scheduler-regression.yml",
     ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
     {
-      "tag": "v2.0.1",
+      "tag": "v2.0.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-07T13:50:52Z",
+      "published_at": "2026-10-11T06:35:15Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1644,
-          "sha256": "sha256:7e73a7685b671483d07ad82c9620dfe287da82ae4ae5b37410d6ff67ab9c2343"
+          "size": 1648,
+          "sha256": "sha256:1b3c9947f589739a9744c9f2b5860b12c35596743b138f2e4078a3972a1797db"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.0.2",
+      "commit": "d115aff64e367037061492487782ea2dd7699022"
+    },
     {
       "name": "v2.0.1",
       "commit": "2a570572fd4469f3f3810e9e982ca748281a8988"
@@ -131,7 +136,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "2.0.1"
+      ".": "2.0.2"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -150,7 +155,7 @@
   "registries": {
     "npm": {
       "package": "pixivflow-webui",
-      "declared": "2.0.1",
+      "declared": "2.0.2",
       "published": null
     }
   },
