@@ -107,12 +107,7 @@
       "path": ".github/workflows/release.yml"
     }
   ],
-  "latest_release_run": {
-    "status": "completed",
-    "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAKit/actions/runs/38127820366",
-    "updated_at": "2026-10-11T09:17:22Z"
-  },
+  "latest_release_run": null,
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
@@ -553,8 +548,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }

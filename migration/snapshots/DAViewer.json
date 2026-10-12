@@ -50,7 +50,7 @@
       "notes": {
         "language": "zh"
       },
-      "post_publish": "python3 .github/scripts/update_download_page.py && git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add docs/ && (git diff --cached --quiet || (git commit -m 'docs: update release download page' && git push && gh workflow run static.yml --ref main))"
+      "post_publish": "gh workflow run update-download-page.yml --ref main -f tag=\"$RELEASE_TAG\""
     },
     "retention": {
       "stable": 1,
@@ -76,15 +76,15 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.5.10",
-  "latest_release": "v0.5.10",
-  "latest_release_at": "2026-10-11T03:49:14Z",
-  "latest_tag": "v0.5.10",
+  "desired_version": "0.5.13",
+  "latest_release": "v0.5.13",
+  "latest_release_at": "2026-10-11T19:11:56Z",
+  "latest_tag": "v0.5.13",
   "draft_releases": [],
   "actual_assets": [
-    "DAViewer-v0.5.10-macos-unsigned-preview.zip",
-    "DAViewer-v0.5.10-windows.zip",
-    "DAViewer-v0.5.10.apk",
+    "DAViewer-v0.5.13-macos-unsigned-preview.zip",
+    "DAViewer-v0.5.13-windows.zip",
+    "DAViewer-v0.5.13.apk",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -97,8 +97,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/38127314887",
-    "updated_at": "2026-10-11T09:08:58Z"
+    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/38211778164",
+    "updated_at": "2026-10-12T06:17:21Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -118,40 +118,52 @@
   ],
   "release_history": [
     {
-      "tag": "v0.5.10",
+      "tag": "v0.5.13",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-11T03:49:14Z",
+      "published_at": "2026-10-11T19:11:56Z",
       "assets": [
         {
-          "name": "DAViewer-v0.5.10-macos-unsigned-preview.zip",
-          "size": 25106636,
-          "sha256": "sha256:9eb6742d89914c579fe0b8871c7177653b4e614fbbddb43380567605c2ffb617"
+          "name": "DAViewer-v0.5.13-macos-unsigned-preview.zip",
+          "size": 25214671,
+          "sha256": "sha256:d34620f4897c4563b7ebd07cbc53864d6223afcb0c8eb6b85277a3bc68c1898e"
         },
         {
-          "name": "DAViewer-v0.5.10-windows.zip",
-          "size": 14476024,
-          "sha256": "sha256:51f120468f66298170893235d7c40f829a5dc534c8ac5bea3a0e58f43a1272ab"
+          "name": "DAViewer-v0.5.13-windows.zip",
+          "size": 14519321,
+          "sha256": "sha256:e12ef17cb7de31ab8b89aafe9c77231bbbc6844018ddf1030c1ae118f90bc6d2"
         },
         {
-          "name": "DAViewer-v0.5.10.apk",
-          "size": 66560482,
-          "sha256": "sha256:d82b4dc06b1565fc24b701467c3d611e25b98dbaff39ba7ac7a846188e6fb6ec"
+          "name": "DAViewer-v0.5.13.apk",
+          "size": 66855418,
+          "sha256": "sha256:871ec4415a6ba402e005dd194ac61b72839ccfb54a16bcb56251abd43493105b"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 1763,
-          "sha256": "sha256:b2f5c0f15233b8cc075e8bc1465622fc943db0557cf9ee036ded9c674808e6f0"
+          "sha256": "sha256:bc92fb5796a4a234759673b28a1bc95ee20f4cc0b9bb4a7a7d10db64e8a60545"
         },
         {
           "name": "SHA256SUMS",
           "size": 292,
-          "sha256": "sha256:a98e680c207c9c4ae4e0a2764887b10040141341904518c9af6e06a0168954f0"
+          "sha256": "sha256:f9cada56c1bd4c9983a5c94fa1c90fb4a3f678e7eded64466d839a905645f7be"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v0.5.13",
+      "commit": "b88c37425770628eb6632a22186021f1c72aae7d"
+    },
+    {
+      "name": "v0.5.12",
+      "commit": "a4e97cff91d69a39a5b7a55e57c2dc22b53601c4"
+    },
+    {
+      "name": "v0.5.11",
+      "commit": "992bb069d280eebd8194b42f172d48f04f9fd749"
+    },
     {
       "name": "v0.5.10",
       "commit": "502aae9481a6f3ca656713f7be88f28ce17154e1"
@@ -704,13 +716,13 @@
       }
     },
     ".release-please-manifest.json": {
-      ".": "0.5.10"
+      ".": "0.5.13"
     }
   },
   "registries": {
     "pub": {
       "package": "daviewer",
-      "declared": "0.5.10",
+      "declared": "0.5.13",
       "published": null
     }
   },
@@ -723,8 +735,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 0,
-    "inQueue": 0,
+    "open": 2,
+    "inQueue": 2,
     "shouldLeave": 0
   }
 }
