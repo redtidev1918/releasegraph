@@ -87,17 +87,17 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "0.4.1",
-  "latest_release": "dakit_cli-v0.4.1",
-  "latest_release_at": "2026-09-08T06:13:11Z",
+  "desired_version": "0.4.2",
+  "latest_release": "dakit_cli-v0.4.2",
+  "latest_release_at": "2026-10-12T13:27:34Z",
   "latest_tag": "python-preview-1.0.0a1",
   "draft_releases": [],
   "actual_assets": [
-    "dakit-cli-0.4.1-linux-arm64.tar.gz",
-    "dakit-cli-0.4.1-linux-x64.tar.gz",
-    "dakit-cli-0.4.1-macos-arm64-unsigned-preview.tar.gz",
-    "dakit-cli-0.4.1-macos-x64-unsigned-preview.tar.gz",
-    "dakit-cli-0.4.1-windows-x64.zip",
+    "dakit-cli-0.4.2-linux-arm64.tar.gz",
+    "dakit-cli-0.4.2-linux-x64.tar.gz",
+    "dakit-cli-0.4.2-macos-arm64-unsigned-preview.tar.gz",
+    "dakit-cli-0.4.2-macos-x64-unsigned-preview.tar.gz",
+    "dakit-cli-0.4.2-windows-x64.zip",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -107,7 +107,12 @@
       "path": ".github/workflows/release.yml"
     }
   ],
-  "latest_release_run": null,
+  "latest_release_run": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/38343604733",
+    "updated_at": "2026-10-13T03:50:57Z"
+  },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
@@ -126,6 +131,49 @@
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
+    {
+      "tag": "dakit_cli-v0.4.2",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-10-12T13:27:34Z",
+      "assets": [
+        {
+          "name": "dakit-cli-0.4.2-linux-arm64.tar.gz",
+          "size": 3263549,
+          "sha256": "sha256:2de138418ea9467c2ba044e307a45d1647ee30c8f05064fe3a372fa139a07528"
+        },
+        {
+          "name": "dakit-cli-0.4.2-linux-x64.tar.gz",
+          "size": 3384617,
+          "sha256": "sha256:020dccac9549456166833eb1e161eacdd8e2633e37d0c78a5d5a3629bb2b0a32"
+        },
+        {
+          "name": "dakit-cli-0.4.2-macos-arm64-unsigned-preview.tar.gz",
+          "size": 3172417,
+          "sha256": "sha256:4787b1421075e91f14b0fc030798004d0e464813db5bc464fe42064ad41cf69c"
+        },
+        {
+          "name": "dakit-cli-0.4.2-macos-x64-unsigned-preview.tar.gz",
+          "size": 3379736,
+          "sha256": "sha256:8fe86c917fb9c8d2a0507b17795e70cb42ab3d3052a58dfdb176fa716f00dcd5"
+        },
+        {
+          "name": "dakit-cli-0.4.2-windows-x64.zip",
+          "size": 3390594,
+          "sha256": "sha256:b0c2d7816be9eef01789335b796b6e17ddb62c5121003668ed686bd3c572b9eb"
+        },
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 2264,
+          "sha256": "sha256:f694627768924cf60bb36605c004a941712b981f80816f17cc000b8754355937"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 532,
+          "sha256": "sha256:51017d740bfa4216d1e91d1624f643004a96273baebe57db822d1461fe8006ec"
+        }
+      ]
+    },
     {
       "tag": "dakit_cli-v0.4.1",
       "draft": false,
@@ -176,6 +224,10 @@
       "commit": "a38360da35e93fee39ed9a9cff31ecd2908bbbdd"
     },
     {
+      "name": "dakit_web-v0.3.0",
+      "commit": "f489f529d7d103eaec27bb4dcc4dec53b134e0a6"
+    },
+    {
       "name": "dakit_web-v0.2.5",
       "commit": "106be8d8bdbbad9c9f63f732f02a760c3d897263"
     },
@@ -190,6 +242,10 @@
     {
       "name": "dakit_web-v0.2.2",
       "commit": "e49ac581c0e6513d062de8fe43ce8515c498632d"
+    },
+    {
+      "name": "dakit_flutter-v1.1.0",
+      "commit": "f489f529d7d103eaec27bb4dcc4dec53b134e0a6"
     },
     {
       "name": "dakit_flutter-v1.0.0",
@@ -246,6 +302,10 @@
     {
       "name": "dakit_flutter-v0.1.1",
       "commit": "d6a8d886135bba25c54549ed0659c9f3e048b58f"
+    },
+    {
+      "name": "dakit_core-v2.0.0",
+      "commit": "f489f529d7d103eaec27bb4dcc4dec53b134e0a6"
     },
     {
       "name": "dakit_core-v1.0.0",
@@ -316,6 +376,10 @@
       "commit": "11d8c49c5c313821801236b73022fde84f80c4a3"
     },
     {
+      "name": "dakit_cli-v0.4.2",
+      "commit": "f89938b08f5dd985524ccbe26e62c5a5d250091e"
+    },
+    {
       "name": "dakit_cli-v0.4.1",
       "commit": "708f86620dca8a0be26bc39b19dd8f5e74bbbcf7"
     },
@@ -342,6 +406,10 @@
     {
       "name": "dakit_cli-v0.2.0",
       "commit": "31873a80865b4134c80b33e1d4ce822b5eda791b"
+    },
+    {
+      "name": "dakit_api-v1.2.0",
+      "commit": "f489f529d7d103eaec27bb4dcc4dec53b134e0a6"
     },
     {
       "name": "dakit_api-v1.1.1",
@@ -525,11 +593,11 @@
       }
     },
     ".release-please-manifest.json": {
-      "packages/dakit_core": "1.1.0",
-      "packages/dakit_api": "1.1.1",
-      "packages/dakit_flutter": "1.0.0",
-      "packages/dakit_cli": "0.4.1",
-      "packages/dakit_web": "0.2.5"
+      "packages/dakit_core": "2.0.0",
+      "packages/dakit_api": "1.2.0",
+      "packages/dakit_flutter": "1.1.0",
+      "packages/dakit_cli": "0.4.2",
+      "packages/dakit_web": "0.3.0"
     }
   },
   "registries": {
