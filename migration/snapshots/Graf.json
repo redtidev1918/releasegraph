@@ -91,8 +91,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/Graf/actions/runs/38343008062",
-    "updated_at": "2026-10-13T03:43:08Z"
+    "url": "https://github.com/redtidev1918/Graf/actions/runs/38531240648",
+    "updated_at": "2026-10-14T07:53:00Z"
   },
   "signals": [
     ".release-please-manifest.json",

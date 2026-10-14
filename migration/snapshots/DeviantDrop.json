@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.15.2",
-  "latest_release": "v1.15.2",
-  "latest_release_at": "2026-10-07T13:28:27Z",
-  "latest_tag": "v1.15.2",
+  "desired_version": "1.15.3",
+  "latest_release": "v1.15.3",
+  "latest_release_at": "2026-10-13T11:44:08Z",
+  "latest_tag": "v1.15.3",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/38342580080",
-    "updated_at": "2026-10-13T03:37:35Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/38530426444",
+    "updated_at": "2026-10-14T07:45:45Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +95,24 @@
   ],
   "release_history": [
     {
-      "tag": "v1.15.2",
+      "tag": "v1.15.3",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-07T13:28:27Z",
+      "published_at": "2026-10-13T11:44:08Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1224,
-          "sha256": "sha256:59a562387c18df9c9bbffa18864aa429f4ff31b952f6627c4ce400003a29b605"
+          "size": 1228,
+          "sha256": "sha256:96f61c8f9c765ce02a98e0730504464467396d50c5f61bbfd1be006440b4914d"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.15.3",
+      "commit": "76dab91d35febc9674dfd7a386919dc1256b2eeb"
+    },
     {
       "name": "v1.15.2",
       "commit": "be2a3beacf1db5aedb669307c7e9f7bbf5919b8f"
@@ -228,7 +232,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.15.2"
+      ".": "1.15.3"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -247,7 +251,7 @@
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.15.2",
+      "declared": "1.15.3",
       "published": null
     }
   },
