@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAKit/actions/runs/38692270587",
-    "updated_at": "2026-10-15T06:25:23Z"
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/38860745815",
+    "updated_at": "2026-10-16T06:21:48Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -222,6 +222,10 @@
     {
       "name": "python-preview-1.0.0a1",
       "commit": "a38360da35e93fee39ed9a9cff31ecd2908bbbdd"
+    },
+    {
+      "name": "dakit_web-v0.3.1",
+      "commit": "80210836f6bf2f97e6af5cbbeb5b89d36fb1c5af"
     },
     {
       "name": "dakit_web-v0.3.0",
@@ -541,6 +545,13 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      "packages/dakit_core": "2.0.0",
+      "packages/dakit_api": "1.2.0",
+      "packages/dakit_flutter": "1.1.0",
+      "packages/dakit_cli": "0.4.2",
+      "packages/dakit_web": "0.3.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -591,13 +602,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      "packages/dakit_core": "2.0.0",
-      "packages/dakit_api": "1.2.0",
-      "packages/dakit_flutter": "1.1.0",
-      "packages/dakit_cli": "0.4.2",
-      "packages/dakit_web": "0.3.0"
     }
   },
   "registries": {
@@ -616,8 +620,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 2,
-    "inQueue": 2,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }

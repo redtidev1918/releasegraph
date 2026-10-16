@@ -144,17 +144,17 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.83.1",
-  "latest_release": "v2.83.1",
-  "latest_release_at": "2026-10-11T06:49:17Z",
-  "latest_tag": "v2.83.1",
+  "desired_version": "2.83.2",
+  "latest_release": "v2.83.2",
+  "latest_release_at": "2026-10-15T18:28:26Z",
+  "latest_tag": "v2.83.2",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json",
     "SHA256SUMS",
-    "telepost-2.83.1-linux-x64.tar.gz",
-    "telepost-2.83.1-macos-arm64.tar.gz",
-    "telepost-2.83.1-windows-x64.zip",
+    "telepost-2.83.2-linux-x64.tar.gz",
+    "telepost-2.83.2-macos-arm64.tar.gz",
+    "telepost-2.83.2-windows-x64.zip",
     "telepost-linux-x64",
     "telepost-macos-arm64",
     "telepost-windows-x64.exe"
@@ -168,8 +168,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/38690806984",
-    "updated_at": "2026-10-15T06:10:34Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/38867045197",
+    "updated_at": "2026-10-16T07:25:20Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -196,55 +196,59 @@
   ],
   "release_history": [
     {
-      "tag": "v2.83.1",
+      "tag": "v2.83.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-11T06:49:17Z",
+      "published_at": "2026-10-15T18:28:26Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 2645,
-          "sha256": "sha256:9ad0846a3791f6397d9beb4913e09e23e092e9e928d04a04a5856f29864253db"
+          "sha256": "sha256:05b96b5a30b5195876422c8dffa0bc297211849ab0b42ae699fab6ddbed5ddc2"
         },
         {
           "name": "SHA256SUMS",
           "size": 561,
-          "sha256": "sha256:3b28c4d7a37d31992e28e7c1b7efcfb5f5e1c0fd149f6331b45fba6c4b683623"
+          "sha256": "sha256:b1beb710184c04968cf98b1ce6a037303e7663d6b772529b18db26cf553ea6e9"
         },
         {
-          "name": "telepost-2.83.1-linux-x64.tar.gz",
-          "size": 47475060,
-          "sha256": "sha256:2da449c777afc059803a939348c7aca6bfc16008cf267ccb7f172bcfa0392c5f"
+          "name": "telepost-2.83.2-linux-x64.tar.gz",
+          "size": 47484622,
+          "sha256": "sha256:c4ea90a03f39327816a748cd64ebee024fb0429b2a6a6c36c2a6a7e892eb0522"
         },
         {
-          "name": "telepost-2.83.1-macos-arm64.tar.gz",
-          "size": 31677640,
-          "sha256": "sha256:a67690685c9397a43fe81bb892902df1fb55b684ef8902bead64f9704ffc644d"
+          "name": "telepost-2.83.2-macos-arm64.tar.gz",
+          "size": 31686795,
+          "sha256": "sha256:d3b4c5e230540901e588e2c6f5f5f789d25b8992188a6ad755605430898e8b22"
         },
         {
-          "name": "telepost-2.83.1-windows-x64.zip",
-          "size": 34918663,
-          "sha256": "sha256:75ea9ec8128d1cc41bb1c94c35e544bea25aad6b0b9f1834eb701485bc99777b"
+          "name": "telepost-2.83.2-windows-x64.zip",
+          "size": 34928008,
+          "sha256": "sha256:30c9deb6b84177386a91ea552e5041889397b59cd3fd744a75ad5e09af6db31d"
         },
         {
           "name": "telepost-linux-x64",
-          "size": 47839992,
-          "sha256": "sha256:be6f1d8ee221e819180971afc6ee36892b096cd582425cc5f7b821a93fb36406"
+          "size": 47850008,
+          "sha256": "sha256:3a4f7c8327689fe18c96225f7e97a6e03af75a0e5d7db5bf474d7a6aab719149"
         },
         {
           "name": "telepost-macos-arm64",
-          "size": 31932688,
-          "sha256": "sha256:3db78c223e4b52a4fbd92271fa99974c04e2740802bcfd9cabc2d81bcda6d4ff"
+          "size": 31941584,
+          "sha256": "sha256:25864666f5adcea8a724b84e17e4e7a7464be2bea7c5ad2df3e1f185b46b45f6"
         },
         {
           "name": "telepost-windows-x64.exe",
-          "size": 35290282,
-          "sha256": "sha256:1b77244a98d13773ea37345af73440dc43161132d0f47eeef824e2d5108f55e7"
+          "size": 35299373,
+          "sha256": "sha256:76c95c1ab98388c16a75dca8834983e1a1e631b1a174d26d6d2f8e5a72aac0d8"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.83.2",
+      "commit": "d5d859ef6e79cfa69961a7555210052ff20a8326"
+    },
     {
       "name": "v2.83.1",
       "commit": "ae2d6f13d59b137d306f26d98e23c9715908b691"
@@ -839,6 +843,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.83.2"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -854,16 +861,13 @@
           ]
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.83.1"
     }
   },
   "registries": {
     "pypi": {
       "package": "telepost-bot",
       "declared": null,
-      "published": "2.83.1"
+      "published": "2.83.2"
     }
   },
   "branchContract": {

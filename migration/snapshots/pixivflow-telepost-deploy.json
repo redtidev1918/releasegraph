@@ -104,10 +104,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.14.2",
-  "latest_release": "v1.14.2",
-  "latest_release_at": "2026-10-09T01:05:30Z",
-  "latest_tag": "v1.14.2",
+  "desired_version": "1.15.0",
+  "latest_release": "v1.15.0",
+  "latest_release_at": "2026-10-15T18:36:22Z",
+  "latest_tag": "v1.15.0",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/38689488303",
-    "updated_at": "2026-10-15T05:56:16Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/38866150151",
+    "updated_at": "2026-10-16T07:16:51Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -152,55 +152,59 @@
   ],
   "release_history": [
     {
-      "tag": "v1.14.2",
+      "tag": "v1.15.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-09T01:05:30Z",
+      "published_at": "2026-10-15T18:36:22Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2516443,
-          "sha256": "sha256:d552dc19e9ebad1000d67dfeac31fcc6ec5c09fe87e02c020e7ae2fcc199ecb6"
+          "size": 2515993,
+          "sha256": "sha256:622071fc2f822a68fe80e0c729ca95ae7b60b25643cf1f2f6816b9384b056919"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2357233,
-          "sha256": "sha256:e3190754534f548ed106520a194474fc5a442cee61cf3c77a8082e2615964165"
+          "size": 2359219,
+          "sha256": "sha256:9f8fb88ac61dd14676af1b8f14283dc1a73bb97746ebe38ed3b9254922984ba6"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2473974,
-          "sha256": "sha256:74d8c112a42669235b4c3fe9b41a62ca588eac103304fd6ab3efe11f4b82ff07"
+          "size": 2474962,
+          "sha256": "sha256:febc7d5937590a891a72f0607cf4b814571837d4905f9c12336c73fd23da719c"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2270404,
-          "sha256": "sha256:aae1522d4b1cd5b86d246d6c605c3294a7d1098eb107bfd77af039707562c3d0"
+          "size": 2271935,
+          "sha256": "sha256:3a2eb7bcb00e9c33858e4eec0bcdec4acf163429f1452c63fd28e44d468473f5"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2536492,
-          "sha256": "sha256:7f0bb3645a2a6638d59dc032c1a2420662f033232b8ad8402be9f6249272ff99"
+          "size": 2537558,
+          "sha256": "sha256:b49180ac9c4cb3f815680fd6fb7b63ec2759576190619b5f633a901ef36d60ea"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2299370,
-          "sha256": "sha256:fa7f5712a9da5f4bc8da6f739b6942f43d20cfe3b6af5580af8e7bd2d2240ed1"
+          "size": 2300982,
+          "sha256": "sha256:35d9e747315dab4d50f6fb30291dbe9b13f6982854bfb089954acac392d7e090"
         },
         {
           "name": "RELEASE-METADATA.json",
-          "size": 2735,
-          "sha256": "sha256:769692c167a1d9bd80bd8be4f7f93899a23433ff91a02c41431abe209ddf9f17"
+          "size": 2805,
+          "sha256": "sha256:da418c1f55db1763f9d184aeb8283ba092ddc7ca3eaaedc0721e6ec26eb94317"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:347ee6a30ff2b10e7803f59c320d41970ceac0e44e5663630ab207eeee1246f6"
+          "sha256": "sha256:d89a8b2bd0510031bdadb9f9374f759184f0506ddd1e58f74619170550866bd6"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.15.0",
+      "commit": "350e78cc5b3dbc2180cdcaa726fb59149739cdea"
+    },
     {
       "name": "v1.14.2",
       "commit": "5fae6ba90410e9e556d06898b8703ebca92b9d52"
@@ -240,7 +244,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "1.14.2"
+      ".": "1.15.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -265,8 +269,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 2,
-    "inQueue": 2,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }
