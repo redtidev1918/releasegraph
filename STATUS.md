@@ -5,13 +5,13 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-10-16T08:13:51.876359+00:00`
+Generated: `2026-10-17T07:51:39.931342+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
 | redtidev1918/BallonsTranslator-lite | fork | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/DAKit | managed | 0.4.2 | dakit_cli-v0.4.2 | 7 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DAViewer | managed | 0.6.0 | v0.6.0 | 5 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DAViewer | managed | 0.6.1 | v0.6.1 | 5 | success | policy+gate | — | HEALTHY |
 | redtidev1918/deviantart-downloader | managed | 4.4.2 | v4.4.2 | 4 | success | policy+gate | — | HEALTHY |
 | redtidev1918/DeviantDrop | managed | 1.15.3 | v1.15.3 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
