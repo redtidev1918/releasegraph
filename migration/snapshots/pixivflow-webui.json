@@ -77,8 +77,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/39208969156",
-    "updated_at": "2026-10-19T06:16:46Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/39371786030",
+    "updated_at": "2026-10-20T04:51:45Z"
   },
   "signals": [
     ".release-please-manifest.json",

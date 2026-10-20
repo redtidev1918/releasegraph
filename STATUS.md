@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-10-19T08:56:37.652791+00:00`
+Generated: `2026-10-20T08:36:14.943907+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -30,4 +30,5 @@ Generated: `2026-10-19T08:56:37.652791+00:00`
 | redtidev1918/shengxiu_feedbot | fork | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/TelePost | managed | 2.83.2 | v2.83.2 | 8 | success | policy+gate | — | HEALTHY |
 | redtidev1918/TelePress | managed | 0.18.0 | v0.18.0 | 4 | success | policy+gate | — | HEALTHY |
+| redtidev1918/unreal-association-doctor | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/use-bash | observe-only | — | v2.0.1 | 0 | — | — | — | UNMANAGED |
