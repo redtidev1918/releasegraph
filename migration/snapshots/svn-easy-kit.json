@@ -1,0 +1,330 @@
+{
+  "repo": "redtidev1918/svn-easy-kit",
+  "default_branch": "main",
+  "visibility": "public",
+  "archived": false,
+  "fork": false,
+  "template": false,
+  "classification": "managed",
+  "health": "HEALTHY",
+  "health_reasons": [],
+  "missing_assets": [],
+  "empty_assets": [],
+  "release_policy": {
+    "kind": "binary",
+    "versioning": {
+      "mode": "manual",
+      "version": "1.3.0"
+    },
+    "build": {
+      "test": "go test ./...",
+      "command": "scripts/build-release",
+      "version_check": "for b in dist/check/SvnEasyClient dist/check/SvnEasyServer; do \"$b\" --version | grep -Fx \"$(basename \"$b\") $RELEASE_VERSION\"; done"
+    },
+    "assets": {
+      "required": [
+        "SvnEasyKit-*-linux-amd64.tar.gz",
+        "SvnEasyKit-*-linux-arm64.tar.gz",
+        "SvnEasyKit-*-darwin-amd64.tar.gz",
+        "SvnEasyKit-*-darwin-arm64.tar.gz",
+        "SvnEasyKit-*-windows-amd64.zip"
+      ],
+      "optional": []
+    },
+    "registries": {
+      "github": {
+        "required": true
+      }
+    },
+    "retention": {
+      "stable": 5,
+      "prerelease": 1,
+      "failed_draft": 2
+    },
+    "checksums": true,
+    "sbom": false
+  },
+  "release_infra_version": "v1",
+  "desired_version": null,
+  "latest_release": "v1.3.0",
+  "latest_release_at": "2026-10-20T16:41:46Z",
+  "latest_tag": "v1.3.0",
+  "draft_releases": [],
+  "actual_assets": [
+    "RELEASE-METADATA.json",
+    "SHA256SUMS",
+    "SvnEasyKit-1.3.0-darwin-amd64.tar.gz",
+    "SvnEasyKit-1.3.0-darwin-arm64.tar.gz",
+    "SvnEasyKit-1.3.0-linux-amd64.tar.gz",
+    "SvnEasyKit-1.3.0-linux-arm64.tar.gz",
+    "SvnEasyKit-1.3.0-windows-amd64.zip"
+  ],
+  "release_workflows": [
+    {
+      "name": "Release",
+      "path": ".github/workflows/release.yml"
+    }
+  ],
+  "latest_release_run": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/svn-easy-kit/actions/runs/39459377055",
+    "updated_at": "2026-10-20T16:41:54Z"
+  },
+  "signals": [
+    ".release-policy.yml",
+    "go.mod"
+  ],
+  "workflow_paths": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/release.yml"
+  ],
+  "release_history": [
+    {
+      "tag": "v1.3.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-10-20T16:41:46Z",
+      "assets": [
+        {
+          "name": "RELEASE-METADATA.json",
+          "size": 2278,
+          "sha256": "sha256:f1f48219643fc5e670a05b9194569680c1abf8dbcea004bc3b447735e7dc519e"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 511,
+          "sha256": "sha256:346a65ecb22351ec8dc861f7f4996ff23f138a9720a14ab28bde55e47cf64b2d"
+        },
+        {
+          "name": "SvnEasyKit-1.3.0-darwin-amd64.tar.gz",
+          "size": 2002011,
+          "sha256": "sha256:278170c4ea1765336ef16970f1166947a7e4dc59161917d8c17d34b8303b9b04"
+        },
+        {
+          "name": "SvnEasyKit-1.3.0-darwin-arm64.tar.gz",
+          "size": 1893799,
+          "sha256": "sha256:282db05b1f4ea1d016d3c8b16be7e027b9a82d0f7a27b0fc6eb648639246ee48"
+        },
+        {
+          "name": "SvnEasyKit-1.3.0-linux-amd64.tar.gz",
+          "size": 1995910,
+          "sha256": "sha256:7954c533b6d798fb4e576b374308a0d85cf852fb7c4f59cb9d186bd5fe4ae9f3"
+        },
+        {
+          "name": "SvnEasyKit-1.3.0-linux-arm64.tar.gz",
+          "size": 1849729,
+          "sha256": "sha256:b663ba26265decc2a624d4a5b6b97dd822a39655bc8f90f51c9c2864693381cc"
+        },
+        {
+          "name": "SvnEasyKit-1.3.0-windows-amd64.zip",
+          "size": 2060817,
+          "sha256": "sha256:8c6be4f0ba468e3290e73ac2931dcbb6f02b181c058c6ab7156e8457d77752bf"
+        }
+      ]
+    },
+    {
+      "tag": "v1.2.1",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-06-15T05:19:06Z",
+      "assets": [
+        {
+          "name": "SHA256SUMS.txt",
+          "size": 609,
+          "sha256": "sha256:39c87e0c993640942058493ba4052d8dc8e987f826db44fbe825ef146fb4bd98"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-linux-arm64.tar.gz",
+          "size": 2105751,
+          "sha256": "sha256:e03a6a3a204d87783b41baf6736ab3ed112690a905da634ac0ff966219d86eff"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-linux-x64.tar.gz",
+          "size": 2323759,
+          "sha256": "sha256:b3f3091a9d5f481b04a5ab8c625b2218e5c9083f05c2ec12334b773d4b0a7f6c"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-macos-arm64.tar.gz",
+          "size": 2119680,
+          "sha256": "sha256:8ff007673f1b7781bff7cd5181e1648933bfa2a04e5bf6f48b3c96fc0bb96b10"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-macos-x64.tar.gz",
+          "size": 2295509,
+          "sha256": "sha256:4943e2b19904f370d091cf65196191cf8141ad0c68d794dfb6f42e22be10d379"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-source.zip",
+          "size": 30365,
+          "sha256": "sha256:c9ab848469142275559d62b8a75023c9a83b989dc5352ab9e2850b938fb19ddd"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.1-windows-x64.zip",
+          "size": 2435083,
+          "sha256": "sha256:0fc6c16337976823a985cc4b41f000f33a5274c98db89a72541ab8d880f6365d"
+        }
+      ]
+    },
+    {
+      "tag": "v1.2.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-06-14T07:40:49Z",
+      "assets": [
+        {
+          "name": "SHA256SUMS.txt",
+          "size": 609,
+          "sha256": "sha256:a99ebdeeb8f2780115fb339950fbf9713d3b3992d6d2de7614fb1a008610e6f9"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-linux-arm64.tar.gz",
+          "size": 2104451,
+          "sha256": "sha256:6821cc3dbda12c07f11b28cbcc6b4da4833df7677e32c9bd1edcd33cb00da577"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-linux-x64.tar.gz",
+          "size": 2323210,
+          "sha256": "sha256:4cdc7d22fcef5c23a1b0496ed6c749d2ae724a2294b1ca42e8337b37fdb2b6f6"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-macos-arm64.tar.gz",
+          "size": 2118516,
+          "sha256": "sha256:3c8312bdf5d4f04dea1a03413d864acca7e093af9eb207fcfe863b9b6ccf23d2"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-macos-x64.tar.gz",
+          "size": 2293909,
+          "sha256": "sha256:7b493a62e686cc2b2b2fb6f13c387b26eb8bde6868b4841933c34701971d4569"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-source.zip",
+          "size": 29112,
+          "sha256": "sha256:d929f3165140d9edce407b36c71e730f0e6525880f7045045e815d52e99f0666"
+        },
+        {
+          "name": "SvnEasyKit-v1.2.0-windows-x64.zip",
+          "size": 2434076,
+          "sha256": "sha256:b766c778db6da69aef3e79220c65cf3ddf526bb4075ed0eda04b1222d5790f23"
+        }
+      ]
+    },
+    {
+      "tag": "v1.1.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-06-13T10:01:44Z",
+      "assets": [
+        {
+          "name": "SHA256SUMS.txt",
+          "size": 609,
+          "sha256": "sha256:6270ea33e19c32e7eb0b6bd39d20568a992521aaa1c28b22ee2422489e709540"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-linux-arm64.tar.gz",
+          "size": 2092387,
+          "sha256": "sha256:f19cad2143ba5f4cd710ab9731ea802904d3d1d2cc9c2d90e5810e1e27d6a967"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-linux-x64.tar.gz",
+          "size": 2312738,
+          "sha256": "sha256:75e443102d1a57be2aac72e62ef9ce6676ba6d1f4efc3cf8c84e392324683883"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-macos-arm64.tar.gz",
+          "size": 2107460,
+          "sha256": "sha256:f3b71ed5a5394925f54cfbc66516ba0c04801cf4dfbec1c02687cfd1988f4473"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-macos-x64.tar.gz",
+          "size": 2279837,
+          "sha256": "sha256:3777ae821113e7887ee0f11e080353ac35b9a61009ca593134d653cbcf152a7d"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-source.zip",
+          "size": 26587,
+          "sha256": "sha256:b0992170c6d2eac1ac7af66f63c5758d8212f44588f2a7cd5938aa2884d86933"
+        },
+        {
+          "name": "SvnEasyKit-v1.1.0-windows-x64.zip",
+          "size": 2411968,
+          "sha256": "sha256:5e0197704de451f20417ab46f9278a413bb0607c1e07fadc06959e996bf47e84"
+        }
+      ]
+    },
+    {
+      "tag": "v1.0.0",
+      "draft": false,
+      "prerelease": false,
+      "published_at": "2026-06-12T16:41:59Z",
+      "assets": [
+        {
+          "name": "SHA256SUMS.txt",
+          "size": 609,
+          "sha256": "sha256:a6fc48c0e6f601182fc8dcc78bb5bc87a2735cf2e523173dc5e135969efade6c"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-linux-arm64.tar.gz",
+          "size": 2074826,
+          "sha256": "sha256:caa08757905fd7f5751caace0565e76988ba1ff7cff918f7f382132a2f0b1317"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-linux-x64.tar.gz",
+          "size": 2290749,
+          "sha256": "sha256:ae2e7d85fec568f727df0a01f5e3c8134f6489eb3fd379a29ce6f8768b1a1c6c"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-macos-arm64.tar.gz",
+          "size": 2089880,
+          "sha256": "sha256:bc9ef86b800242b0024947228ef5d7e04ecc75d24c412f982523dde1ee37ae3e"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-macos-x64.tar.gz",
+          "size": 2257445,
+          "sha256": "sha256:59a3bcc5313747f2812a9f1749929895588c5312c0d3e66789deed8cb3046279"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-source.zip",
+          "size": 25319,
+          "sha256": "sha256:5f88a8ab9d3da9394c9a613275d40d7a2ca79af1b545388ca277433b207aaf6b"
+        },
+        {
+          "name": "SvnEasyKit-v1.0.0-windows-x64.zip",
+          "size": 2389779,
+          "sha256": "sha256:9103a2b9dba4c07889254c14c2ef2cb72f08d79c1d6631ae4535b2d691b260ca"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "v1.3.0",
+      "commit": "f92808d475503039865dc22ad850557c55a95c74"
+    },
+    {
+      "name": "v1.2.1",
+      "commit": "bdef89d4ebdb23f14794d65fb45c42ad84f55b8a"
+    },
+    {
+      "name": "v1.2.0",
+      "commit": "dd747b84c2f1e51508cb7ad9f4e2a801dc5bbae7"
+    },
+    {
+      "name": "v1.1.0",
+      "commit": "07863e84960095748f173a5fb6a00c0894ed7986"
+    },
+    {
+      "name": "v1.0.0",
+      "commit": "02ddd429779525613d42874ba21cb3ef8da70e13"
+    }
+  ],
+  "release_config": {},
+  "registries": {},
+  "branchContract": {
+    "configured": false,
+    "gateInstalled": false,
+    "gatePinned": false,
+    "policyValid": null
+  },
+  "prLifecycle": null
+}
