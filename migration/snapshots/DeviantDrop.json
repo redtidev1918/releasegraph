@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.15.3",
-  "latest_release": "v1.15.3",
-  "latest_release_at": "2026-10-13T11:44:08Z",
-  "latest_tag": "v1.15.3",
+  "desired_version": "1.16.0",
+  "latest_release": "v1.16.0",
+  "latest_release_at": "2026-10-22T15:39:37Z",
+  "latest_tag": "v1.16.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/39742377525",
-    "updated_at": "2026-10-22T07:42:46Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/39919299282",
+    "updated_at": "2026-10-23T07:40:23Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +95,24 @@
   ],
   "release_history": [
     {
-      "tag": "v1.15.3",
+      "tag": "v1.16.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-13T11:44:08Z",
+      "published_at": "2026-10-22T15:39:37Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1228,
-          "sha256": "sha256:96f61c8f9c765ce02a98e0730504464467396d50c5f61bbfd1be006440b4914d"
+          "sha256": "sha256:a0a21ae892f47df9f7fb297870cf4b07631857f96eb4f26498b9b58cbba65900"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.16.0",
+      "commit": "1e5bccdf4a830bb35f0701ed84bed9d47efbbf3d"
+    },
     {
       "name": "v1.15.3",
       "commit": "76dab91d35febc9674dfd7a386919dc1256b2eeb"
@@ -245,13 +249,13 @@
       }
     },
     ".release-please-manifest.json": {
-      ".": "1.15.3"
+      ".": "1.16.0"
     }
   },
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.15.3",
+      "declared": "1.16.0",
       "published": null
     }
   },

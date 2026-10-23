@@ -104,10 +104,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.15.0",
-  "latest_release": "v1.15.0",
-  "latest_release_at": "2026-10-15T18:36:22Z",
-  "latest_tag": "v1.15.0",
+  "desired_version": "1.15.1",
+  "latest_release": "v1.15.1",
+  "latest_release_at": "2026-10-22T18:42:12Z",
+  "latest_tag": "v1.15.1",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/39742077740",
-    "updated_at": "2026-10-22T07:40:31Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/39919014108",
+    "updated_at": "2026-10-23T07:38:06Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -152,55 +152,59 @@
   ],
   "release_history": [
     {
-      "tag": "v1.15.0",
+      "tag": "v1.15.1",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-15T18:36:22Z",
+      "published_at": "2026-10-22T18:42:12Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2515993,
-          "sha256": "sha256:622071fc2f822a68fe80e0c729ca95ae7b60b25643cf1f2f6816b9384b056919"
+          "size": 2515597,
+          "sha256": "sha256:19099d370b4fd6d21aac95283f0a32b5b3e88129a982d2cf3e17b975e83bd3d9"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2359219,
-          "sha256": "sha256:9f8fb88ac61dd14676af1b8f14283dc1a73bb97746ebe38ed3b9254922984ba6"
+          "size": 2359220,
+          "sha256": "sha256:f7c390e81ce6109cf6624562fe18ca335e7283dabd8f75a0ded729d1824129c3"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2474962,
-          "sha256": "sha256:febc7d5937590a891a72f0607cf4b814571837d4905f9c12336c73fd23da719c"
+          "size": 2474669,
+          "sha256": "sha256:e16e23b605b812b8181648affd1ccbfb1cbf4b47130e39dcb0999d1f1c8c9988"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2271935,
-          "sha256": "sha256:3a2eb7bcb00e9c33858e4eec0bcdec4acf163429f1452c63fd28e44d468473f5"
+          "size": 2271425,
+          "sha256": "sha256:e97f0288514b02520ce4442da84fc21a18963bd25fc712c265d65a086018ee96"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2537558,
-          "sha256": "sha256:b49180ac9c4cb3f815680fd6fb7b63ec2759576190619b5f633a901ef36d60ea"
+          "size": 2537493,
+          "sha256": "sha256:f14643e6ffffcb537a5999854674bf54b3b78dd15eb962aae467ab3b0c38bdb8"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2300982,
-          "sha256": "sha256:35d9e747315dab4d50f6fb30291dbe9b13f6982854bfb089954acac392d7e090"
+          "size": 2300446,
+          "sha256": "sha256:e2f3702496c0c95566212d110868ef5f8515bc8bc3e9454bbb83aee9bf731d2b"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2805,
-          "sha256": "sha256:da418c1f55db1763f9d184aeb8283ba092ddc7ca3eaaedc0721e6ec26eb94317"
+          "sha256": "sha256:bbe031fb78bb7e1f0744a9e57b44da9c536655168d1a6a57b65e7da238d074a6"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:d89a8b2bd0510031bdadb9f9374f759184f0506ddd1e58f74619170550866bd6"
+          "sha256": "sha256:ed127bf0d99334428bed2ecfebdc96a60d3102ffc07a15a28ef9255d8f3ba6de"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.15.1",
+      "commit": "d1b3cf2df6afa68a914b2fd01596f94a5522eb6a"
+    },
     {
       "name": "v1.15.0",
       "commit": "350e78cc5b3dbc2180cdcaa726fb59149739cdea"
@@ -243,6 +247,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.15.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -254,9 +261,6 @@
           "include-component-in-tag": false
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.15.0"
     }
   },
   "registries": {},
@@ -269,8 +273,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 2,
-    "inQueue": 2,
+    "open": 1,
+    "inQueue": 1,
     "shouldLeave": 0
   }
 }
