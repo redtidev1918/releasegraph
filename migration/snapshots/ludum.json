@@ -57,10 +57,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "3.1.2",
-  "latest_release": "v3.1.2",
-  "latest_release_at": "2026-10-09T16:18:36Z",
-  "latest_tag": "v3.1.2",
+  "desired_version": "4.0.0",
+  "latest_release": "v4.0.0",
+  "latest_release_at": "2026-10-23T17:35:30Z",
+  "latest_tag": "v4.0.0",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ludum/actions/runs/39918857002",
-    "updated_at": "2026-10-23T07:36:23Z"
+    "url": "https://github.com/redtidev1918/ludum/actions/runs/40068252993",
+    "updated_at": "2026-10-24T05:57:17Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +95,24 @@
   ],
   "release_history": [
     {
-      "tag": "v3.1.2",
+      "tag": "v4.0.0",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-09T16:18:36Z",
+      "published_at": "2026-10-23T17:35:30Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1531,
-          "sha256": "sha256:542dc4acefb602e24b259f49c014040f5b6c8579e019022b1e1f1f13dcaeb9e5"
+          "sha256": "sha256:4ff92442c3949c8563d33fb551c4aecbce12bb48829988f238890e38481110e4"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v4.0.0",
+      "commit": "42c1412378e5f3ae6dff0a9dfbfc8366defc3ae2"
+    },
     {
       "name": "v3.1.2",
       "commit": "68b1d0194207346fd2262d6eccebe2766ef4681d"
@@ -152,7 +156,7 @@
   ],
   "release_config": {
     ".release-please-manifest.json": {
-      ".": "3.1.2"
+      ".": "4.0.0"
     },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
@@ -171,8 +175,8 @@
   "registries": {
     "npm": {
       "package": "ludum",
-      "declared": "3.1.2",
-      "published": "3.1.2"
+      "declared": "4.0.0",
+      "published": "4.0.0"
     }
   },
   "branchContract": {
