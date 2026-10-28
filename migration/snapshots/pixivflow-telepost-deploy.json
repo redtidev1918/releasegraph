@@ -104,10 +104,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.15.1",
-  "latest_release": "v1.15.1",
-  "latest_release_at": "2026-10-22T18:42:12Z",
-  "latest_tag": "v1.15.1",
+  "desired_version": "1.15.2",
+  "latest_release": "v1.15.2",
+  "latest_release_at": "2026-10-27T11:34:07Z",
+  "latest_tag": "v1.15.2",
   "draft_releases": [],
   "actual_assets": [
     "deploy-darwin-amd64.tar.gz",
@@ -128,8 +128,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/40470262908",
-    "updated_at": "2026-10-27T07:57:50Z"
+    "url": "https://github.com/redtidev1918/pixivflow-telepost-deploy/actions/runs/40640318849",
+    "updated_at": "2026-10-28T05:51:04Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -152,55 +152,59 @@
   ],
   "release_history": [
     {
-      "tag": "v1.15.1",
+      "tag": "v1.15.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-22T18:42:12Z",
+      "published_at": "2026-10-27T11:34:07Z",
       "assets": [
         {
           "name": "deploy-darwin-amd64.tar.gz",
-          "size": 2515597,
-          "sha256": "sha256:19099d370b4fd6d21aac95283f0a32b5b3e88129a982d2cf3e17b975e83bd3d9"
+          "size": 2516431,
+          "sha256": "sha256:57a57150038bde9fa8690a166a5290009094b3485f6f97e10959b62e477e087b"
         },
         {
           "name": "deploy-darwin-arm64.tar.gz",
-          "size": 2359220,
-          "sha256": "sha256:f7c390e81ce6109cf6624562fe18ca335e7283dabd8f75a0ded729d1824129c3"
+          "size": 2359966,
+          "sha256": "sha256:7995444c5da793b7198d8ea81f66d79a5aeae7864822782aa7bd67bdc89f30cc"
         },
         {
           "name": "deploy-linux-amd64.tar.gz",
-          "size": 2474669,
-          "sha256": "sha256:e16e23b605b812b8181648affd1ccbfb1cbf4b47130e39dcb0999d1f1c8c9988"
+          "size": 2474911,
+          "sha256": "sha256:c33cb1ca725f4099334684a1c1423c6db568db6e898f9eae6bfe49ea7708e1b7"
         },
         {
           "name": "deploy-linux-arm64.tar.gz",
-          "size": 2271425,
-          "sha256": "sha256:e97f0288514b02520ce4442da84fc21a18963bd25fc712c265d65a086018ee96"
+          "size": 2272077,
+          "sha256": "sha256:240f17901c37ccdfd690421c07a066541e076814037b329394948d68aef4220d"
         },
         {
           "name": "deploy-windows-amd64.tar.gz",
-          "size": 2537493,
-          "sha256": "sha256:f14643e6ffffcb537a5999854674bf54b3b78dd15eb962aae467ab3b0c38bdb8"
+          "size": 2537703,
+          "sha256": "sha256:39300d011c0d7e76403cf89e1cc80fcaf659d3628e4bc4bc7ed8ca21e42ee8c1"
         },
         {
           "name": "deploy-windows-arm64.tar.gz",
-          "size": 2300446,
-          "sha256": "sha256:e2f3702496c0c95566212d110868ef5f8515bc8bc3e9454bbb83aee9bf731d2b"
+          "size": 2301249,
+          "sha256": "sha256:cfbf8ea48c7e4ba5de2451fe69f04e181d110b00c030a6b45b1b50e3c103d5ba"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2805,
-          "sha256": "sha256:bbe031fb78bb7e1f0744a9e57b44da9c536655168d1a6a57b65e7da238d074a6"
+          "sha256": "sha256:c16ac86a91fa1a1f4569531fa44cc0f09984047e2400b9fd2626073cdb3af9a6"
         },
         {
           "name": "SHA256SUMS",
           "size": 558,
-          "sha256": "sha256:ed127bf0d99334428bed2ecfebdc96a60d3102ffc07a15a28ef9255d8f3ba6de"
+          "sha256": "sha256:de530c7c0de0b472a097cab3b305ea956b8834f8e3a403e25ac9e85226e27d4b"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.15.2",
+      "commit": "440d765c8bffd10782671ae783ace29e37c5e10f"
+    },
     {
       "name": "v1.15.1",
       "commit": "d1b3cf2df6afa68a914b2fd01596f94a5522eb6a"
@@ -260,7 +264,7 @@
       }
     },
     ".release-please-manifest.json": {
-      ".": "1.15.1"
+      ".": "1.15.2"
     }
   },
   "registries": {},
@@ -273,8 +277,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": true,
-    "open": 5,
-    "inQueue": 5,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }
