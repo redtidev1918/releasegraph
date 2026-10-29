@@ -75,14 +75,14 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "4.4.2",
-  "latest_release": "v4.4.2",
-  "latest_release_at": "2026-10-13T11:42:50Z",
-  "latest_tag": "v4.4.2",
+  "desired_version": "4.4.4",
+  "latest_release": "v4.4.4",
+  "latest_release_at": "2026-10-29T08:30:53Z",
+  "latest_tag": "v4.4.4",
   "draft_releases": [],
   "actual_assets": [
-    "devart_dl-4.4.2-py3-none-any.whl",
-    "devart_dl-4.4.2.tar.gz",
+    "devart_dl-4.4.4-py3-none-any.whl",
+    "devart_dl-4.4.4.tar.gz",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -95,8 +95,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/40655970398",
-    "updated_at": "2026-10-28T08:19:52Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/40842258496",
+    "updated_at": "2026-10-29T08:32:29Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -117,35 +117,43 @@
   ],
   "release_history": [
     {
-      "tag": "v4.4.2",
+      "tag": "v4.4.4",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-13T11:42:50Z",
+      "published_at": "2026-10-29T08:30:53Z",
       "assets": [
         {
-          "name": "devart_dl-4.4.2-py3-none-any.whl",
-          "size": 51797,
-          "sha256": "sha256:47cc6eaf763e309573c23a1d2a3910b355551e739f0db25c8965165d36f6694b"
+          "name": "devart_dl-4.4.4-py3-none-any.whl",
+          "size": 53381,
+          "sha256": "sha256:3daaef8741ecca7ef359c8b82c27f6e314e3df8bee6fb2555531200e248c6fbe"
         },
         {
-          "name": "devart_dl-4.4.2.tar.gz",
-          "size": 66095,
-          "sha256": "sha256:800ae6382e804b3e59dde88e6ab2c534fd7561aa1df0a34c34eeaf62b28d8aca"
+          "name": "devart_dl-4.4.4.tar.gz",
+          "size": 69259,
+          "sha256": "sha256:b6a914c6dcb4371ae567c27df686ecd1c869e387b2eae24547d82d468a67377c"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 1688,
-          "sha256": "sha256:3ad930cdf888e48efdd79d8be531b3e9b9cd76c9b0750095654d8f10de75b479"
+          "sha256": "sha256:c7714920f9a79fba0e784c9ff8bbca5d830e8d550b6682787a153b4fe5189a0a"
         },
         {
           "name": "SHA256SUMS",
           "size": 188,
-          "sha256": "sha256:aea84dc8ec1bc47e155a8e9fc4f2d7dfbdf000a1649a3fc811bca15136449223"
+          "sha256": "sha256:954589c2e2e562155ff87f4432b11895cda55f4e2cb23dc7d2e00e1ef76d2a22"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v4.4.4",
+      "commit": "3de79263035a1e6563f7a001d852ea5858fa6c8c"
+    },
+    {
+      "name": "v4.4.3",
+      "commit": "4b3ab6e59c118de00839cd81a80886c5c45af743"
+    },
     {
       "name": "v4.4.2",
       "commit": "8d99dbc444175fb4d29e1fd17cf99305f42de1e0"
@@ -224,6 +232,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "4.4.4"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -236,16 +247,13 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "4.4.2"
     }
   },
   "registries": {
     "pypi": {
       "package": "devart-dl",
-      "declared": "4.4.2",
-      "published": "4.4.2"
+      "declared": "4.4.4",
+      "published": "4.4.4"
     }
   },
   "branchContract": {

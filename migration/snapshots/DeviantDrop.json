@@ -55,10 +55,10 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "1.16.0",
-  "latest_release": "v1.16.0",
-  "latest_release_at": "2026-10-22T15:39:37Z",
-  "latest_tag": "v1.16.0",
+  "desired_version": "1.16.2",
+  "latest_release": "v1.16.2",
+  "latest_release_at": "2026-10-29T07:08:12Z",
+  "latest_tag": "v1.16.2",
   "draft_releases": [],
   "actual_assets": [
     "RELEASE-METADATA.json"
@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/40646689567",
-    "updated_at": "2026-10-28T06:54:24Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/40833050375",
+    "updated_at": "2026-10-29T07:08:52Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -95,20 +95,28 @@
   ],
   "release_history": [
     {
-      "tag": "v1.16.0",
+      "tag": "v1.16.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-10-22T15:39:37Z",
+      "published_at": "2026-10-29T07:08:12Z",
       "assets": [
         {
           "name": "RELEASE-METADATA.json",
           "size": 1228,
-          "sha256": "sha256:a0a21ae892f47df9f7fb297870cf4b07631857f96eb4f26498b9b58cbba65900"
+          "sha256": "sha256:5b5a8862afc2fe3c88eceb2e9aa3e797a2288cfa8d542ee609a269cf7a0a2437"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v1.16.2",
+      "commit": "0207960603f3556b799458aaea43005a0d6b32d0"
+    },
+    {
+      "name": "v1.16.1",
+      "commit": "01636079fc56707a235248a43316e603d5b2787e"
+    },
     {
       "name": "v1.16.0",
       "commit": "1e5bccdf4a830bb35f0701ed84bed9d47efbbf3d"
@@ -235,6 +243,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "1.16.2"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -247,15 +258,12 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "1.16.0"
     }
   },
   "registries": {
     "npm": {
       "package": "deviantdrop",
-      "declared": "1.16.0",
+      "declared": "1.16.2",
       "published": null
     }
   },

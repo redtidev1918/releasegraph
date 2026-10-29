@@ -5,14 +5,14 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-10-28T09:42:24.280026+00:00`
+Generated: `2026-10-29T10:01:25.743476+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
 | redtidev1918/DAKit | managed | 0.4.2 | dakit_cli-v0.4.2 | 7 | success | policy+gate | — | HEALTHY |
 | redtidev1918/DAViewer | managed | 0.7.0 | v0.7.0 | 5 | success | policy+gate | — | HEALTHY |
-| redtidev1918/deviantart-downloader | managed | 4.4.2 | v4.4.2 | 4 | success | policy+gate | — | HEALTHY |
-| redtidev1918/DeviantDrop | managed | 1.16.0 | v1.16.0 | 1 | success | policy+gate | — | HEALTHY |
+| redtidev1918/deviantart-downloader | managed | 4.4.4 | v4.4.4 | 4 | success | policy+gate | — | HEALTHY |
+| redtidev1918/DeviantDrop | managed | 1.16.2 | v1.16.2 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/docsite | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/NekoTime | managed | 2.3.4 | v2.3.4 | 7 | success | policy+gate | — | HEALTHY |
 | redtidev1918/pixiv-token-getter | managed | 2.6.1 | v2.6.1 | 1 | success | policy+gate | — | HEALTHY |
