@@ -95,13 +95,14 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/41036825723",
-    "updated_at": "2026-10-30T10:00:27Z"
+    "url": "https://github.com/redtidev1918/deviantart-downloader/actions/runs/41189003151",
+    "updated_at": "2026-10-31T09:31:11Z"
   },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
     "CHANGELOG.md",
+    "package.json",
     "pyproject.toml",
     "release-please-config.json",
     "setup.py"
@@ -110,9 +111,10 @@
     ".github/workflows/approve-release-please-runs.yml",
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
+    ".github/workflows/docs-check.yml",
+    ".github/workflows/docs.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
@@ -236,6 +238,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "4.4.5"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -248,12 +253,14 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "4.4.5"
     }
   },
   "registries": {
+    "npm": {
+      "package": "docs",
+      "declared": null,
+      "published": "0.4.0"
+    },
     "pypi": {
       "package": "devart-dl",
       "declared": "4.4.5",

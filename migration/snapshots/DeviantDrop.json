@@ -72,8 +72,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/40993196962",
-    "updated_at": "2026-10-30T02:42:11Z"
+    "url": "https://github.com/redtidev1918/DeviantDrop/actions/runs/41184887623",
+    "updated_at": "2026-10-31T08:30:55Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -88,9 +88,10 @@
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/deploy.yml",
+    ".github/workflows/docs-check.yml",
+    ".github/workflows/docs.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [

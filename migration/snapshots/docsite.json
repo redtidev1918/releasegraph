@@ -5,14 +5,11 @@
   "archived": false,
   "fork": false,
   "template": false,
-  "classification": "no-release",
-  "health": "NO_RELEASE",
+  "classification": "observe-only",
+  "health": "UNMANAGED",
   "health_reasons": [
     {
-      "code": "policy_absent"
-    },
-    {
-      "code": "release_absent"
+      "code": "unmanaged_repo"
     }
   ],
   "missing_assets": [],
@@ -27,17 +24,26 @@
   "actual_assets": [],
   "release_workflows": [],
   "latest_release_run": null,
-  "signals": [],
+  "signals": [
+    "package.json"
+  ],
   "workflow_paths": [
     ".github/workflows/docs.yml",
     ".github/workflows/navcheck.yml",
     ".github/workflows/notify-profile.yml",
-    ".github/workflows/update-download-page.yml"
+    ".github/workflows/update-download-page.yml",
+    ".github/workflows/validate.yml"
   ],
   "release_history": [],
   "tags": [],
   "release_config": {},
-  "registries": {},
+  "registries": {
+    "npm": {
+      "package": "docs",
+      "declared": null,
+      "published": "0.4.0"
+    }
+  },
   "branchContract": {
     "configured": false,
     "gateInstalled": false,

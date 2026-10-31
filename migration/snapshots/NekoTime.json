@@ -104,22 +104,24 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/41021613521",
-    "updated_at": "2026-10-30T07:41:40Z"
+    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/41175541315",
+    "updated_at": "2026-10-31T06:11:21Z"
   },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
     "CHANGELOG.md",
+    "package.json",
     "pubspec.yaml",
     "release-please-config.json"
   ],
   "workflow_paths": [
     ".github/workflows/approve-release-please-runs.yml",
     ".github/workflows/branch-contract.yml",
+    ".github/workflows/docs-check.yml",
+    ".github/workflows/docs.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/release.yml",
-    ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
@@ -196,6 +198,11 @@
     }
   },
   "registries": {
+    "npm": {
+      "package": "docs",
+      "declared": null,
+      "published": "0.4.0"
+    },
     "pub": {
       "package": "neko_time",
       "declared": "2.3.4",

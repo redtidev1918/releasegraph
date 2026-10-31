@@ -97,13 +97,14 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/40993955957",
-    "updated_at": "2026-10-30T02:50:12Z"
+    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/41185420067",
+    "updated_at": "2026-10-31T08:38:33Z"
   },
   "signals": [
     ".release-please-manifest.json",
     ".release-policy.yml",
     "CHANGELOG.md",
+    "package.json",
     "pubspec.yaml",
     "release-please-config.json"
   ],
@@ -111,11 +112,12 @@
     ".github/workflows/approve-release-please-runs.yml",
     ".github/workflows/branch-contract.yml",
     ".github/workflows/ci.yml",
+    ".github/workflows/docs-check.yml",
+    ".github/workflows/docs.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/p0-diagnostic-apk.yml",
     ".github/workflows/release.yml",
     ".github/workflows/sdk-integration.yml",
-    ".github/workflows/static.yml",
     ".github/workflows/update-download-page.yml"
   ],
   "release_history": [
@@ -774,6 +776,11 @@
     }
   },
   "registries": {
+    "npm": {
+      "package": "docs",
+      "declared": null,
+      "published": "0.4.0"
+    },
     "pub": {
       "package": "daviewer",
       "declared": "0.7.0",
