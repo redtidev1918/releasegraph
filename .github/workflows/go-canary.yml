@@ -6,6 +6,26 @@ on:
 permissions:
   contents: read
 jobs:
+
+  # Fleet health E2E probe: the gate reads the marked alert issue's title.
+  # Re-running this job on the same head with a flipped title demonstrates a
+  # same-SHA failure→pass→fail cycle for the fleet health acceptance.
+  e2e-probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Fleet health E2E probe gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title=$(gh api "repos/${{ github.repository }}/issues/120" --jq .title)
+          echo "gate reads: $title"
+          if echo "$title" | grep -q 'PROBE-FAIL'; then
+            echo 'probe failure requested via the fleet-health issue title'
+            exit 1
+          fi
   test:
     runs-on: ubuntu-latest
     strategy:
