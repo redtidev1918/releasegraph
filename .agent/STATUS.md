@@ -54,3 +54,11 @@
 Stage 1 audit implementation under test on `codex/fleet-pr-health`. Baseline and
 protocol: `docs/pr-health-baseline.md`, `docs/pr-health.md`. Stages 2/3 and real
 end-to-end alert acceptance are pending. Three PRs requested; none may auto-merge.
+
+## 2026-11-01 Fleet Health 阶段二(告警)与权限降级
+
+分支 feat/fleet-pr-health-alerts:GraphQL 拆分(branchProtectionRule 独立查询),
+权限缺失时 checks 证据保留、PR 诚实 UNKNOWN;UpdateIssue 原语;单一标记 Issue
+持久化(首次/最近发现、事件周期、恢复日志、幂等通知、超长拒绝、读写凭据分离)。
+测试含权限降级、生命周期、事件周期、重试不重复通知。Administration 为人工阻断
+(App 所有者授权),系统按降级模式持续运行。

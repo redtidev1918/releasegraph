@@ -200,6 +200,15 @@ func (b *Bound) CommentOnIssue(ctx context.Context, repo string, number int, bod
 	return b.client.CommentOnIssue(ctx, repo, number, body)
 }
 
+// UpdateIssue rewrites an issue body and optionally its state in the bound
+// repository. The fleet-health alert issue is the only current caller.
+func (b *Bound) UpdateIssue(ctx context.Context, repo string, number int, body, state string) error {
+	if err := b.guardTarget(repo); err != nil {
+		return err
+	}
+	return b.client.UpdateIssue(ctx, repo, number, body, state)
+}
+
 // ClosePullRequest closes a pull request without merging it. This is the
 // strongest mutation the lifecycle contract can reach: the client exposes no
 // merge, no branch deletion and no history rewrite at all.

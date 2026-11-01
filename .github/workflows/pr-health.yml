@@ -5,6 +5,7 @@ on:
     - cron: '23 * * * *'
 permissions:
   contents: read
+  issues: write
 concurrency:
   group: fleet-pr-health
   cancel-in-progress: false
@@ -25,18 +26,28 @@ jobs:
           client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
           private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
           owner: ${{ vars.RELEASEGRAPH_OWNER }}
+          # Administration is deliberately NOT requested: the App installation
+          # does not have it. Required-check evidence then degrades to UNKNOWN
+          # per pull request instead of failing the scan.
           permission-metadata: read
           permission-contents: read
           permission-pull-requests: read
           permission-actions: read
           permission-checks: read
-          # Branch protection and active rulesets live under the administration
-          # permission; required-check evidence is incomplete without it.
-          permission-administration: read
       - name: Audit current PR heads
         env:
           RELEASEGRAPH_FLEET_TOKEN: ${{ steps.reader.outputs.token }}
         run: '"$RUNNER_TEMP/releasegraph" pr-health audit --manifest fleet.yaml --report pr-health.json'
+      - name: Persist incidents on the control issue
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -s pr-health.json ]; then
+            echo 'no report produced; nothing to persist'
+            exit 0
+          fi
+          "$RUNNER_TEMP/releasegraph" pr-health alert --report pr-health.json
       - name: Preserve scan evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0

@@ -203,12 +203,22 @@ func addIncident(r *Report, i Incident) { r.Incidents[i.Fingerprint()] = i }
 
 const query = `query PRHealth($owner:String!,$name:String!,$number:Int!,$cursor:String) {
  repository(owner:$owner,name:$name) { pullRequest(number:$number) {
- headRefOid baseRefOid baseRefName reviewDecision changedFiles mergeable baseRef { branchProtectionRule { requiredStatusCheckContexts } }
+ headRefOid baseRefOid baseRefName reviewDecision changedFiles mergeable
  commits(last:1) { nodes { commit { oid statusCheckRollup { contexts(first:100,after:$cursor) {
  totalCount pageInfo { hasNextPage endCursor } nodes {
  ... on CheckRun { id databaseId name status conclusion isRequired(pullRequestNumber:$number) detailsUrl checkSuite { app { slug } workflowRun { workflow { id } } } }
  ... on StatusContext { id context state isRequired(pullRequestNumber:$number) targetUrl description }
  } } } } } }
+ } }
+}`
+
+// requiredContextsQuery reads branch protection separately from the check
+// rollup: branchProtectionRule needs the administration permission, and a
+// permission failure there must degrade only required-check evidence — the
+// observed checks of the pull request stay in the report.
+const requiredContextsQuery = `query RequiredContexts($owner:String!,$name:String!,$base:String!) {
+ repository(owner:$owner,name:$name) { ref(qualifiedName:$base) {
+ branchProtectionRule { requiredStatusCheckContexts }
  } }
 }`
 
@@ -227,10 +237,7 @@ func observe(ctx context.Context, c *github.Bound, repo, base string, p *Pull) e
 					ChangedFiles   int
 					HeadRefOid     string
 					Mergeable      string
-					BaseRef        *struct {
-						BranchProtectionRule *struct{ RequiredStatusCheckContexts []string }
-					}
-					Commits struct {
+					Commits        struct {
 						Nodes []struct {
 							Commit struct {
 								Oid               string
@@ -265,12 +272,6 @@ func observe(ctx context.Context, c *github.Bound, repo, base string, p *Pull) e
 		p.BaseBranch = pr.BaseRefName
 		p.ReviewDecision = pr.ReviewDecision
 		p.ChangedFiles = pr.ChangedFiles
-		if pr.BaseRef == nil {
-			return fmt.Errorf("base branch unavailable")
-		}
-		if rule := pr.BaseRef.BranchProtectionRule; rule != nil {
-			p.Required = rule.RequiredStatusCheckContexts
-		}
 		if len(pr.Commits.Nodes) != 1 || pr.Commits.Nodes[0].Commit.Oid != p.SHA {
 			return fmt.Errorf("head commit unavailable")
 		}
@@ -394,8 +395,31 @@ func observe(ctx context.Context, c *github.Bound, repo, base string, p *Pull) e
 	for i := range p.Checks {
 		p.Checks[i].Health = checkState(p.Checks[i])
 	}
-	// Active rulesets supplement classic branch protection. Failure is UNKNOWN,
-	// including permission errors; absence of evidence is never a passing check.
+	// Required-check evidence is collected after the checks themselves so a
+	// permission failure here leaves the observed checks in the report while
+	// the pull request degrades to UNKNOWN. Absence of evidence is never a
+	// passing check.
+	var required struct {
+		Repository *struct {
+			Ref *struct {
+				BranchProtectionRule *struct {
+					RequiredStatusCheckContexts []string
+				}
+			}
+		}
+	}
+	if err := c.Query(ctx, repo, requiredContextsQuery, map[string]any{
+		"owner": parts[0], "name": parts[1], "base": base,
+	}, &required); err != nil {
+		return err
+	}
+	if required.Repository == nil || required.Repository.Ref == nil {
+		return fmt.Errorf("base branch unavailable")
+	}
+	if rule := required.Repository.Ref.BranchProtectionRule; rule != nil {
+		p.Required = append(p.Required, rule.RequiredStatusCheckContexts...)
+	}
+	// Active rulesets supplement classic branch protection.
 	rules, err := c.Paginate(ctx, fmt.Sprintf("repos/%s/rules/branches/%s", repo, url.PathEscape(base)))
 	if err != nil {
 		return err
