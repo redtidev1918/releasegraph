@@ -99,6 +99,7 @@
     ".github/workflows/infra-canary.yml",
     ".github/workflows/infra-release.yml",
     ".github/workflows/notify-profile.yml",
+    ".github/workflows/pr-health.yml",
     ".github/workflows/pr-lifecycle.yml",
     ".github/workflows/probe-p6.yml",
     ".github/workflows/probe-runs-audit.yml",
