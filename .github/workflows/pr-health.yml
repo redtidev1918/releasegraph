@@ -47,7 +47,7 @@ jobs:
             echo 'no report produced; nothing to persist'
             exit 0
           fi
-          "$RUNNER_TEMP/releasegraph" pr-health alert --report pr-health.json
+          "$RUNNER_TEMP/releasegraph" pr-health alert --report pr-health.json --apply
       - name: Preserve scan evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
