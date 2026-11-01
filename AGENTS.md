@@ -127,3 +127,12 @@ fails, restore the file (`git checkout -- dist/release/RELEASE-METADATA.json`)
 instead of committing the dirty artifact; never use `git add -A` blindly.
 
 Commits are reviewable vertical slices, one concern each.
+
+## Fleet PR health
+
+`releasegraph pr-health audit --manifest fleet.yaml --report pr-health.json`
+observes PR checks independently of lifecycle/release health. Only enabled
+manifest entries are scanned; missing/unknown/incomplete evidence never passes.
+Use the fleet App read token; do not substitute an ordinary gh login. Community
+dashboards are optional observers, never dependencies or incident authority.
+See `docs/pr-health.md`. No automatic merge or closure belongs to this feature.

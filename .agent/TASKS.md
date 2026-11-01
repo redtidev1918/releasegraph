@@ -20,3 +20,7 @@
 | #91 之后的三笔 provider 修复 | `3e7ad7a`（2026-09-30 waiver 优先于 tag 冲突）、`f77f8d4`（2026-10-07 历史 Release 保留 + 退役被取代 PR）、`f855d3e`（2026-10-09 manifest 记账排除出归因） |
 | PR 归因链重构 | Merge #110 `feat/provider-pr-attribution`；证据信号常量见 `internal/provider/releaseplease.go:200-207` |
 | #85 actionlint 债 | 已关闭（2026-09-16） |
+
+| RG-FH1 | Read-only Fleet PR health audit and classification | IN_PROGRESS | docs/pr-health.md; internal/prhealth |
+| RG-FH2 | Persistent single Issue, deduplication and recovery | TODO | Depends on RG-FH1 |
+| RG-FH3 | Scheduled workflow, artifacts, community/Dependabot guidance, E2E | TODO | Depends on RG-FH2; no automatic merge |

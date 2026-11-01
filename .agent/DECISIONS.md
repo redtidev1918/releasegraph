@@ -53,3 +53,11 @@ publish queue。失去合并资格的 PR 先把工程上下文归档进 issue �
 Go 核心已承担生产写入的 provider reconciliation；发布写入、repair、
 dispatch、registry 发布与保留策略在 Python/Go 契约 canary 通过前保持
 Python v1。不因「Go 已在」就整体切换。
+
+## D-08 Fleet PR Health authority (2026-11-01)
+
+Fleet manifest selects scope; GitHub APIs provide evidence; Issues persist
+incidents; Actions schedules scans and stores reports. Community dashboards
+are replaceable observers. No database, service, copied dashboard or runtime
+dependency. Unknown evidence never passes. PR health is not release health or
+permission to remove a PR from the merge queue.

@@ -48,3 +48,9 @@
 | 分支契约 / PR 生命周期 / 认证的执行细节 | `docs/branch-contract.md`、`docs/pr-lifecycle.md`、`docs/authentication.md` |
 
 本目录禁止复制 fleet 版本快照（会与生成的仪表盘漂移）；需要时链接查询。
+
+## 2026-11-01 Fleet Health
+
+Stage 1 audit implementation under test on `codex/fleet-pr-health`. Baseline and
+protocol: `docs/pr-health-baseline.md`, `docs/pr-health.md`. Stages 2/3 and real
+end-to-end alert acceptance are pending. Three PRs requested; none may auto-merge.

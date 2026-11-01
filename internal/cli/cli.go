@@ -54,6 +54,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		err = fleetCommand(stdout, args[1:])
 	case "branch-contract":
 		err = branchContractCommand(stdout, args[1:])
+	case "pr-health":
+		err = prHealthCommand(stdout, args[1:])
 	case "pr-lifecycle":
 		err = prLifecycleCommand(stdout, args[1:])
 	case "doctor":
@@ -131,7 +133,7 @@ func doctor(w io.Writer, args []string) error {
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
-	info := map[string]any{"status": "ok", "mode": "read-only", "serverRequired": false, "databaseRequired": false, "commands": []string{"agent-context", "apply-plan", "audit", "branch-contract", "doctor", "explain", "fleet", "graph", "init", "inspect", "migrate", "plan", "pr-lifecycle", "provider", "repair", "rollout", "static-check", "status", "version"}}
+	info := map[string]any{"status": "ok", "mode": "read-only", "serverRequired": false, "databaseRequired": false, "commands": []string{"agent-context", "apply-plan", "audit", "branch-contract", "doctor", "explain", "fleet", "graph", "init", "inspect", "migrate", "plan", "pr-health", "pr-lifecycle", "provider", "repair", "rollout", "static-check", "status", "version"}}
 	return write(w, format, info, humanDoctor)
 }
 
