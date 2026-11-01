@@ -136,7 +136,9 @@ func Scan(ctx context.Context, client *github.Bound, manifest *fleet.Manifest) R
 					}
 				}
 				if p.Status == "MISSING" || p.Status == "UNKNOWN" || p.Status == "SKIPPED" {
-					addIncident(&report, Incident{Repository: repo, Number: p.Number, SHA: p.SHA, Identity: "pr:" + p.Status, Check: p.Status, Category: "UNCLASSIFIED", URL: fmt.Sprintf("https://github.com/%s/pull/%d", repo, p.Number)})
+					// Evidence carries the failure code so the alert body can
+					// disclose monitoring capability gaps (e.g. API_PERMISSION).
+					addIncident(&report, Incident{Repository: repo, Number: p.Number, SHA: p.SHA, Identity: "pr:" + p.Status, Check: p.Status, Category: "UNCLASSIFIED", Evidence: p.Error, URL: fmt.Sprintf("https://github.com/%s/pull/%d", repo, p.Number)})
 				}
 				result.Pulls = append(result.Pulls, p)
 			}
@@ -175,7 +177,7 @@ func Scan(ctx context.Context, client *github.Bound, manifest *fleet.Manifest) R
 		}
 		if !result.Complete {
 			report.Complete = false
-			addIncident(&report, Incident{Repository: repo, Identity: "SCAN_INCOMPLETE", Check: "SCAN_INCOMPLETE", Category: "UNCLASSIFIED"})
+			addIncident(&report, Incident{Repository: repo, Identity: "SCAN_INCOMPLETE", Check: "SCAN_INCOMPLETE", Category: "UNCLASSIFIED", Evidence: result.Error})
 		}
 		report.Repositories = append(report.Repositories, result)
 	}

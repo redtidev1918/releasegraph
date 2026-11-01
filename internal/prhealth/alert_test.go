@@ -337,3 +337,16 @@ func TestAlertRejectsOversizedBody(t *testing.T) {
 		t.Fatal("failed alert mutated persistent state")
 	}
 }
+
+func TestAlertBodyDisclosesCapabilityGaps(t *testing.T) {
+	state := AlertState{At: time.Now().UTC(), Complete: false, Incidents: map[string]*IncidentRecord{
+		incidentA().Fingerprint(): {Incident: func() Incident { i := incidentA(); i.Evidence = "API_PERMISSION"; return i }(), FirstSeen: time.Now().UTC(), LastSeen: time.Now().UTC(), Episode: 1},
+	}}
+	body := alertBody(state, Report{SchemaVersion: 1, StartedAt: state.At, Status: "DEGRADED"})
+	if !strings.Contains(body, "Monitoring capability gaps") || !strings.Contains(body, "Administration") {
+		t.Fatal("capability gap not disclosed in alert body")
+	}
+	if !strings.Contains(body, "API_PERMISSION") {
+		t.Fatal("failure code missing from alert body")
+	}
+}
