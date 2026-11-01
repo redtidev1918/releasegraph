@@ -62,3 +62,9 @@ end-to-end alert acceptance are pending. Three PRs requested; none may auto-merg
 持久化(首次/最近发现、事件周期、恢复日志、幂等通知、超长拒绝、读写凭据分离)。
 测试含权限降级、生命周期、事件周期、重试不重复通知。Administration 为人工阻断
 (App 所有者授权),系统按降级模式持续运行。
+
+## 2026-11-01 告警 E2E 进行中
+
+真实标记 Issue #120 已创建(65 事件,真实失败+权限降级如实混排)。发现 pr:UNKNOWN
+事件缺 Evidence 代码 → 能力缺口章节缺失;分支 feat/fleet-health-incident-evidence
+补上并加披露回归。合并后下一次扫描同时验证去重(同指纹应零新通知)。
