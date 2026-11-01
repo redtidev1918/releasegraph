@@ -31,3 +31,10 @@ fleet-audit 生成的根 STATUS.md / status.json 的 HEALTHY 来自
 正确路径是控制仓既有工作流（`provider-operations.yml` 等，先
 `apply=false`）或人工提供凭据；把普通 `gh` 登录当作 fleet token 使用、
 或从 runner 提取 Actions secret，都是被明确禁止的捷径。
+
+## L-5 Verify community claims against the pinned source (2026-11-01)
+
+buluma/github-monitor README said vanilla JS/no DB, but f9a717b uses Svelte and
+SQLite; the page failed with effect_orphan while its API found all 31 baseline
+PRs. UI success, scan coverage and reliable alert delivery require separate
+checks. Several API catch blocks return empty arrays, so it cannot decide health.
