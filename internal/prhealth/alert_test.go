@@ -20,7 +20,15 @@ func incidentA() Incident {
 	return Incident{Repository: "o/r", Number: 1, SHA: "sha-a", Identity: "github-actions:42:test", Check: "test", Category: "CI_CONFIGURATION", URL: "https://example/check"}
 }
 
+// scanAt synthesizes a report whose repositories mirror the incidents: each
+// incident's pull is discovered and fully observed (green after resolution).
+// degraded adds a pull whose verdict could not be verified (permission gap)
+// while its checks were still fully observed.
 func scanAt(start time.Time, complete bool, incidents ...Incident) Report {
+	return scanObserving(start, complete, nil, incidents...)
+}
+
+func scanObserving(start time.Time, complete bool, degraded []Pull, incidents ...Incident) Report {
 	r := Report{SchemaVersion: 1, StartedAt: start, FinishedAt: start.Add(time.Minute), Status: "FAIL", Complete: complete, Incidents: map[string]Incident{}}
 	if len(incidents) == 0 {
 		r.Status = "PASS"
@@ -28,13 +36,44 @@ func scanAt(start time.Time, complete bool, incidents ...Incident) Report {
 	for _, i := range incidents {
 		r.Incidents[i.Fingerprint()] = i
 	}
+	repos := map[string]*Repository{}
+	ensure := func(name string) *Repository {
+		if repo, ok := repos[name]; ok {
+			return repo
+		}
+		repo := &Repository{Name: name, Complete: true, Discovered: true, Pulls: []Pull{}}
+		repos[name] = repo
+		return repo
+	}
+	for _, i := range incidents {
+		repo := ensure(i.Repository)
+		repo.Pulls = append(repo.Pulls, Pull{Number: i.Number, SHA: i.SHA, Status: "FAIL", ChecksObserved: true})
+	}
+	for _, p := range degraded {
+		repo := ensure("o/r")
+		repo.Pulls = append(repo.Pulls, p)
+	}
+	if len(repos) == 0 {
+		ensure("o/r")
+	}
+	for _, repo := range repos {
+		r.Repositories = append(r.Repositories, *repo)
+	}
 	return r
+}
+
+func degradedPull(sha string) Pull {
+	return Pull{Number: 1, SHA: sha, Status: "UNKNOWN", Error: "API_PERMISSION", ChecksObserved: true}
 }
 
 func TestNextStateEpisodesAndRecovery(t *testing.T) {
 	t1 := time.Now().UTC().Add(-3 * time.Hour)
 	t2 := t1.Add(time.Hour)
 	t3 := t2.Add(time.Hour)
+	t32 := t3.Add(10 * time.Minute)
+	t33 := t3.Add(20 * time.Minute)
+	t34 := t3.Add(30 * time.Minute)
+	t35 := t3.Add(40 * time.Minute)
 	t4 := t3.Add(time.Hour)
 	t5 := t4.Add(time.Hour)
 
@@ -53,25 +92,65 @@ func TestNextStateEpisodesAndRecovery(t *testing.T) {
 	}
 	state = plan.State
 
-	// An incomplete scan neither recovers nor overwrites confirmed health.
-	plan, err = NextState(state, scanAt(t3, false))
+	// A scan that failed to look at the incident's own repository (here: an
+	// undiscovered repository in an overall incomplete scan) neither recovers
+	// nor overwrites confirmed health.
+	unobserved := scanAt(t3, false)
+	unobserved.Repositories[0].Discovered = false
+	plan, err = NextState(state, unobserved)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if plan.Active != 1 || len(plan.Recovered) != 0 {
-		t.Fatalf("incomplete scan recovered incidents: %+v", plan)
+		t.Fatalf("unobserving scan recovered incidents: %+v", plan)
 	}
 	if rec := plan.State.Incidents[incidentA().Fingerprint()]; !rec.LastSeen.Equal(t2) {
-		t.Fatalf("incomplete scan rewrote last-seen: %+v", rec)
+		t.Fatalf("unobserving scan rewrote last-seen: %+v", rec)
+	}
+	state = plan.State
+
+	// Degraded elsewhere must not freeze recovery: an overall-incomplete scan
+	// whose own pull was fully observed (checks green after a fix) resolves
+	// the incident even though another pull stays permission-degraded.
+	degradedScan := scanObserving(t32, false, []Pull{degradedPull("other-sha")})
+	plan, err = NextState(state, degradedScan)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plan.Active != 0 || len(plan.Recovered) != 1 {
+		t.Fatalf("observed recovery blocked by unrelated degradation: %+v", plan)
+	}
+	state = plan.State
+
+	// A permission-degraded verdict freezes only same-head verdict incidents;
+	// a check incident on a fully observed head still resolves, and a newer
+	// head retires the old fingerprint.
+	frozen := scanObserving(t33, true, []Pull{degradedPull("sha-a")})
+	frozen.Incidents[Incident{Repository: "o/r", Number: 1, SHA: "sha-a", Identity: "pr:UNKNOWN"}.Fingerprint()] = Incident{Repository: "o/r", Number: 1, SHA: "sha-a", Identity: "pr:UNKNOWN", Check: "UNKNOWN"}
+	plan, err = NextState(AlertState{}, frozen)
+	if err != nil || plan.Active != 1 {
+		t.Fatalf("degraded scan setup wrong: %+v err=%v", plan, err)
+	}
+	resolved := scanObserving(t34, true, []Pull{degradedPull("sha-a")})
+	plan, err = NextState(plan.State, resolved)
+	if err != nil || plan.Active != 1 || len(plan.Recovered) != 0 {
+		t.Fatalf("same-head unknown verdict must stay frozen: %+v err=%v", plan, err)
+	}
+	moved := scanObserving(t35, true, []Pull{degradedPull("sha-b")})
+	plan, err = NextState(plan.State, moved)
+	if err != nil || plan.Active != 0 || len(plan.Recovered) != 1 {
+		t.Fatalf("superseding head must retire the old fingerprint: %+v err=%v", plan, err)
 	}
 	state = plan.State
 
 	plan, err = NextState(state, scanAt(t4, true))
-	if err != nil || plan.Active != 0 || len(plan.Recovered) != 1 || !plan.State.Complete {
+	if err != nil || plan.Active != 0 || len(plan.Recovered) != 0 {
 		t.Fatalf("recovery failed: %+v err=%v", plan, err)
 	}
-	if plan.Recovered[0].FirstSeen.Format(time.RFC3339) != t1.Format(time.RFC3339) {
-		t.Fatalf("recovery lost first-seen: %+v", plan.Recovered[0])
+	state = AlertState{At: t2, Incidents: map[string]*IncidentRecord{incidentA().Fingerprint(): {Incident: incidentA(), FirstSeen: t1, LastSeen: t2, Episode: 1}}, Recovered: nil}
+	plan, err = NextState(state, scanAt(t4, true))
+	if err != nil || plan.Active != 0 || len(plan.Recovered) != 1 || plan.Recovered[0].FirstSeen.Format(time.RFC3339) != t1.Format(time.RFC3339) {
+		t.Fatalf("recovery failed: %+v err=%v", plan, err)
 	}
 	state = plan.State
 

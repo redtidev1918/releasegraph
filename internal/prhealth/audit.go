@@ -57,6 +57,7 @@ type Pull struct {
 	Draft          bool             `json:"draft"`
 	Mergeable      string           `json:"mergeable"`
 	Status         string           `json:"status"`
+	ChecksObserved bool             `json:"checks_observed"`
 	Checks         []Check          `json:"checks"`
 	Required       []string         `json:"required"`
 	Runs           []map[string]any `json:"runs"`
@@ -66,6 +67,7 @@ type Pull struct {
 type Repository struct {
 	Name              string `json:"name"`
 	Complete          bool   `json:"complete"`
+	Discovered        bool   `json:"discovered"`
 	Error             string `json:"error,omitempty"`
 	Pulls             []Pull `json:"pulls"`
 	Dependabot        string `json:"dependabot,omitempty"`
@@ -114,6 +116,9 @@ func Scan(ctx context.Context, client *github.Bound, manifest *fleet.Manifest) R
 			result.Complete = false
 			result.Error = FailureCode(err)
 		} else {
+			// Discovery succeeded: this repository's open-PR set is the
+			// authority for which pull requests still exist.
+			result.Discovered = true
 			for _, pr := range pulls {
 				p := Pull{Number: pr.Number, Title: pr.Title, Author: pr.User.Login, Branch: pr.Head.Ref, SHA: pr.Head.Sha, CreatedAt: pr.CreatedAt, UpdatedAt: pr.UpdatedAt, Draft: pr.Draft, Status: "UNKNOWN"}
 				prctx, cancel := context.WithTimeout(repoctx, 2*time.Minute)
@@ -397,6 +402,10 @@ func observe(ctx context.Context, c *github.Bound, repo, base string, p *Pull) e
 	for i := range p.Checks {
 		p.Checks[i].Health = checkState(p.Checks[i])
 	}
+	// The check evidence above is complete and count-verified; failures from
+	// here on (required-check evidence needs the administration permission)
+	// must not strip recovery authority from the checks already observed.
+	p.ChecksObserved = true
 	// Required-check evidence is collected after the checks themselves so a
 	// permission failure here leaves the observed checks in the report while
 	// the pull request degrades to UNKNOWN. Absence of evidence is never a

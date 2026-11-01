@@ -62,36 +62,110 @@ type AlertPlan struct {
 	State       AlertState       `json:"state"`
 }
 
+// observationAuthority records, per pull request, what a scan actually
+// observed. Recovery of an incident is decided by the evidence quality of its
+// own repository and pull request — a monitoring failure elsewhere (or a
+// permission gap on another aspect of the same pull request) must not freeze
+// unrelated confirmed health, and confirmed health must not be cleared by a
+// scan that failed to look at it.
+type pullObservation struct {
+	present         bool
+	checksObserved  bool // check rollup, runs and classification fully observed
+	verdictObserved bool // definitive verdict (no observation error)
+	sha             string
+}
+
+type observationAuthority struct {
+	discovered map[string]bool
+	pulls      map[string]pullObservation
+}
+
+func observationKey(repo string, number int) string {
+	return fmt.Sprintf("%s#%d", repo, number)
+}
+
+func authorityFrom(r Report) observationAuthority {
+	a := observationAuthority{
+		discovered: map[string]bool{},
+		pulls:      map[string]pullObservation{},
+	}
+	for _, repo := range r.Repositories {
+		a.discovered[repo.Name] = repo.Discovered
+		for _, p := range repo.Pulls {
+			a.pulls[observationKey(repo.Name, p.Number)] = pullObservation{
+				present:         true,
+				checksObserved:  p.ChecksObserved,
+				verdictObserved: p.Error == "",
+				sha:             p.SHA,
+			}
+		}
+	}
+	return a
+}
+
+// canRecover reports whether this scan authoritatively resolved the incident.
+func (a observationAuthority) canRecover(i Incident) bool {
+	if discovered, ok := a.discovered[i.Repository]; !ok || !discovered {
+		// The scan could not even establish this repository's open-PR set.
+		return false
+	}
+	if i.Identity == "SCAN_INCOMPLETE" {
+		// Repository-level degradation: resolved once discovery succeeds and
+		// the scan no longer reports it.
+		return true
+	}
+	obs, present := a.pulls[observationKey(i.Repository, i.Number)]
+	if !present {
+		// Discovered repository, absent pull: merged or closed. Its head
+		// cannot come back through this pull request.
+		return true
+	}
+	superseded := obs.sha != i.SHA
+	if strings.HasPrefix(i.Identity, "pr:") {
+		// Pull-verdict incidents: a definitive verdict resolves the question,
+		// on this head or a superseding one. An unknown verdict freezes the
+		// same head; a superseding head with fully observed checks also
+		// resolves it, because the old head no longer exists.
+		return obs.verdictObserved || (obs.checksObserved && superseded)
+	}
+	// Check-identity incidents: fully observed checks on this head mean this
+	// check no longer fails; any superseding head retires the old fingerprint.
+	return obs.checksObserved || (obs.verdictObserved && superseded)
+}
+
 // NextState folds a scan report into the previous alert state.
 //
-// A complete scan resolves incidents (recording recovery); an incomplete scan
-// never recovers anything and never lets a monitoring failure overwrite
-// already-confirmed health: unobserved incidents keep their record untouched.
-// A fingerprint that reappears after recovery starts a new episode and
-// notifies again.
+// Recovery requires an authoritative observation of the incident's own
+// repository and pull request (see observationAuthority); anything the scan
+// failed to observe keeps its record untouched, so a monitoring failure can
+// neither clear confirmed health nor be cleared by stale data. A fingerprint
+// that reappears after recovery starts a new episode and notifies again.
 func NextState(previous AlertState, r Report) (*AlertPlan, error) {
 	if !previous.At.IsZero() && !r.StartedAt.After(previous.At) {
 		return nil, fmt.Errorf("stale scan cannot replace alert state")
 	}
 	now := r.StartedAt
+	authority := authorityFrom(r)
 	next := AlertState{At: now, Complete: r.Complete, Incidents: map[string]*IncidentRecord{}, Recovered: previous.Recovered}
 	plan := &AlertPlan{State: next}
 	for fp, rec := range previous.Incidents {
 		next.Incidents[fp] = rec
 	}
-	if r.Complete {
-		for fp, rec := range previous.Incidents {
-			if _, still := r.Incidents[fp]; !still {
-				recovered := RecoveryRecord{
-					Fingerprint: fp, Incident: rec.Incident,
-					FirstSeen: rec.FirstSeen, LastSeen: rec.LastSeen,
-					Episode: rec.Episode, RecoveredAt: now,
-				}
-				plan.Recovered = append(plan.Recovered, recovered)
-				next.Recovered = append([]RecoveryRecord{recovered}, next.Recovered...)
-				delete(next.Incidents, fp)
-			}
+	for fp, rec := range previous.Incidents {
+		if _, still := r.Incidents[fp]; still {
+			continue
 		}
+		if !authority.canRecover(rec.Incident) {
+			continue
+		}
+		recovered := RecoveryRecord{
+			Fingerprint: fp, Incident: rec.Incident,
+			FirstSeen: rec.FirstSeen, LastSeen: rec.LastSeen,
+			Episode: rec.Episode, RecoveredAt: now,
+		}
+		plan.Recovered = append(plan.Recovered, recovered)
+		next.Recovered = append([]RecoveryRecord{recovered}, next.Recovered...)
+		delete(next.Incidents, fp)
 	}
 	fingerprints := make([]string, 0, len(r.Incidents))
 	for fp := range r.Incidents {
