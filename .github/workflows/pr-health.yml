@@ -30,6 +30,9 @@ jobs:
           permission-pull-requests: read
           permission-actions: read
           permission-checks: read
+          # Branch protection and active rulesets live under the administration
+          # permission; required-check evidence is incomplete without it.
+          permission-administration: read
       - name: Audit current PR heads
         env:
           RELEASEGRAPH_FLEET_TOKEN: ${{ steps.reader.outputs.token }}
