@@ -45,3 +45,13 @@
 用户授权后以 docs 提交（单提交单关注点）推送至 `origin/main`。
 无其他文件改动；推送前按 AGENTS.md 跑完三查，
 `dist/release/RELEASE-METADATA.json` 无差异入库。
+
+## 2026-11-01 转向社区方案试用
+
+用户在实现途中明确要求优先试用 buluma/github-monitor，ReleaseGraph 保持已有发布治理职责。已停止自建监控开发。
+
+- 独立 worktree：`/Users/hezzn/.codex/worktrees/f2e9/worktrees/releasegraph-fleet-pr-health`，分支 `codex/fleet-pr-health`。
+- 编码前计划提交 `39eeacb`；未推送、未创建 PR、未变更 GitHub release/PR/Issue。
+- 工作区留有未完成 Go 原型（GitHub read/query retry、prhealth scan/alert），不能视为可交付功能；尚无完整测试、CLI、workflow 或真实告警验收。
+- 基线：`/tmp/releasegraph-pr-health-evidence/baseline.json`，15 个 enabled 仓库、31 个 open PR；使用普通 gh 只读盘点，不代表 fleet App 权限已验证。
+- 后续试用独立社区工具；保留上述工作区以免丢失上下文，不合入主线。
