@@ -68,3 +68,10 @@ end-to-end alert acceptance are pending. Three PRs requested; none may auto-merg
 真实标记 Issue #120 已创建(65 事件,真实失败+权限降级如实混排)。发现 pr:UNKNOWN
 事件缺 Evidence 代码 → 能力缺口章节缺失;分支 feat/fleet-health-incident-evidence
 补上并加披露回归。合并后下一次扫描同时验证去重(同指纹应零新通知)。
+
+## 2026-11-01 恢复权威粒度重构
+
+恢复不再以「整次扫描 complete」为前提(该前提在用户选择不授予 Administration 的
+长期降级姿态下会永久冻结一切恢复、堆积已解决事件)。现按事件自身的观测质量判定:
+仓库发现成功即权威;check 事件在其 PR 的 checks 证据完整收集时即可恢复;pr:verdict
+事件需确定性判定或被完整观测的新 head 取代;观测失败的 PR 冻结自身事件,不影响别处。
