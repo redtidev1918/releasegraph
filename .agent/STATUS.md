@@ -75,3 +75,11 @@ end-to-end alert acceptance are pending. Three PRs requested; none may auto-merg
 长期降级姿态下会永久冻结一切恢复、堆积已解决事件)。现按事件自身的观测质量判定:
 仓库发现成功即权威;check 事件在其 PR 的 checks 证据完整收集时即可恢复;pr:verdict
 事件需确定性判定或被完整观测的新 head 取代;观测失败的 PR 冻结自身事件,不影响别处。
+
+## 2026-11-01 Fleet Health 全生命周期验收完成
+
+真实 E2E(生产系统):Issue #120 创建(65 事件)→ 二次扫描零重复通知(去重)→
+探针 PR #123 同 SHA 翻转(工作流门禁读标记 Issue 标题)→ 失败捕获(新事件+通知)→
+恢复记录(恢复评论+恢复日志)→ 复发 episode 2 重新通知 → 探针关闭恢复绿色。
+Administration 缺口在告警正文如实披露(API_PERMISSION 章节含解决方式)。
+恢复权威按事件观测粒度判定(#122),降级姿态下真实修复可被记录。

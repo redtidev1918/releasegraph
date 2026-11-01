@@ -26,3 +26,6 @@
 | RG-FH3 | Scheduled workflow, artifacts, community/Dependabot guidance, E2E | TODO | Depends on RG-FH2; no automatic merge |
 
 | RG-FH2 | Persistent single Issue, deduplication and recovery | IN_PROGRESS | feat/fleet-pr-health-alerts;待真实 E2E |
+
+| RG-FH2 | Persistent single Issue, deduplication and recovery | DONE | 生产验收全链路 |
+| RG-FH3 | Scheduled workflow + artifacts + E2E | DONE(验收完成) | cron 每小时 23 分;E2E 用临时探针 #123 |
