@@ -60,7 +60,11 @@ func TestEvidenceClassification(t *testing.T) {
 	}
 }
 
-func fixtureClient(t *testing.T, broken bool) *github.Bound {
+// fixtureClient serves a two-PR repository. broken corrupts check pagination;
+// guardedBranch makes the branch-protection GraphQL query fail with a
+// permission error, as happens without the administration permission;
+// guardedRules does the same for the REST rulesets endpoint.
+func fixtureClient(t *testing.T, broken, guardedBranch, guardedRules bool) *github.Bound {
 	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "outside") {
@@ -85,15 +89,27 @@ func fixtureClient(t *testing.T, broken bool) *github.Bound {
 				fmt.Fprint(w, `{"data":{"repository":{"pullRequests":{"totalCount":2}}}}`)
 				return
 			}
+			if strings.Contains(payload.Query, "RequiredContexts") {
+				if guardedBranch {
+					w.WriteHeader(403)
+					return
+				}
+				fmt.Fprint(w, `{"data":{"repository":{"ref":{"branchProtectionRule":{"requiredStatusCheckContexts":["test"]}}}}}`)
+				return
+			}
 			n := int(payload.Variables["number"].(float64))
 			total := 1
 			if broken {
 				total = 2
 			}
-			fmt.Fprintf(w, `{"data":{"repository":{"pullRequest":{"headRefOid":"sha","mergeable":"MERGEABLE","baseRef":{"branchProtectionRule":{"requiredStatusCheckContexts":["test"]}},"commits":{"nodes":[{"commit":{"oid":"sha","statusCheckRollup":{"contexts":{"totalCount":%d,"pageInfo":{"hasNextPage":false,"endCursor":null},"nodes":[{"id":"check%d","name":"test","status":"COMPLETED","conclusion":"FAILURE","isRequired":true,"detailsUrl":"https://github.com/o/good/actions/runs/1"}]}}}}]}}}}}`, total, n)
+			fmt.Fprintf(w, `{"data":{"repository":{"pullRequest":{"headRefOid":"sha","baseRefOid":"basesha","baseRefName":"main","mergeable":"MERGEABLE","commits":{"nodes":[{"commit":{"oid":"sha","statusCheckRollup":{"contexts":{"totalCount":%d,"pageInfo":{"hasNextPage":false,"endCursor":null},"nodes":[{"id":"check%d","name":"test","status":"COMPLETED","conclusion":"FAILURE","isRequired":true,"detailsUrl":"https://github.com/o/good/actions/runs/1"}]}}}}]}}}}}`, total, n)
 		case strings.HasSuffix(r.URL.Path, "/pulls"):
 			fmt.Fprint(w, `[{"number":1,"title":"dep1","user":{"login":"dependabot[bot]"},"head":{"ref":"dep1","sha":"sha"},"base":{"ref":"main"}},{"number":2,"title":"dep2","user":{"login":"dependabot[bot]"},"head":{"ref":"dep2","sha":"sha"},"base":{"ref":"main"}}]`)
 		case strings.Contains(r.URL.Path, "/rules/"):
+			if guardedRules {
+				w.WriteHeader(403)
+				return
+			}
 			fmt.Fprint(w, `[]`)
 		case strings.HasSuffix(r.URL.Path, "/actions/runs"):
 			fmt.Fprint(w, `{"total_count":0,"workflow_runs":[]}`)
@@ -110,7 +126,7 @@ func fixtureClient(t *testing.T, broken bool) *github.Bound {
 func TestScanIncludesDependabotAndIsolatesRepositories(t *testing.T) {
 	disabled := false
 	m := &fleet.Manifest{Version: 1, Repositories: []fleet.ManifestEntry{{Name: "o/bad"}, {Name: "o/good"}, {Name: "o/outside", Enabled: &disabled}}}
-	r := Scan(context.Background(), fixtureClient(t, false), m)
+	r := Scan(context.Background(), fixtureClient(t, false, false, false), m)
 	if r.Complete || r.Status != "DEGRADED" || len(r.Repositories) != 2 {
 		t.Fatalf("%+v", r)
 	}
@@ -121,14 +137,49 @@ func TestScanIncludesDependabotAndIsolatesRepositories(t *testing.T) {
 	if good.Pulls[0].Author != "dependabot[bot]" {
 		t.Fatal("dependabot omitted")
 	}
+	if good.Pulls[0].Required[0] != "test" {
+		t.Fatalf("required contexts missing: %+v", good.Pulls[0].Required)
+	}
 	if len(r.Incidents) != 3 {
 		t.Fatalf("%+v", r.Incidents)
 	}
 }
 func TestIncompleteChecksNeverPass(t *testing.T) {
-	r := Scan(context.Background(), fixtureClient(t, true), &fleet.Manifest{Version: 1, Repositories: []fleet.ManifestEntry{{Name: "o/good"}}})
+	r := Scan(context.Background(), fixtureClient(t, true, false, false), &fleet.Manifest{Version: 1, Repositories: []fleet.ManifestEntry{{Name: "o/good"}}})
 	if r.Complete || r.Status != "DEGRADED" || r.Repositories[0].Pulls[0].Status != "UNKNOWN" {
 		t.Fatalf("%+v", r)
+	}
+}
+
+// A branch-protection permission failure must degrade the pull request to
+// UNKNOWN without discarding the check evidence already collected.
+func TestGuardedBranchProtectionKeepsCheckEvidence(t *testing.T) {
+	for name, guarded := range map[string]struct{ branch, rules bool }{
+		"graphql branch protection": {true, false},
+		"rest rulesets":             {false, true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			r := Scan(context.Background(), fixtureClient(t, false, guarded.branch, guarded.rules), &fleet.Manifest{Version: 1, Repositories: []fleet.ManifestEntry{{Name: "o/good"}}})
+			if r.Complete || r.Status != "DEGRADED" {
+				t.Fatalf("%+v", r)
+			}
+			pull := r.Repositories[0].Pulls[0]
+			if pull.Status != "UNKNOWN" || pull.Error != "API_PERMISSION" {
+				t.Fatalf("pull did not degrade honestly: %+v", pull)
+			}
+			if len(pull.Checks) != 1 || pull.Checks[0].Name != "test" {
+				t.Fatalf("check evidence lost: %+v", pull.Checks)
+			}
+			found := false
+			for _, i := range r.Incidents {
+				if i.Repository == "o/good" && i.Number == 1 && i.Check == "test" && i.Category != "" {
+					found = true
+				}
+			}
+			if !found {
+				t.Fatalf("failed-check incident lost: %+v", r.Incidents)
+			}
+		})
 	}
 }
 

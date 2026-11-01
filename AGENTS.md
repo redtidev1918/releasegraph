@@ -135,4 +135,7 @@ observes PR checks independently of lifecycle/release health. Only enabled
 manifest entries are scanned; missing/unknown/incomplete evidence never passes.
 Use the fleet App read token; do not substitute an ordinary gh login. Community
 dashboards are optional observers, never dependencies or incident authority.
-See `docs/pr-health.md`. No automatic merge or closure belongs to this feature.
+`pr-health alert --report ... --apply` persists incidents on the single marked
+control-repository issue with the repository token, never the fleet token; it
+plans by default. See `docs/pr-health.md`. No automatic merge or closure of
+business pull requests belongs to this feature.

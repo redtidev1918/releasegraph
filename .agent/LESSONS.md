@@ -38,3 +38,10 @@ buluma/github-monitor README said vanilla JS/no DB, but f9a717b uses Svelte and
 SQLite; the page failed with effect_orphan while its API found all 31 baseline
 PRs. UI success, scan coverage and reliable alert delivery require separate
 checks. Several API catch blocks return empty arrays, so it cannot decide health.
+
+## L-6 值拷贝快照与切片重赋值(2026-11-01)
+
+plan 结构体创建时值拷贝了 state;随后对 state.Recovered 的 append 重赋值不会
+反映到 plan.State,恢复日志静默丢失、复发周期算错。构造引用状态的对象后,返回
+前必须重新同步;测试必须覆盖"恢复后再复发"的完整链路才能暴露此类缺陷。
+夹具 JSON 少一个闭括号会以 unexpected end of JSON input 伪装成网络/权限问题。

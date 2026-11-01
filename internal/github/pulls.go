@@ -204,6 +204,18 @@ func (c *Client) ClosePullRequest(ctx context.Context, repo string, number int) 
 		map[string]string{"state": "closed"})
 }
 
+// UpdateIssue rewrites an issue body and optionally its state. It is how
+// persistent state advances on the single marked fleet-health issue; callers
+// keep their own copy until the update succeeds.
+func (c *Client) UpdateIssue(ctx context.Context, repo string, number int, body, state string) error {
+	payload := map[string]any{"body": body}
+	if state != "" {
+		payload["state"] = state
+	}
+	return c.mutate(ctx, http.MethodPatch,
+		fmt.Sprintf("repos/%s/issues/%d", repo, number), payload)
+}
+
 // mutateReturning performs a mutating call and decodes the response, for the
 // endpoints whose result is needed to continue (a created issue's number).
 func (c *Client) mutateReturning(ctx context.Context, method, path string, payload any, target any) error {

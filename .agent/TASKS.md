@@ -24,3 +24,5 @@
 | RG-FH1 | Read-only Fleet PR health audit and classification | IN_PROGRESS | docs/pr-health.md; internal/prhealth |
 | RG-FH2 | Persistent single Issue, deduplication and recovery | TODO | Depends on RG-FH1 |
 | RG-FH3 | Scheduled workflow, artifacts, community/Dependabot guidance, E2E | TODO | Depends on RG-FH2; no automatic merge |
+
+| RG-FH2 | Persistent single Issue, deduplication and recovery | IN_PROGRESS | feat/fleet-pr-health-alerts;待真实 E2E |

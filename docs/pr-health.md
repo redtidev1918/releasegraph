@@ -59,12 +59,42 @@ Dependabot, multiple failures, inaccessible repositories, incomplete pages,
 429/403/503 retries, cancellation, invalid/external pagination and credential
 separation. Run the repository's Go/Python/static checks before pushing.
 
+## Persistent incidents and alerting
+
+```
+releasegraph pr-health alert --report pr-health.json [--apply] [--repo owner/name]
+```
+
+The single marked issue in the control repository is the incident authority;
+its body embeds the serialized state. Plans by default; `--apply` is the
+explicit act. The write credential is the repository-scoped `GITHUB_TOKEN`
+of the control repository — the fleet token is refused, so scanning and
+alerting credentials never mix. Incident fingerprints are
+`repository + PR + head SHA + check identity`, so a new head or a different
+check opens a new incident while a changed diagnosis does not.
+
+Every incident carries first-seen and last-seen times and an episode counter.
+A complete scan resolves incidents (recovery comment, then the issue closes);
+an incomplete scan never recovers and never overwrites confirmed health.
+Recurrence after recovery opens a new episode and notifies again. Notification
+and recovery comments embed scan-timestamp markers, so retries after a partial
+write cannot double-notify. Multiple marked issues, oversized bodies and
+unreadable state abort without mutating anything.
+
+Administration is deliberately not requested for the scan token: the App
+installation does not have it. Required-check evidence then degrades per pull
+request to UNKNOWN (`API_PERMISSION`) while observed checks, workflow runs and
+classification stay in the report; the alert discloses the capability gap and
+its resolution instead of hiding it. Granting Administration: read-only to the
+App later upgrades evidence without code changes.
+
 ## Delivery state
 
-Stage 1 implements audit only. Persistent Issue state and scheduled delivery
-are separate reviewable stages. No schedule or real alert delivery is claimed
-by this stage. A live control-plane App scan and dedicated test-PR failure,
-deduplication and recovery are required before accepting the whole system.
+Audit (stage 1) and persistent alerting (stage 2) are implemented; the
+scheduled workflow runs the alert in plan mode until a dispatched run is
+reviewed, then `--apply` is the explicit follow-up. Real end-to-end acceptance
+— live alert creation, deduplication on a second scan, recovery closure and
+episode recurrence — is required before calling the system operational.
 
 Sources: [GitHub Checks GraphQL](https://docs.github.com/en/graphql/reference/checks),
 [branch protection](https://docs.github.com/en/rest/branches/branch-protection).

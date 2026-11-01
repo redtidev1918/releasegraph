@@ -1,0 +1,339 @@
+package prhealth
+
+import (
+	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/redtidev1918/releasegraph/internal/domain"
+	"github.com/redtidev1918/releasegraph/internal/github"
+)
+
+func incidentA() Incident {
+	return Incident{Repository: "o/r", Number: 1, SHA: "sha-a", Identity: "github-actions:42:test", Check: "test", Category: "CI_CONFIGURATION", URL: "https://example/check"}
+}
+
+func scanAt(start time.Time, complete bool, incidents ...Incident) Report {
+	r := Report{SchemaVersion: 1, StartedAt: start, FinishedAt: start.Add(time.Minute), Status: "FAIL", Complete: complete, Incidents: map[string]Incident{}}
+	if len(incidents) == 0 {
+		r.Status = "PASS"
+	}
+	for _, i := range incidents {
+		r.Incidents[i.Fingerprint()] = i
+	}
+	return r
+}
+
+func TestNextStateEpisodesAndRecovery(t *testing.T) {
+	t1 := time.Now().UTC().Add(-3 * time.Hour)
+	t2 := t1.Add(time.Hour)
+	t3 := t2.Add(time.Hour)
+	t4 := t3.Add(time.Hour)
+	t5 := t4.Add(time.Hour)
+
+	plan, err := NextState(AlertState{}, scanAt(t1, true, incidentA()))
+	if err != nil || len(plan.NewEpisodes) != 1 || plan.NewEpisodes[0].Episode != 1 || plan.Active != 1 {
+		t.Fatalf("first scan: %+v err=%v", plan, err)
+	}
+	state := plan.State
+
+	plan, err = NextState(state, scanAt(t2, true, incidentA()))
+	if err != nil || len(plan.NewEpisodes) != 0 || plan.Active != 1 {
+		t.Fatalf("repeat scan must not re-notify: %+v err=%v", plan, err)
+	}
+	if rec := plan.State.Incidents[incidentA().Fingerprint()]; !rec.LastSeen.Equal(t2) || !rec.FirstSeen.Equal(t1) {
+		t.Fatalf("seen timestamps wrong: %+v", rec)
+	}
+	state = plan.State
+
+	// An incomplete scan neither recovers nor overwrites confirmed health.
+	plan, err = NextState(state, scanAt(t3, false))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plan.Active != 1 || len(plan.Recovered) != 0 {
+		t.Fatalf("incomplete scan recovered incidents: %+v", plan)
+	}
+	if rec := plan.State.Incidents[incidentA().Fingerprint()]; !rec.LastSeen.Equal(t2) {
+		t.Fatalf("incomplete scan rewrote last-seen: %+v", rec)
+	}
+	state = plan.State
+
+	plan, err = NextState(state, scanAt(t4, true))
+	if err != nil || plan.Active != 0 || len(plan.Recovered) != 1 || !plan.State.Complete {
+		t.Fatalf("recovery failed: %+v err=%v", plan, err)
+	}
+	if plan.Recovered[0].FirstSeen.Format(time.RFC3339) != t1.Format(time.RFC3339) {
+		t.Fatalf("recovery lost first-seen: %+v", plan.Recovered[0])
+	}
+	state = plan.State
+
+	plan, err = NextState(state, scanAt(t5, true, incidentA()))
+	if err != nil || len(plan.NewEpisodes) != 1 || plan.NewEpisodes[0].Episode != 2 {
+		t.Fatalf("recurrence must open episode 2: %+v err=%v", plan, err)
+	}
+	if _, err := NextState(plan.State, scanAt(t5, true, incidentA())); err == nil {
+		t.Fatal("stale scan accepted")
+	}
+}
+
+// issueServer fakes the control repository's issue API with real state.
+type issueServer struct {
+	mu         sync.Mutex
+	issues     map[int]map[string]any
+	comments   map[int][]string
+	nextNumber int
+	failPatch  bool
+	t          *testing.T
+}
+
+func newIssueServer(t *testing.T, marked bool) (*issueServer, *github.Bound) {
+	t.Helper()
+	s := &issueServer{issues: map[int]map[string]any{}, comments: map[int][]string{}, nextNumber: 7, t: t}
+	if marked {
+		state, err := json.Marshal(AlertState{At: time.Now().UTC().Add(-2 * time.Hour), Complete: true, Incidents: map[string]*IncidentRecord{}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		s.issues[7] = map[string]any{"number": 7, "state": "closed", "title": "[Fleet Health] PR checks degraded",
+			"body": "old\n" + AlertMarker + encodeStateForTest(t, state) + " -->\n"}
+	}
+	srv := httptest.NewServer(http.HandlerFunc(s.handle))
+	t.Cleanup(srv.Close)
+	return s, github.NewForTest(srv.URL).Bind(domain.ExecutionContext{Scope: domain.ScopeRepository, Repository: "o/ctl"})
+}
+
+func encodeStateForTest(t *testing.T, raw []byte) string {
+	t.Helper()
+	return base64.StdEncoding.EncodeToString(raw)
+}
+
+func (s *issueServer) handle(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	path := r.URL.Path
+	switch {
+	case r.Method == http.MethodGet && strings.HasSuffix(path, "/comments"):
+		n := issueNumber(strings.TrimSuffix(path, "/comments"))
+		var out []map[string]any
+		for _, body := range s.comments[n] {
+			out = append(out, map[string]any{"body": body})
+		}
+		if out == nil {
+			out = []map[string]any{}
+		}
+		json.NewEncoder(w).Encode(out)
+	case r.Method == http.MethodPost && strings.HasSuffix(path, "/comments"):
+		var payload struct{ Body string }
+		json.NewDecoder(r.Body).Decode(&payload)
+		n := issueNumber(strings.TrimSuffix(path, "/comments"))
+		s.comments[n] = append(s.comments[n], payload.Body)
+		w.WriteHeader(201)
+		json.NewEncoder(w).Encode(map[string]any{"id": len(s.comments[n])})
+	case r.Method == http.MethodPost && strings.HasSuffix(path, "/issues"):
+		var payload struct {
+			Title string
+			Body  string
+		}
+		json.NewDecoder(r.Body).Decode(&payload)
+		s.nextNumber++
+		n := s.nextNumber
+		s.issues[n] = map[string]any{"number": n, "state": "open", "title": payload.Title, "body": payload.Body}
+		w.WriteHeader(201)
+		json.NewEncoder(w).Encode(map[string]any{"number": n})
+	case r.Method == http.MethodPatch:
+		if s.failPatch {
+			w.WriteHeader(422)
+			return
+		}
+		var payload struct {
+			Body  string
+			State string
+		}
+		json.NewDecoder(r.Body).Decode(&payload)
+		n := issueNumber(path)
+		issue, ok := s.issues[n]
+		if !ok {
+			w.WriteHeader(404)
+			return
+		}
+		if payload.Body != "" {
+			issue["body"] = payload.Body
+		}
+		if payload.State != "" {
+			issue["state"] = payload.State
+		}
+		json.NewEncoder(w).Encode(issue)
+	case r.Method == http.MethodGet && strings.HasSuffix(path, "/issues"):
+		var out []map[string]any
+		for _, n := range sortedIssueNumbers(s.issues) {
+			out = append(out, s.issues[n])
+		}
+		if out == nil {
+			out = []map[string]any{}
+		}
+		json.NewEncoder(w).Encode(out)
+	default:
+		s.t.Errorf("unexpected %s %s", r.Method, path)
+		w.WriteHeader(404)
+	}
+}
+
+func issueNumber(path string) int {
+	parts := strings.Split(strings.Trim(path, "/"), "/")
+	n := 0
+	fmt.Sscanf(parts[len(parts)-1], "%d", &n)
+	return n
+}
+
+func sortedIssueNumbers(issues map[int]map[string]any) []int {
+	numbers := make([]int, 0, len(issues))
+	for n := range issues {
+		numbers = append(numbers, n)
+	}
+	for i := 0; i < len(numbers); i++ {
+		for j := i + 1; j < len(numbers); j++ {
+			if numbers[j] < numbers[i] {
+				numbers[i], numbers[j] = numbers[j], numbers[i]
+			}
+		}
+	}
+	return numbers
+}
+
+func TestAlertPlanNeverWrites(t *testing.T) {
+	store, client := newIssueServer(t, false)
+	_, err := Alert(context.Background(), client, "o/ctl", scanAt(time.Now().UTC(), true, incidentA()), false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	store.mu.Lock()
+	defer store.mu.Unlock()
+	if len(store.issues) != 0 {
+		t.Fatal("plan mode wrote an issue")
+	}
+}
+
+func TestAlertLifecycle(t *testing.T) {
+	store, client := newIssueServer(t, false)
+	now := time.Now().UTC().Truncate(time.Second)
+
+	// 1. First failing scan creates the marked issue and notifies.
+	plan, err := Alert(context.Background(), client, "o/ctl", scanAt(now, true, incidentA()), true)
+	if err != nil || plan.Action != "create" || plan.Issue != 8 {
+		t.Fatalf("create: %+v err=%v", plan, err)
+	}
+	store.mu.Lock()
+	body := store.issues[8]["body"].(string)
+	store.mu.Unlock()
+	state, err := parseState(body)
+	if err != nil || len(state.Incidents) != 1 {
+		t.Fatalf("created body unreadable: %v", err)
+	}
+	if !strings.Contains(body, "API") && !strings.Contains(body, incidentA().Category) {
+		t.Fatal("created body lost incident detail")
+	}
+
+	// 2. Same incident again: update only, no duplicate notification.
+	later := now.Add(time.Hour)
+	plan, err = Alert(context.Background(), client, "o/ctl", scanAt(later, true, incidentA()), true)
+	if err != nil || plan.Action != "update" || len(plan.NewEpisodes) != 0 {
+		t.Fatalf("repeat: %+v err=%v", plan, err)
+	}
+	store.mu.Lock()
+	if len(store.comments[8]) != 0 {
+		t.Fatal("repeat scan notified again")
+	}
+	store.mu.Unlock()
+
+	// 3. Recovery: comment once and close the issue.
+	recovered := later.Add(time.Hour)
+	plan, err = Alert(context.Background(), client, "o/ctl", scanAt(recovered, true), true)
+	if err != nil || plan.Action != "close" || len(plan.Recovered) != 1 {
+		t.Fatalf("recovery: %+v err=%v", plan, err)
+	}
+	store.mu.Lock()
+	if len(store.comments[8]) != 1 || !strings.Contains(store.comments[8][0], recoveredMarker) {
+		t.Fatalf("recovery comment wrong: %q", store.comments[8])
+	}
+	if store.issues[8]["state"] != "closed" {
+		t.Fatal("issue not closed on recovery")
+	}
+	store.mu.Unlock()
+
+	// 4. Recurrence: episode 2, new notification, issue reopened.
+	recurrence := recovered.Add(time.Hour)
+	store.failPatch = true
+	_, err = Alert(context.Background(), client, "o/ctl", scanAt(recurrence, true, incidentA()), true)
+	if err == nil {
+		t.Fatal("injected update failure must surface")
+	}
+	store.mu.Lock()
+	posted := len(store.comments[8])
+	store.mu.Unlock()
+	if posted != 2 {
+		t.Fatalf("notification missing before failed update: %d", posted)
+	}
+	store.failPatch = false
+	plan, err = Alert(context.Background(), client, "o/ctl", scanAt(recurrence, true, incidentA()), true)
+	if err != nil || len(plan.NewEpisodes) != 1 || plan.NewEpisodes[0].Episode != 2 {
+		t.Fatalf("recurrence: %+v err=%v", plan, err)
+	}
+	store.mu.Lock()
+	if len(store.comments[8]) != 2 {
+		t.Fatal("retry duplicated the notification comment")
+	}
+	if !strings.Contains(store.comments[8][1], "episode 2") {
+		t.Fatalf("recurrence comment lacks episode: %q", store.comments[8][1])
+	}
+	if store.issues[8]["state"] != "open" {
+		t.Fatal("closed issue not reopened on recurrence")
+	}
+	finalBody := store.issues[8]["body"].(string)
+	store.mu.Unlock()
+	final, err := parseState(finalBody)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rec := final.Incidents[incidentA().Fingerprint()]
+	if rec == nil || rec.Episode != 2 || !rec.FirstSeen.Equal(recurrence) {
+		t.Fatalf("final state wrong: %+v", rec)
+	}
+	if len(final.Recovered) != 1 {
+		t.Fatalf("recovery log lost: %+v", final.Recovered)
+	}
+}
+
+func TestAlertRefusesAmbiguousIssues(t *testing.T) {
+	store, client := newIssueServer(t, true)
+	store.mu.Lock()
+	store.issues[9] = map[string]any{"number": 9, "state": "open", "body": store.issues[7]["body"]}
+	store.mu.Unlock()
+	if _, err := Alert(context.Background(), client, "o/ctl", scanAt(time.Now().UTC(), true, incidentA()), true); err == nil {
+		t.Fatal("ambiguous marked issues accepted")
+	}
+}
+
+func TestAlertRejectsOversizedBody(t *testing.T) {
+	store, client := newIssueServer(t, true)
+	many := make([]Incident, 0, 500)
+	for i := 0; i < 500; i++ {
+		many = append(many, Incident{Repository: "o/very-long-repository-name", Number: 10000 + i, SHA: "0123456789abcdef0123456789abcdef01234567", Identity: fmt.Sprintf("github-actions:%d:workflow-check-with-a-long-name-%d", i, i), Check: "workflow check", Category: "CI_CONFIGURATION", URL: "https://example.com/very/long/evidence/url"})
+	}
+	_, err := Alert(context.Background(), client, "o/ctl", scanAt(time.Now().UTC(), true, many...), true)
+	if err == nil || !strings.Contains(err.Error(), "safe issue size") {
+		t.Fatalf("oversized body accepted: %v", err)
+	}
+	store.mu.Lock()
+	defer store.mu.Unlock()
+	if len(store.comments[7]) != 0 || len(store.issues) != 1 {
+		t.Fatal("failed alert mutated persistent state")
+	}
+}
