@@ -89,7 +89,7 @@ jobs:
           repository: ${{ job.workflow_repository }}
           ref: ${{ job.workflow_sha }}
           path: .releasegraph
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: .releasegraph/go.mod
           cache: true
@@ -250,7 +250,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         if: steps.plan.outputs.run_release == '1' && steps.plan.outputs.needs_go == '1'
         with:
           go-version: ${{ steps.plan.outputs.go_version }}
@@ -294,7 +294,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         if: needs.build-plan.outputs.needs_go == '1'
         with:
           go-version: ${{ needs.build-plan.outputs.go_version }}
