@@ -535,7 +535,7 @@ jobs:
         id: ghcr
         if: ${{ steps.plan.outputs.run_release == '1' && steps.plan.outputs.release_health != 'healthy' && !inputs.dry_run && steps.plan.outputs.ghcr_enabled == 'true' }}
         continue-on-error: ${{ steps.plan.outputs.ghcr_required != 'true' }}
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ${{ steps.plan.outputs.ghcr_context }}
           file: ${{ steps.plan.outputs.ghcr_file }}
