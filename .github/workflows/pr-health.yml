@@ -26,9 +26,8 @@ jobs:
           client-id: ${{ vars.RELEASEGRAPH_CLIENT_ID }}
           private-key: ${{ secrets.RELEASEGRAPH_PRIVATE_KEY }}
           owner: ${{ vars.RELEASEGRAPH_OWNER }}
-          # Administration is deliberately NOT requested: the App installation
-          # does not have it. Required-check evidence then degrades to UNKNOWN
-          # per pull request instead of failing the scan.
+          # Read branch protection and required checks; never mutate settings.
+          permission-administration: read
           permission-metadata: read
           permission-contents: read
           permission-pull-requests: read
