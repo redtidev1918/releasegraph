@@ -168,8 +168,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/41296701529",
-    "updated_at": "2026-11-01T10:16:44Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/41400846842",
+    "updated_at": "2026-11-02T06:35:39Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -935,8 +935,8 @@
   "prLifecycle": {
     "status": "evaluated",
     "enabled": false,
-    "open": 2,
-    "inQueue": 2,
+    "open": 0,
+    "inQueue": 0,
     "shouldLeave": 0
   }
 }
