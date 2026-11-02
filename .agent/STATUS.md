@@ -75,3 +75,23 @@ end-to-end alert acceptance are pending. Three PRs requested; none may auto-merg
 长期降级姿态下会永久冻结一切恢复、堆积已解决事件)。现按事件自身的观测质量判定:
 仓库发现成功即权威;check 事件在其 PR 的 checks 证据完整收集时即可恢复;pr:verdict
 事件需确定性判定或被完整观测的新 head 取代;观测失败的 PR 冻结自身事件,不影响别处。
+
+## 2026-11-02 关机交接快照（GitHub 事实以链接为准）
+
+- 本轮相关本地 worktree 已逐个检查，均无未提交文件；本交接改动在独立
+  `feat/shutdown-handoff-20261102` 分支完成并须经远程 PR 验收。
+- Fleet PR Health 在 `f81d029` 上定时运行：
+  [run 41408421249](https://github.com/redtidev1918/releasegraph/actions/runs/41408421249)
+  为 `DEGRADED`，扫描覆盖 15/15 仓库但 `complete=false`；5 个 PR 因
+  `API_PERMISSION` 保持 `UNKNOWN`。JSON Artifact 已上传，单一持久化
+  [Issue #120](https://github.com/redtidev1918/releasegraph/issues/120) 已更新。
+  不得将此结果称为全绿。`Administration` 读权限是当前实现报告的能力缺口；
+  对私有仓还需区分 GitHub 套餐限制与 App 授权，不应未经验证直接扩权。
+- docsite [navcheck run 41299560459](https://github.com/redtidev1918/docsite/actions/runs/41299560459)
+  在 `75621ccb` 失败于 NekoTime 8 个侧边栏目标；
+  [最新重跑 41429093048](https://github.com/redtidev1918/docsite/actions/runs/41429093048)
+  仍失败。NekoTime 的 `prepare-docs.mjs` 会生成这些被忽略的 `docs/` 页面；
+  [docs-check](https://github.com/redtidev1918/NekoTime/actions/runs/41289010196)
+  和 [Pages 部署](https://github.com/redtidev1918/NekoTime/actions/runs/41288825784)
+  在相关提交成功。上游 navcheck 未运行生成步骤，故此检查尚未修复，
+  不能把导航契约报告为通过。

@@ -26,3 +26,12 @@
 | RG-FH3 | Scheduled workflow, artifacts, community/Dependabot guidance, E2E | TODO | Depends on RG-FH2; no automatic merge |
 
 | RG-FH2 | Persistent single Issue, deduplication and recovery | IN_PROGRESS | feat/fleet-pr-health-alerts;待真实 E2E |
+
+## 2026-11-02 关机交接（以最新远程证据覆盖上方历史状态）
+
+| ID | 任务 | 状态 | 证据与下一步 |
+| --- | --- | --- | --- |
+| RG-SD1 | Fleet PR Health 云端扫描和持久化告警 | IN_PROGRESS | [run 41408421249](https://github.com/redtidev1918/releasegraph/actions/runs/41408421249)：15/15、`DEGRADED`、5 PR `UNKNOWN`；Artifact 与 [Issue #120](https://github.com/redtidev1918/releasegraph/issues/120) 已保存。核实 App 权限及私有仓套餐边界后再验收；不得把权限不足改写成 PASS。 |
+| RG-SD2 | docsite 全仓导航契约 | BLOCKED | [run 41299560459](https://github.com/redtidev1918/docsite/actions/runs/41299560459) 与 [最新重跑](https://github.com/redtidev1918/docsite/actions/runs/41429093048) 均在 NekoTime 生成页误报 8 个缺失目标。修正上游检查的生成页处理并跑全仓 CI；勿放宽真实断链检查。 |
+| RG-SD3 | PR/CI 云端交接 | DONE | 本轮已合并 PR 见 HANDOFF；远程 workflow 与日志不依赖本机。合并不代表所有后续运行通过。 |
+| RG-SD4 | 本交接文档 PR 验收 | IN_PROGRESS | 当前分支 `feat/shutdown-handoff-20261102`；推送后记录 PR、Head SHA 和 CI 结果。 |
