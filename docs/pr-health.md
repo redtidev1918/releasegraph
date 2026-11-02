@@ -81,12 +81,11 @@ and recovery comments embed scan-timestamp markers, so retries after a partial
 write cannot double-notify. Multiple marked issues, oversized bodies and
 unreadable state abort without mutating anything.
 
-Administration is deliberately not requested for the scan token: the App
-installation does not have it. Required-check evidence then degrades per pull
-request to UNKNOWN (`API_PERMISSION`) while observed checks, workflow runs and
-classification stay in the report; the alert discloses the capability gap and
-its resolution instead of hiding it. Granting Administration: read-only to the
-App later upgrades evidence without code changes.
+The scan token requests Administration: read-only to inspect branch protection
+and required checks. The App registration and installation must both approve
+this permission. Missing required-check evidence still degrades the affected
+pull request to UNKNOWN (`API_PERMISSION`); observed checks and workflow runs
+remain in the report. The scan token cannot modify repository settings.
 
 ## Delivery state
 
