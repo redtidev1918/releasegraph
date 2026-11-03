@@ -113,7 +113,44 @@ invent a release to satisfy a stale version fallback. Preserve existing tags,
 published artifacts, branches, and history. Report source fixes, merges,
 published versions, and deployed versions as separate outcomes.
 
+## Execution grading and validation
+
+Grade each task by risk, not by diff size; default L2. Unknown impact is L3
+until it is placed, and work that crosses into a higher-risk area escalates.
+
+- **L1** — docs and comments that change no behavior: check links, examples
+  and the diff; existing docs CI owns the build. Config, command or permission
+  semantics are never L1.
+- **L2** — ordinary fixes and features with a clear boundary: trace callers
+  first, then run the targeted regressions for the touched area (affected Go
+  packages, Python modules). The full gates stay with CI.
+- **L3** — anything that touches release or fleet state: policy version
+  changes, `prepare-tag`, rollout, provider `repair`/`reconcile`/`waive`
+  `--apply`, workflow changes, cross-repo contracts. Name the failure paths
+  first; plan or dry-run before every `--apply` (rules 3–4).
+
+A task level never grants release or production authority; scope and
+credentials above decide that.
+
+Consume CI instead of duplicating it. Confirm the PR head SHA, base and check
+states first, then wait once per PR (`gh pr checks <PR> --watch --interval 30`)
+instead of polling in parallel. Read status plus failure summaries; open
+failing job logs only when the summary is not enough. Before any re-run,
+separate code failures from infrastructure failures and re-run only what is
+affected. After a new commit, re-verify the new head. Merge on current-head
+evidence plus the branch contract — never on `MERGEABLE` alone and never on a
+stale head's success.
+
+Stop at the task's acceptance boundary. State the acceptance behavior, scope
+and delivery boundary when the task starts; report pending CI, external
+acceptance and missing evidence as pending, never as accepted.
+
 ## Before you push
+
+Required in full for changes that touch Go or Python code, workflows, or
+release metadata. A docs-only change (L1 above) needs `git diff --check`
+plus the applicable current-head CI before merge instead of local full-suite
+runs.
 
 ```bash
 go vet ./... && go test ./...
