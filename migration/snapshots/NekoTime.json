@@ -81,19 +81,18 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "2.3.4",
-  "latest_release": "v2.3.4",
-  "latest_release_at": "2026-08-27T05:11:06Z",
-  "latest_tag": "v2.3.4",
+  "desired_version": "2.3.5",
+  "latest_release": "v2.3.5",
+  "latest_release_at": "2026-11-03T13:54:43Z",
+  "latest_tag": "v2.3.5",
   "draft_releases": [],
   "actual_assets": [
-    "NekoTime-Linux-x64-v2.3.4.tar.gz",
-    "NekoTime-macOS-v2.3.4.dmg",
-    "NekoTime-macOS-v2.3.4.zip",
-    "NekoTime-Windows-v2.3.4.zip",
+    "NekoTime-Linux-x64-v2.3.5.tar.gz",
+    "NekoTime-macOS-v2.3.5.dmg",
+    "NekoTime-macOS-v2.3.5.zip",
+    "NekoTime-Windows-v2.3.5.zip",
     "RELEASE-METADATA.json",
-    "SHA256SUMS",
-    "SHA256SUMS.txt"
+    "SHA256SUMS"
   ],
   "release_workflows": [
     {
@@ -104,8 +103,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/41594488098",
-    "updated_at": "2026-11-03T07:10:22Z"
+    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/41809654701",
+    "updated_at": "2026-11-04T09:45:21Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -126,50 +125,49 @@
   ],
   "release_history": [
     {
-      "tag": "v2.3.4",
+      "tag": "v2.3.5",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-08-27T05:11:06Z",
+      "published_at": "2026-11-03T13:54:43Z",
       "assets": [
         {
-          "name": "NekoTime-Linux-x64-v2.3.4.tar.gz",
-          "size": 8433765,
-          "sha256": "sha256:099a7b8753240161dc8e6a3dfe0f41470efe5a0937e6fd6aa8513a2521f299b7"
+          "name": "NekoTime-Linux-x64-v2.3.5.tar.gz",
+          "size": 17748203,
+          "sha256": "sha256:44c73825bb09e9ca8032e0717ba8ba8b86364f13209b4592157292d32953ec56"
         },
         {
-          "name": "NekoTime-macOS-v2.3.4.dmg",
-          "size": 14615670,
-          "sha256": "sha256:2883a7dd9b5648c41b75b2ecbe4b71d6bb0935cf154cbff28cada551c75a00f4"
+          "name": "NekoTime-macOS-v2.3.5.dmg",
+          "size": 15541866,
+          "sha256": "sha256:1616acc910623714949775e902901dafb66b41e024c11c56c904eafff4f0ba81"
         },
         {
-          "name": "NekoTime-macOS-v2.3.4.zip",
-          "size": 43872387,
-          "sha256": "sha256:b037c85e8e18c532909cfc88636f25f1f89a650fd94e070cec688916db5fbc6e"
+          "name": "NekoTime-macOS-v2.3.5.zip",
+          "size": 15604513,
+          "sha256": "sha256:0d5b305eb5b15a0c6a62c58db52ec46d0be92c8c7b0c3a6c8a4fd0f4473f6619"
         },
         {
-          "name": "NekoTime-Windows-v2.3.4.zip",
-          "size": 10390929,
-          "sha256": "sha256:7325ee3cc950f74ad650462c2db4768b426f0db54f3a61035b67e1d03aeebc63"
+          "name": "NekoTime-Windows-v2.3.5.zip",
+          "size": 11006943,
+          "sha256": "sha256:7612cc362abe36564d3b357ef164c773ae014e1c4634ae4205b81b8f3108cefc"
         },
         {
           "name": "RELEASE-METADATA.json",
-          "size": 1463,
-          "sha256": "sha256:9fe2e86fc95f4af7d15bab6708166093def005cf521c404a7b34e91086d02e8c"
+          "size": 1975,
+          "sha256": "sha256:d704d74296248df87ef945532299ac57e312262d43cc63d18ac4475041b08fb9"
         },
         {
           "name": "SHA256SUMS",
           "size": 377,
-          "sha256": "sha256:04c4e886e824eb9b1d7d2bc6bf93ada4413b8e41fd3bb617f6cac44633d8daae"
-        },
-        {
-          "name": "SHA256SUMS.txt",
-          "size": 378,
-          "sha256": "sha256:fc22cfea82fc78b6fa00f342333e482df90b24926f88e907423cb68a8f91b9e3"
+          "sha256": "sha256:b2510f135d68a1f601a1550ebc2da35b3edf68c0b3ddcec012e3ac5392ce83a0"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v2.3.5",
+      "commit": "969894429bd0095d04629a118d417f2a22be1073"
+    },
     {
       "name": "v2.3.4",
       "commit": "e0bb75b2f0bc9dbe8661f122ac0bd8d70ba61d18"
@@ -180,6 +178,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.3.5"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -192,9 +193,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.3.4"
     }
   },
   "registries": {
@@ -205,7 +203,7 @@
     },
     "pub": {
       "package": "neko_time",
-      "declared": "2.3.4",
+      "declared": "2.3.5",
       "published": null
     }
   },
