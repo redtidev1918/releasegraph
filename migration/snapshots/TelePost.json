@@ -168,8 +168,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/42151969557",
-    "updated_at": "2026-11-06T02:42:30Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/42331860143",
+    "updated_at": "2026-11-07T03:00:02Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -906,9 +906,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "2.84.14"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -924,6 +921,9 @@
           ]
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "2.84.14"
     }
   },
   "registries": {
