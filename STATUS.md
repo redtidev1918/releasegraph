@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-11-09T11:35:05.456713+00:00`
+Generated: `2026-11-10T11:16:42.908524+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -24,5 +24,6 @@ Generated: `2026-11-09T11:35:05.456713+00:00`
 | redtidev1918/pixivflow-webui | managed | 2.0.2 | v2.0.2 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.19 | 9 | — | — | — | HEALTHY |
+| redtidev1918/svn-easy-kit | managed | — | v1.4.4 | 7 | success | — | — | HEALTHY |
 | redtidev1918/TelePost | managed | 2.84.14 | v2.84.14 | 8 | success | policy+gate | — | HEALTHY |
 | redtidev1918/TelePress | managed | 0.18.1 | v0.18.1 | 4 | success | policy+gate | — | HEALTHY |
