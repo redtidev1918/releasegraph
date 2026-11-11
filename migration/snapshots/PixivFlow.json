@@ -121,8 +121,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/42755098395",
-    "updated_at": "2026-11-10T04:19:46Z"
+    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/42986227999",
+    "updated_at": "2026-11-11T08:20:45Z"
   },
   "signals": [
     ".release-please-manifest.json",
