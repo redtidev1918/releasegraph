@@ -74,8 +74,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/43389465099",
-    "updated_at": "2026-11-13T07:57:51Z"
+    "url": "https://github.com/redtidev1918/ParaNote/actions/runs/43550620561",
+    "updated_at": "2026-11-14T03:15:25Z"
   },
   "signals": [
     ".release-please-manifest.json",
