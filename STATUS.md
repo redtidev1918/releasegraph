@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-11-15T10:57:09.479666+00:00`
+Generated: `2026-11-16T11:22:41.967700+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -19,7 +19,7 @@ Generated: `2026-11-15T10:57:09.479666+00:00`
 | redtidev1918/pixiv-token-getter | managed | 3.0.0 | v3.0.0 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/PixivFlow | managed | 3.10.0 | v3.10.0 | 3 | success | policy+gate | — | HEALTHY |
 | redtidev1918/pixivflow-desktop | managed | 0.4.0 | v0.4.0 | 5 | success | policy | — | HEALTHY |
-| redtidev1918/pixivflow-telepost-deploy | managed | 1.15.3 | v1.15.3 | 8 | success | policy+gate | 0/0 | HEALTHY |
+| redtidev1918/pixivflow-telepost-deploy | managed | 1.15.3 | v1.15.3 | 8 | success | policy+gate | 2/2 | HEALTHY |
 | redtidev1918/pixivflow-webui | managed | 2.0.2 | v2.0.2 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.19 | 9 | — | — | — | HEALTHY |

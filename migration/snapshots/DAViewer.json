@@ -97,8 +97,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/43700604643",
-    "updated_at": "2026-11-15T09:43:49Z"
+    "url": "https://github.com/redtidev1918/DAViewer/actions/runs/43844789177",
+    "updated_at": "2026-11-16T10:00:17Z"
   },
   "signals": [
     ".release-please-manifest.json",

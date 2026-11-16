@@ -83,8 +83,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePress/actions/runs/43670467073",
-    "updated_at": "2026-11-15T03:02:15Z"
+    "url": "https://github.com/redtidev1918/TelePress/actions/runs/43795859969",
+    "updated_at": "2026-11-16T03:04:18Z"
   },
   "signals": [
     ".release-please-manifest.json",
