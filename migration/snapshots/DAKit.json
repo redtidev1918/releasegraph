@@ -110,8 +110,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/DAKit/actions/runs/43832209058",
-    "updated_at": "2026-11-16T08:33:58Z"
+    "url": "https://github.com/redtidev1918/DAKit/actions/runs/44070834868",
+    "updated_at": "2026-11-17T11:05:56Z"
   },
   "signals": [
     ".release-please-manifest.json",
