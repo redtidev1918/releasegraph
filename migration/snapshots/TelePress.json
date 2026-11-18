@@ -83,8 +83,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePress/actions/runs/44019354685",
-    "updated_at": "2026-11-17T04:45:51Z"
+    "url": "https://github.com/redtidev1918/TelePress/actions/runs/44239067010",
+    "updated_at": "2026-11-18T04:41:58Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -251,6 +251,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "0.18.1"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -324,9 +327,6 @@
           ]
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "0.18.1"
     }
   },
   "registries": {

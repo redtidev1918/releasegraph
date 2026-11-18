@@ -168,8 +168,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/TelePost/actions/runs/44018908596",
-    "updated_at": "2026-11-17T04:42:02Z"
+    "url": "https://github.com/redtidev1918/TelePost/actions/runs/44238647315",
+    "updated_at": "2026-11-18T04:38:13Z"
   },
   "signals": [
     ".release-please-manifest.json",
