@@ -103,8 +103,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/44857670089",
-    "updated_at": "2026-11-21T02:46:39Z"
+    "url": "https://github.com/redtidev1918/NekoTime/actions/runs/45004047703",
+    "updated_at": "2026-11-22T08:42:45Z"
   },
   "signals": [
     ".release-please-manifest.json",

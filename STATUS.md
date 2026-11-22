@@ -5,7 +5,7 @@
 > 就是 fleet 状态的变化记录。desired / managed 清单的唯一事实源是
 > [`fleet.yaml`](./fleet.yaml)。机器可读的同源快照见 [`status.json`](./status.json)。
 
-Generated: `2026-11-21T11:05:15.345460+00:00`
+Generated: `2026-11-22T11:28:03.553470+00:00`
 
 | Repository | Class | Desired | Latest | Assets | Workflow | Contract | PR Lifecycle | Health |
 |---|---|---:|---:|---:|---|---|---|---|
@@ -17,11 +17,11 @@ Generated: `2026-11-21T11:05:15.345460+00:00`
 | redtidev1918/NekoTime | managed | 2.3.5 | v2.3.5 | 6 | success | policy+gate | — | HEALTHY |
 | redtidev1918/ParaNote | managed | 0.2.2 | v0.2.2 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/pixiv-token-getter | managed | 3.0.0 | v3.0.0 | 1 | success | policy+gate | — | HEALTHY |
-| redtidev1918/PixivFlow | managed | 3.10.0 | v3.10.0 | 3 | success | policy+gate | — | HEALTHY |
+| redtidev1918/PixivFlow | managed | 3.10.1 | v3.10.1 | 3 | failure | policy+gate | — | DEGRADED |
 | redtidev1918/pixivflow-desktop | managed | 0.4.0 | v0.4.0 | 5 | success | policy | — | HEALTHY |
-| redtidev1918/pixivflow-telepost-deploy | managed | 1.15.3 | v1.15.3 | 8 | success | policy+gate | 2/2 | HEALTHY |
+| redtidev1918/pixivflow-telepost-deploy | managed | 1.15.3 | v1.15.3 | 8 | success | policy+gate | 3/3 | HEALTHY |
 | redtidev1918/pixivflow-webui | managed | 2.0.2 | v2.0.2 | 1 | success | policy+gate | — | HEALTHY |
 | redtidev1918/redtidev1918 | no-release | — | — | 0 | — | — | — | NO_RELEASE |
 | redtidev1918/releasegraph | managed | — | v1.5.19 | 9 | — | — | — | HEALTHY |
-| redtidev1918/TelePost | managed | 2.84.14 | v2.84.14 | 8 | success | policy+gate | — | HEALTHY |
+| redtidev1918/TelePost | managed | 2.84.15 | v2.84.15 | 8 | success | policy+gate | — | HEALTHY |
 | redtidev1918/TelePress | managed | 0.18.1 | v0.18.1 | 4 | success | policy+gate | — | HEALTHY |
