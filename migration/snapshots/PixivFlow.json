@@ -6,13 +6,8 @@
   "fork": false,
   "template": false,
   "classification": "managed",
-  "health": "DEGRADED",
-  "health_reasons": [
-    {
-      "code": "release_run_failed",
-      "detail": "failure"
-    }
-  ],
+  "health": "HEALTHY",
+  "health_reasons": [],
   "missing_assets": [],
   "empty_assets": [],
   "release_policy": {
@@ -55,7 +50,8 @@
           "id": "refresh-download-page",
           "type": "github-workflow",
           "required": true,
-          "workflow": "update-download-page.yml",
+          "workflow": "refresh-release-download-page.yml",
+          "ref": "default",
           "inputs": {
             "tag": "{{tag}}",
             "deploy-docs": "false"
@@ -65,7 +61,7 @@
           "id": "deploy-docs",
           "type": "github-workflow",
           "required": true,
-          "workflow": "static.yml",
+          "workflow": "docs.yml",
           "ref": "default"
         }
       ]
@@ -107,13 +103,13 @@
     }
   },
   "release_infra_version": null,
-  "desired_version": "3.10.1",
-  "latest_release": "v3.10.1",
-  "latest_release_at": "2026-11-22T08:01:48Z",
-  "latest_tag": "v3.10.1",
+  "desired_version": "3.10.2",
+  "latest_release": "v3.10.2",
+  "latest_release_at": "2026-11-23T08:37:48Z",
+  "latest_tag": "v3.10.2",
   "draft_releases": [],
   "actual_assets": [
-    "pixivflow-3.10.1.tgz",
+    "pixivflow-3.10.2.tgz",
     "RELEASE-METADATA.json",
     "SHA256SUMS"
   ],
@@ -125,9 +121,9 @@
   ],
   "latest_release_run": {
     "status": "completed",
-    "conclusion": "failure",
-    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/44999815884",
-    "updated_at": "2026-11-22T08:02:52Z"
+    "conclusion": "success",
+    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/45163085366",
+    "updated_at": "2026-11-23T11:13:10Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -145,6 +141,7 @@
     ".github/workflows/gitleaks.yml",
     ".github/workflows/notify-profile.yml",
     ".github/workflows/package-smoke.yml",
+    ".github/workflows/refresh-release-download-page.yml",
     ".github/workflows/release.yml",
     ".github/workflows/test.yml",
     ".github/workflows/update-download-page.yml",
@@ -152,30 +149,34 @@
   ],
   "release_history": [
     {
-      "tag": "v3.10.1",
+      "tag": "v3.10.2",
       "draft": false,
       "prerelease": false,
-      "published_at": "2026-11-22T08:01:48Z",
+      "published_at": "2026-11-23T08:37:48Z",
       "assets": [
         {
-          "name": "pixivflow-3.10.1.tgz",
-          "size": 2726658,
-          "sha256": "sha256:962ddfcb1cb164ac3f0479e6cc8af43c85f18384565ac51b06d86d1bfd55c882"
+          "name": "pixivflow-3.10.2.tgz",
+          "size": 2726661,
+          "sha256": "sha256:4338b89fc00ce29fed297597a8867f180df8ada087a7b3c0be45f77a7e7c9ab1"
         },
         {
           "name": "RELEASE-METADATA.json",
           "size": 2320,
-          "sha256": "sha256:9a0a6263758d7f94f59141df444e682410cc27ff834ad52d71bac12c3d3c63aa"
+          "sha256": "sha256:5f23266ad5b62617fd2be29e5ac6cdc1891a831b722d9d73afb00c46ee551035"
         },
         {
           "name": "SHA256SUMS",
           "size": 87,
-          "sha256": "sha256:b23d8b9e1000c320657b0a56f385a569921b979a5c145dc22509b8b8a76e4794"
+          "sha256": "sha256:00611a35238319af6c8b26e92c2f045b7b097b5f42c1b88ab67b96382c48e54d"
         }
       ]
     }
   ],
   "tags": [
+    {
+      "name": "v3.10.2",
+      "commit": "fd2eda5c87399d4d3f3b5b8c295651a90da19fbb"
+    },
     {
       "name": "v3.10.1",
       "commit": "c809d10e8339b5e443299e6ad1244fe34874061a"
@@ -506,9 +507,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "3.10.1"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -521,13 +519,16 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "3.10.2"
     }
   },
   "registries": {
     "npm": {
       "package": "pixivflow",
-      "declared": "3.10.1",
-      "published": "3.10.1"
+      "declared": "3.10.2",
+      "published": "3.10.2"
     }
   },
   "branchContract": {
