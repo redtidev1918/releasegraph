@@ -77,8 +77,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/45144090017",
-    "updated_at": "2026-11-23T09:07:12Z"
+    "url": "https://github.com/redtidev1918/pixivflow-webui/actions/runs/45337615818",
+    "updated_at": "2026-11-24T06:03:59Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -135,6 +135,9 @@
     }
   ],
   "release_config": {
+    ".release-please-manifest.json": {
+      ".": "2.0.2"
+    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -147,9 +150,6 @@
           "skip-github-release": true
         }
       }
-    },
-    ".release-please-manifest.json": {
-      ".": "2.0.2"
     }
   },
   "registries": {
