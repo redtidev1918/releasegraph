@@ -122,8 +122,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/45345174544",
-    "updated_at": "2026-11-24T07:05:11Z"
+    "url": "https://github.com/redtidev1918/PixivFlow/actions/runs/45537904387",
+    "updated_at": "2026-11-25T03:09:20Z"
   },
   "signals": [
     ".release-please-manifest.json",
@@ -507,9 +507,6 @@
     }
   ],
   "release_config": {
-    ".release-please-manifest.json": {
-      ".": "3.10.2"
-    },
     "release-please-config.json": {
       "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
       "skip-github-release": true,
@@ -522,6 +519,9 @@
           "skip-github-release": true
         }
       }
+    },
+    ".release-please-manifest.json": {
+      ".": "3.10.2"
     }
   },
   "registries": {
