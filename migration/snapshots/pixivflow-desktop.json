@@ -119,8 +119,8 @@
   "latest_release_run": {
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/45746774364",
-    "updated_at": "2026-11-26T03:06:48Z"
+    "url": "https://github.com/redtidev1918/pixivflow-desktop/actions/runs/45940516033",
+    "updated_at": "2026-11-27T04:32:29Z"
   },
   "signals": [
     ".release-please-manifest.json",
